@@ -1,0 +1,14 @@
+About the demo program
+----------------------
+
+The demo directory contains an example Gtk program that uses the undo
+library.  It allows the user to draw with the mouse in the window
+and undo/redo the mouse strokes that they make.  The undo, redo and
+clear buttons are made sensitive/unsensitive to show when the user
+can undo/clear or redo actions that they have performed.
+
+The example program is named 'sketch'.
+
+Drawing is performed by dragging the mouse in the window with any of
+the buttons down.
+
