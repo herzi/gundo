@@ -18,13 +18,13 @@
 */
 
 
-#include "undo.h"
-#include "undo_ui.h"
+#include "gundo.h"
+#include "gundo_ui.h"
 
 
 typedef struct Connection Connection;
 struct Connection {
-    UndoSequence *seq;
+    GundoSequence *seq;
     guint undo_sensitive_signal;
     guint undo_destroy_signal;
     GtkWidget *widget;
@@ -32,7 +32,7 @@ struct Connection {
 };
 
 
-static void cb_set_sensitivity( UndoSequence *seq, 
+static void cb_set_sensitivity( GundoSequence *seq, 
                                 gboolean sensitive, 
                                 GtkWidget *widget ) 
 {
@@ -46,14 +46,14 @@ static void cb_widget_destroyed( GtkWidget *widget, Connection *cx ) {
     g_free(cx);
 }
 
-static void cb_undo_sequence_destroyed( UndoSequence *seq, Connection *cx ) {
+static void cb_undo_sequence_destroyed( GundoSequence *seq, Connection *cx ) {
     gtk_signal_disconnect( GTK_OBJECT(cx->widget), cx->widget_destroy_signal );
     
     g_free(cx);
 }
 
 static void make_sensitive( GtkWidget *widget, 
-                            UndoSequence *seq, 
+                            GundoSequence *seq, 
                             char *signal_name ) 
 {
     Connection *cx = g_new( Connection, 1 );
@@ -78,14 +78,14 @@ static void make_sensitive( GtkWidget *widget,
                             cx );
 }
 
-void undo_make_undo_sensitive( GtkWidget *widget, UndoSequence *seq ) {
+void gundo_make_undo_sensitive( GtkWidget *widget, GundoSequence *seq ) {
     make_sensitive( widget, seq, "can_undo" );
-    gtk_widget_set_sensitive( widget, undo_sequence_can_undo(seq) );
+    gtk_widget_set_sensitive( widget, gundo_sequence_can_undo(seq) );
 }
 
-void undo_make_redo_sensitive( GtkWidget *widget, UndoSequence *seq ) {
+void gundo_make_redo_sensitive( GtkWidget *widget, GundoSequence *seq ) {
     make_sensitive( widget, seq, "can_redo" );
-    gtk_widget_set_sensitive( widget, undo_sequence_can_redo(seq) );
+    gtk_widget_set_sensitive( widget, gundo_sequence_can_redo(seq) );
 }
 
 

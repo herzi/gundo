@@ -1,7 +1,7 @@
 # Makefile for libundo
 
-LIB_NAME = undo
-LIB_VERSION = 1.0.0
+LIB_NAME = gundo
+LIB_VERSION = 0.2.0
 
 
 CFLAGS = $(shell gtk-config --cflags gtk) -g -Wall -DDEBUG
@@ -33,6 +33,9 @@ $(STATIC_LIB): $(OBJECTS)
 test: check
 check:
 	cd ../test;	$(MAKE) $(MAKEFLAGS) all
+
+demo: check
+	cd ../demo;	$(MAKE) $(MAKEFLAGS) all
 
 clean:
 	rm -f *.o *~ core $(SHARED_LIB) $(STATIC_LIB)

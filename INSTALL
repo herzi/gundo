@@ -1,6 +1,12 @@
 How to install Gtk Undo
 -----------------------
 
+IMPORTANT:
+   If you have installed a previous version of this library, uninstall
+   it, to avoid name-clash with another library named "libundo" and to
+   avoid version numbering problems caused by a bug in version 0.1.
+
+
 1) Read the file named COPYING.  You must agree to the terms of the license
    before making and installing the library.
 

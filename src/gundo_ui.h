@@ -25,18 +25,18 @@ extern "C" {
 #endif
 
 /*  Functions that make a widget sensitive to the current state of an
- *  UndoSequence.  A widget that is undo-sensitive will only be sensitive 
+ *  GundoSequence.  A widget that is undo-sensitive will only be sensitive 
  *  when it is possible to call undo_sequence_undo on its associated 
- *  UndoSequence (that is, when undo_sequence_can_undo returns TRUE).  
+ *  GundoSequence (that is, when undo_sequence_can_undo returns TRUE).  
  *  A widget that is redo_sensitive will only be sensitive when it is 
- *  possible to call undo_sequence_redo on its associated UndoSequence 
+ *  possible to call undo_sequence_redo on its associated GundoSequence 
  *  (that is, when undo_sequence_can_redo returns TRUE).
  *
  *  A widget that is made sensitive to undo/redo must be destroyed
- *  AFTER the destruction of the UndoSequence.
+ *  AFTER the destruction of the GundoSequence.
  */
-void undo_make_undo_sensitive( GtkWidget *widget, UndoSequence *seq );
-void undo_make_redo_sensitive( GtkWidget *widget, UndoSequence *seq );
+void gundo_make_undo_sensitive( GtkWidget *widget, GundoSequence *seq );
+void gundo_make_redo_sensitive( GtkWidget *widget, GundoSequence *seq );
 
 
 #ifdef __cplusplus

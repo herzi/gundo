@@ -15,7 +15,7 @@ OBJECTS = $(SOURCES:.c=.o)
 all: sketch
 
 sketch: sketch.o
-	$(LD) $(LDFLAGS) -o $@ $^ -L$(SRCDIR) -lundo
+	$(LD) $(LDFLAGS) -o $@ $^ -L$(SRCDIR) -lgundo
 
 clean:
 	rm -f *.o *~ core

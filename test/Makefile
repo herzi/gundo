@@ -4,7 +4,7 @@
 SRCDIR = ../src
 
 CFLAGS = $(shell gtk-config --cflags gtk) -g -DDEBUG -I$(SRCDIR)
-LDFLAGS = -L$(SRCDIR) -lundo $(shell gtk-config --libs gtk)
+LDFLAGS = $(shell gtk-config --libs gtk)
 LD = gcc
 
 SOURCES = $(wildcard *.c)
@@ -16,7 +16,7 @@ all: tundo
 	./tundo
 
 tundo: tundo.o
-	$(LD) $(LDFLAGS) -o $@ $^ -L$(SRCDIR) -lundo $(LDLIBS)
+	$(LD) $(LDFLAGS) -o $@ $^ -L$(SRCDIR) -lgundo $(LDLIBS)
 
 clean:
 	rm -f *.o *~ core

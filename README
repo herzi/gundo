@@ -5,15 +5,15 @@ Copyright (C) 1999  Nat Pryce
 Introduction
 ------------
 
-Gtk Undo is a Gtk object that manages multilevel undo/redo for an application.
-The object stores a sequence of actions and provides methods for undoing or
-redoing those actions. It fires signals to inform the application when it is
-or is not possible to undo or redo any actions. Utility functions are provided
-that react to those signals to keep user interface components in sync with the
-undo sequence.
+Gundo provides a Gtk object that manages multilevel undo/redo for an 
+application.  The object stores a sequence of actions and provides methods 
+for undoing or redoing those actions. It fires signals to inform the
+application when it is or is not possible to undo or redo any actions. 
+Utility functions are provided that react to those signals to keep user 
+interface components in sync with the undo sequence.
 
-This is version 0.1. The latest version can be found at:
-    http://www-dse.doc.ic.ac.uk/~np2/software/gtkundo/
+This is version 0.2. The latest version can be found at:
+    http://www-dse.doc.ic.ac.uk/~np2/software/undo.html
 
 
 Disclaimer and License

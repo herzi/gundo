@@ -1,8 +1,8 @@
 
 
 #include "gtk/gtk.h"
-#include "undo.h"
-#include "undo_ui.h"
+#include "gundo.h"
+#include "gundo_ui.h"
 
 
 /*  A Stroke holds information about a single stroke of the user's "pen"
@@ -49,13 +49,13 @@ static void cb_quit( GtkWidget *widget, gpointer data );
 static GtkWidget *window, *sketch; /* GUI components */
 static Stroke *current_stroke;     /* Stroke currently being draw, or 0 */
 static GPtrArray *visible_strokes; /* Strokes drawn in window and not undone */
-static UndoSequence *actions;      /* Undoable actions performed by the user */
+static GundoSequence *actions;     /* Undoable actions performed by the user */
 
 
-static UndoActionType stroke_action_type = {
-    (UndoActionCallback)cb_undo_stroke,
-    (UndoActionCallback)cb_redo_stroke,
-    (UndoActionCallback)cb_free_stroke
+static GundoActionType stroke_action_type = {
+    (GundoActionCallback)cb_undo_stroke,
+    (GundoActionCallback)cb_redo_stroke,
+    (GundoActionCallback)cb_free_stroke
 };
 
 
@@ -119,7 +119,7 @@ static gboolean cb_end_stroke( GtkWidget *widget,
                                gpointer data )
 {
     g_ptr_array_add( visible_strokes, current_stroke );
-    undo_sequence_add_action( actions, &stroke_action_type, current_stroke );
+    gundo_sequence_add_action( actions, &stroke_action_type, current_stroke );
     current_stroke = 0;
 }
 
@@ -157,17 +157,17 @@ static void cb_free_stroke( Stroke *stroke ) {
  */
 
 static void cb_undo_clicked( GtkWidget *widget, gpointer data ) {
-    undo_sequence_undo( actions );
+    gundo_sequence_undo( actions );
 }
 
 static void cb_redo_clicked( GtkWidget *widget, gpointer data ) {
-    undo_sequence_redo( actions );
+    gundo_sequence_redo( actions );
 }
 
 static void cb_clear_clicked( GtkWidget *widget, gpointer data ) {
     int i;
     
-    undo_sequence_clear( actions );
+    gundo_sequence_clear( actions );
     
     for( i = 0; i < visible_strokes->len; i++ ) {
         stroke_destroy( (Stroke*)g_ptr_array_index( visible_strokes, i ) );
@@ -188,7 +188,7 @@ void init_sketch() {
     GtkWidget *button;
     
     visible_strokes = g_ptr_array_new();
-    actions = undo_sequence_new();
+    actions = gundo_sequence_new();
     
     window = gtk_window_new( GTK_WINDOW_TOPLEVEL );
     gtk_window_set_title( GTK_WINDOW(window), "Undo Demo - Sketch" );
@@ -200,17 +200,17 @@ void init_sketch() {
     gtk_signal_connect( GTK_OBJECT(button), "clicked",
                         GTK_SIGNAL_FUNC(cb_quit), NULL );
     button = gtk_button_new_with_label( "Undo" );
-    undo_make_undo_sensitive( button, actions );
+    gundo_make_undo_sensitive( button, actions );
     gtk_box_pack_start( GTK_BOX(hbox), button, FALSE, FALSE, 0 );
     gtk_signal_connect( GTK_OBJECT(button), "clicked",
                         GTK_SIGNAL_FUNC(cb_undo_clicked), NULL );
     button = gtk_button_new_with_label( "Redo" );
-    undo_make_redo_sensitive( button, actions );
+    gundo_make_redo_sensitive( button, actions );
     gtk_box_pack_start( GTK_BOX(hbox), button, FALSE, FALSE, 0 );
     gtk_signal_connect( GTK_OBJECT(button), "clicked",
                         GTK_SIGNAL_FUNC(cb_redo_clicked), NULL );
     button = gtk_button_new_with_label( "Clear" );
-    undo_make_undo_sensitive( button, actions );
+    gundo_make_undo_sensitive( button, actions );
     gtk_box_pack_start( GTK_BOX(hbox), button, FALSE, FALSE, 0 );
     gtk_signal_connect( GTK_OBJECT(button), "clicked",
                         GTK_SIGNAL_FUNC(cb_clear_clicked), NULL );

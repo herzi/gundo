@@ -19,12 +19,12 @@
 
 #include <stdio.h>
 #include <glib.h>
-#include "undo.h"
+#include "gundo.h"
 
 
 typedef struct _UndoAction UndoAction;
 struct _UndoAction {
-    const UndoActionType *type;
+    const GundoActionType *type;
     gpointer data;
 };
 
@@ -35,67 +35,67 @@ enum UndoSignalType {
 };
 
 
-static void undo_sequence_class_init( UndoSequenceClass* );
-static void undo_sequence_init( UndoSequence* );
-static void undo_sequence_destroy( GtkObject *object );
-static void group_undo( UndoSequence *seq );
-static void group_redo( UndoSequence *seq );
+static void gundo_sequence_class_init( GundoSequenceClass* );
+static void gundo_sequence_init( GundoSequence* );
+static void gundo_sequence_destroy( GtkObject *object );
+static void group_undo( GundoSequence *seq );
+static void group_redo( GundoSequence *seq );
 static void free_actions( int actc, UndoAction *actv );
 
 
-static gint undo_sequence_signals[UNDO_SEQUENCE_SIGNAL_LAST+1];
+static gint gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_LAST+1];
 static GtkObjectClass *base_class = 0;
-static UndoActionType undo_action_group = {
-    (UndoActionCallback)group_undo,
-    (UndoActionCallback)group_redo,
-    (UndoActionCallback)gtk_object_destroy
+static GundoActionType gundo_action_group = {
+    (GundoActionCallback)group_undo,
+    (GundoActionCallback)group_redo,
+    (GundoActionCallback)gtk_object_destroy
 };
 
 
 
-guint undo_sequence_get_type () {
-    static guint undo_sequence_type = 0;
+guint gundo_sequence_get_type () {
+    static guint gundo_sequence_type = 0;
     
-    if( !undo_sequence_type ) {
+    if( !gundo_sequence_type ) {
         GtkTypeInfo type_info = {
-            "UndoSequence",
-            sizeof(UndoSequence),
-            sizeof(UndoSequenceClass),
-            (GtkClassInitFunc)undo_sequence_class_init,
-            (GtkObjectInitFunc)undo_sequence_init,
+            "GundoSequence",
+            sizeof(GundoSequence),
+            sizeof(GundoSequenceClass),
+            (GtkClassInitFunc)gundo_sequence_class_init,
+            (GtkObjectInitFunc)gundo_sequence_init,
             (GtkArgSetFunc)NULL,
             (GtkArgGetFunc)NULL
         };
         
-        undo_sequence_type = 
+        gundo_sequence_type = 
             gtk_type_unique( gtk_object_get_type(), &type_info );
     }
     
-    return undo_sequence_type;
+    return gundo_sequence_type;
 }
 
 
-static void undo_sequence_class_init( UndoSequenceClass *klass ) {
+static void gundo_sequence_class_init( GundoSequenceClass *klass ) {
     GtkObjectClass *base = (GtkObjectClass*)klass;
-    base->destroy = undo_sequence_destroy;
+    base->destroy = gundo_sequence_destroy;
     
-    undo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO] = 
+    gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO] = 
         gtk_signal_new( "can_undo",
                         GTK_RUN_FIRST,
-                        undo_sequence_get_type(),
-                        GTK_SIGNAL_OFFSET( UndoSequenceClass, can_undo ),
+                        gundo_sequence_get_type(),
+                        GTK_SIGNAL_OFFSET( GundoSequenceClass, can_undo ),
                         gtk_marshal_NONE__BOOL,
                         GTK_TYPE_NONE, 1, GTK_TYPE_BOOL );
     
-    undo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO] = 
+    gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO] = 
         gtk_signal_new( "can_redo",
                         GTK_RUN_FIRST,
-                        undo_sequence_get_type(),
-                        GTK_SIGNAL_OFFSET( UndoSequenceClass, can_redo ),
+                        gundo_sequence_get_type(),
+                        GTK_SIGNAL_OFFSET( GundoSequenceClass, can_redo ),
                         gtk_marshal_NONE__BOOL,
                         GTK_TYPE_NONE, 1, GTK_TYPE_BOOL );
     
-    gtk_object_class_add_signals( base, undo_sequence_signals,
+    gtk_object_class_add_signals( base, gundo_sequence_signals,
                                   UNDO_SEQUENCE_SIGNAL_LAST+1 );
     
     klass->can_undo = NULL;
@@ -104,18 +104,18 @@ static void undo_sequence_class_init( UndoSequenceClass *klass ) {
     base_class = gtk_type_class( gtk_object_get_type() );
 }
 
-static void undo_sequence_init( UndoSequence *seq ) {
+static void gundo_sequence_init( GundoSequence *seq ) {
     seq->actions = g_array_new( FALSE, FALSE, sizeof(UndoAction) );
     seq->next_redo = 0;
     seq->group = NULL;
 }
 
-static void undo_sequence_destroy( GtkObject *object ) {
-    UndoSequence *seq;
+static void gundo_sequence_destroy( GtkObject *object ) {
+    GundoSequence *seq;
     
     g_return_if_fail( object != NULL );
     
-    seq = UNDO_SEQUENCE(object);
+    seq = GUNDO_SEQUENCE(object);
     free_actions( seq->actions->len, (UndoAction*)seq->actions->data );
     if( seq->group ) gtk_object_destroy( GTK_OBJECT(seq->group) );
     g_array_free( seq->actions, TRUE );
@@ -126,18 +126,18 @@ static void undo_sequence_destroy( GtkObject *object ) {
 }
 
 
-UndoSequence *undo_sequence_new() {
-    return UNDO_SEQUENCE( gtk_type_new( undo_sequence_get_type() ) );
+GundoSequence *gundo_sequence_new() {
+    return GUNDO_SEQUENCE( gtk_type_new( gundo_sequence_get_type() ) );
 }
 
 
-void undo_sequence_clear( UndoSequence *seq ) {
+void gundo_sequence_clear( GundoSequence *seq ) {
     gboolean could_undo, could_redo;
     
     g_assert( seq->group == NULL );
     
-    could_undo = undo_sequence_can_undo(seq);
-    could_redo = undo_sequence_can_redo(seq);
+    could_undo = gundo_sequence_can_undo(seq);
+    could_redo = gundo_sequence_can_redo(seq);
     
     free_actions( seq->actions->len, (UndoAction*)seq->actions->data );
     g_array_set_size( seq->actions, 0 );
@@ -149,27 +149,27 @@ void undo_sequence_clear( UndoSequence *seq ) {
     
     if( could_undo ) {
         gtk_signal_emit( GTK_OBJECT(seq),
-                         undo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO],
+                         gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO],
                          FALSE );
     }
     if( could_redo ) {
         gtk_signal_emit( GTK_OBJECT(seq),
-                         undo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO],
+                         gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO],
                          FALSE );
     }
 }
 
 
-void undo_sequence_add_action( UndoSequence *seq, 
-                               const UndoActionType *type, 
+void gundo_sequence_add_action( GundoSequence *seq, 
+                               const GundoActionType *type, 
                                gpointer data ) 
 {
     if( seq->group ) {
-        undo_sequence_add_action( seq->group, type, data );
+        gundo_sequence_add_action( seq->group, type, data );
     } else {
         UndoAction action;
-        gboolean could_undo = undo_sequence_can_undo(seq);
-        gboolean could_redo = undo_sequence_can_redo(seq);
+        gboolean could_undo = gundo_sequence_can_undo(seq);
+        gboolean could_redo = gundo_sequence_can_redo(seq);
         
         if( seq->next_redo < seq->actions->len ) {
             free_actions( seq->actions->len - seq->next_redo,
@@ -185,67 +185,69 @@ void undo_sequence_add_action( UndoSequence *seq,
         seq->next_redo++;
         
         if( !could_undo ) {
-            gtk_signal_emit( GTK_OBJECT(seq),
-                             undo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO],
-                             TRUE );
+            gtk_signal_emit( 
+                GTK_OBJECT(seq),
+                gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO],
+                TRUE );
         }
         if( could_redo ) {
-            gtk_signal_emit( GTK_OBJECT(seq),
-                             undo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO],
-                             FALSE );
+            gtk_signal_emit( 
+                GTK_OBJECT(seq),
+                gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO],
+                FALSE );
         }
     }
 }
 
-void undo_sequence_start_group( UndoSequence *seq ) {
+void gundo_sequence_start_group( GundoSequence *seq ) {
     if( seq->group ) {
-        undo_sequence_start_group( seq->group );
+        gundo_sequence_start_group( seq->group );
     } else {
-        seq->group = undo_sequence_new();
+        seq->group = gundo_sequence_new();
     }
 }
 
-void undo_sequence_end_group( UndoSequence *seq ) {
+void gundo_sequence_end_group( GundoSequence *seq ) {
     g_assert( seq->group != NULL );
     
     if( seq->group->group ) {
-        undo_sequence_end_group( seq->group );
+        gundo_sequence_end_group( seq->group );
     } else {
-        UndoSequence *group = seq->group;
+        GundoSequence *group = seq->group;
         seq->group = NULL;
         
         if( group->actions->len > 0 ) {
-            undo_sequence_add_action( seq, &undo_action_group, group );
+            gundo_sequence_add_action( seq, &gundo_action_group, group );
         } else {
             gtk_object_destroy( GTK_OBJECT(group) );
         }
     }
 }
 
-void undo_sequence_abort_group( UndoSequence *seq ) {
+void gundo_sequence_abort_group( GundoSequence *seq ) {
     g_assert( seq->group != NULL );
     
     if( seq->group->group ) {
-        undo_sequence_abort_group( seq->group );
+        gundo_sequence_abort_group( seq->group );
     } else {
-        UndoSequence *group = seq->group;
+        GundoSequence *group = seq->group;
         seq->group = 0;
         gtk_object_destroy( GTK_OBJECT(group) );
     }
 }
 
-gboolean undo_sequence_can_undo( UndoSequence *seq ) {
+gboolean gundo_sequence_can_undo( GundoSequence *seq ) {
     return seq->next_redo > 0;
 }
 
-void undo_sequence_undo( UndoSequence *seq ) {
+void gundo_sequence_undo( GundoSequence *seq ) {
     UndoAction *action;
     gboolean could_redo;
     
     g_assert( seq->group == NULL );
-    g_assert( undo_sequence_can_undo(seq) );
+    g_assert( gundo_sequence_can_undo(seq) );
     
-    could_redo = undo_sequence_can_redo(seq);
+    could_redo = gundo_sequence_can_redo(seq);
     
     seq->next_redo--;
     action = &g_array_index( seq->actions, UndoAction, seq->next_redo );
@@ -253,29 +255,29 @@ void undo_sequence_undo( UndoSequence *seq ) {
     
     if( !could_redo ) {
         gtk_signal_emit( GTK_OBJECT(seq),
-                         undo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO],
+                         gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO],
                          TRUE );
     }
-    if( !undo_sequence_can_undo(seq) ) {
+    if( !gundo_sequence_can_undo(seq) ) {
         gtk_signal_emit( GTK_OBJECT(seq),
-                         undo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO],
+                         gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO],
                          FALSE );
     }
 }
 
 
-gboolean undo_sequence_can_redo( UndoSequence *seq ) {
+gboolean gundo_sequence_can_redo( GundoSequence *seq ) {
     return seq->next_redo < seq->actions->len;
 }
 
-void undo_sequence_redo( UndoSequence *seq ) {
+void gundo_sequence_redo( GundoSequence *seq ) {
     UndoAction *action;
     gboolean could_undo;
     
     g_assert( seq->group == NULL );
-    g_assert( undo_sequence_can_redo(seq) );
+    g_assert( gundo_sequence_can_redo(seq) );
     
-    could_undo = undo_sequence_can_undo(seq);
+    could_undo = gundo_sequence_can_undo(seq);
     
     action = &g_array_index( seq->actions, UndoAction, seq->next_redo );
     seq->next_redo++;
@@ -283,24 +285,24 @@ void undo_sequence_redo( UndoSequence *seq ) {
     
     if( !could_undo ) {
         gtk_signal_emit( GTK_OBJECT(seq),
-                         undo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO],
+                         gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO],
                          TRUE );
     }
-    if( !undo_sequence_can_redo(seq) ) {
+    if( !gundo_sequence_can_redo(seq) ) {
         gtk_signal_emit( GTK_OBJECT(seq),
-                         undo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO],
+                         gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO],
                          FALSE );
     }
 }
 
 
-static void group_undo( UndoSequence *seq ) {
-    while( undo_sequence_can_undo(seq) ) undo_sequence_undo(seq);
+static void group_undo( GundoSequence *seq ) {
+    while( gundo_sequence_can_undo(seq) ) gundo_sequence_undo(seq);
 }
 
 
-static void group_redo( UndoSequence *seq ) {
-    while( undo_sequence_can_redo(seq) ) undo_sequence_redo(seq);
+static void group_redo( GundoSequence *seq ) {
+    while( gundo_sequence_can_redo(seq) ) gundo_sequence_redo(seq);
 }
 
 

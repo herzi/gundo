@@ -1,6 +1,6 @@
 
 #include <stdio.h>
-#include "undo.h"
+#include "gundo.h"
 
 #ifndef VERBOSE
 #define VERBOSE 0
@@ -24,7 +24,7 @@ static void free_data( gpointer p ) {
     g_free(p);
 }
 
-static UndoActionType test_undo_action = { undo_inc, redo_inc, free_data };
+static GundoActionType test_undo_action = { undo_inc, redo_inc, free_data };
 
 static int count = 0;
 
@@ -46,25 +46,25 @@ static TestData *test_undo_data() {
     return d;
 }
 
-static void do_inc( UndoSequence *seq ) {
+static void do_inc( GundoSequence *seq ) {
     count++;
-    undo_sequence_add_action( seq, &test_undo_action, test_undo_data() );
+    gundo_sequence_add_action( seq, &test_undo_action, test_undo_data() );
 }
 
 static void test_undo() {
-    UndoSequence *seq = undo_sequence_new();
+    GundoSequence *seq = gundo_sequence_new();
     
     count = 0;
     
     do_inc(seq);
     check_value( 1, "added undo action" );
-    undo_sequence_undo( seq );
+    gundo_sequence_undo( seq );
     check_value( 0, "undid increment" );
-    undo_sequence_redo( seq );
+    gundo_sequence_redo( seq );
     check_value( 1, "redid increment" );
-    undo_sequence_undo( seq );
+    gundo_sequence_undo( seq );
     check_value( 0, "undid increment again" );
-    undo_sequence_redo( seq );
+    gundo_sequence_redo( seq );
     check_value( 1, "redid increment again" );
     
     gtk_object_destroy( GTK_OBJECT(seq) );
@@ -72,28 +72,28 @@ static void test_undo() {
 }
 
 static void test_groups() {
-    UndoSequence *seq = undo_sequence_new();
+    GundoSequence *seq = gundo_sequence_new();
     
     count = 0;
     
     do_inc(seq);
     check_value( 1, "added undo action" );
     
-    undo_sequence_start_group( seq );
+    gundo_sequence_start_group( seq );
     do_inc( seq );
     do_inc( seq );
     do_inc( seq );
     do_inc( seq );
-    undo_sequence_end_group( seq );
+    gundo_sequence_end_group( seq );
     
     check_value( 5, "performed a group of undoable actions" );
-    undo_sequence_undo( seq );
+    gundo_sequence_undo( seq );
     check_value( 1, "undid the group" );
-    undo_sequence_undo( seq );
+    gundo_sequence_undo( seq );
     check_value( 0, "undid the initial single action" );
-    undo_sequence_redo( seq );
+    gundo_sequence_redo( seq );
     check_value( 1, "redid the initial single action" );
-    undo_sequence_redo( seq );
+    gundo_sequence_redo( seq );
     check_value( 5, "redid the group of actions" );
     
     gtk_object_destroy( GTK_OBJECT(seq) );

@@ -1,3 +1,8 @@
-TODO list for libundo
+Gtk Undo Library: things to do, in no particular order
 
-- Use autoconf to build the library, rather than a hand-written makefile
+* Change the build process to use autoconf
+
+* Write some documentation
+
+* Gnome undo/redo button and menu-item widgets
+
