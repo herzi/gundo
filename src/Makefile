@@ -14,6 +14,8 @@ SOURCES = $(wildcard *.c)
 HEADERS = $(wildcard *.h)
 OBJECTS = $(SOURCES:.c=.o)
 
+DOCDIR  = ../doc
+
 SHARED_LIB = lib$(LIB_NAME).so.$(LIB_VERSION)
 STATIC_LIB = lib$(LIB_NAME).a
 
@@ -40,6 +42,9 @@ demo: check
 clean:
 	rm -f *.o *~ core $(SHARED_LIB) $(STATIC_LIB)
 	cd ../test; $(MAKE) $(MAKEFLAGS) clean
+
+html-doc:
+	doc++ --no-java-graphs --html --tables --dir $(DOCDIR) $(HEADERS)
 
 again: clean all
 

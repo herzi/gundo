@@ -1,0 +1,53 @@
+<HTML>
+<HEAD>
+   <TITLE> _GundoActionType</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.3.15">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<H2> <A HREF="#DOC.DOCU">_GundoActionType</A></H2>
+<BLOCKQUOTE>Information about the type of an undoable action</BLOCKQUOTE>
+
+<HR>
+<P><DL>
+ <DT>
+<A HREF="#DOC.5.1"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>GundoActionCallback <B>undo</B>
+<DD><I>Function called to undo the action</I>
+<DT>
+<A HREF="#DOC.5.2"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>GundoActionCallback <B>redo</B>
+<DD><I>Function called to redo the action</I>
+<DT>
+<A HREF="#DOC.5.3"><IMG ALT="[more]" BORDER=0 SRC=icon1.gif></A>GundoActionCallback <B>free</B>
+<DD><I>Function called to free the action_data</I>
+</DL></P>
+
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>Information about the type of an undoable action.  This structure should be
+referred to by the <!1><A HREF="GundoActionType.html">GundoActionType</A> typedef.
+
+</BLOCKQUOTE>
+<DL>
+
+<A NAME="undo">
+<A NAME="DOC.5.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GundoActionCallback undo</B></TT>
+<DD>Function called to undo the action.
+<DL></DL><P>
+<A NAME="redo">
+<A NAME="DOC.5.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GundoActionCallback redo</B></TT>
+<DD>Function called to redo the action. 
+<DL></DL><P>
+<A NAME="free">
+<A NAME="DOC.5.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>GundoActionCallback free</B></TT>
+<DD>Function called to free the action_data.  Can be NULL, in which case
+the action_data is not free'd.
+<DL></DL><P></DL>
+<DL><DT><B>See Also:</B><DD><!1><A HREF="GundoActionType.html">GundoActionType</A>
+<BR><!1><A HREF="gundo_sequence_add_action.html">gundo_sequence_add_action</A><BR></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">Hierarchy of classes</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.imaginator.com/doc++">DOC++</A>.
+</BODY>

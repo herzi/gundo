@@ -2,7 +2,7 @@ Gtk Undo Library: things to do, in no particular order
 
 * Change the build process to use autoconf
 
-* Write some documentation
+* Write a tutorial document
 
 * Gnome undo/redo button and menu-item widgets
 

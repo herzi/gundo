@@ -24,18 +24,28 @@
 extern "C" {
 #endif
 
-/*  Functions that make a widget sensitive to the current state of an
- *  GundoSequence.  A widget that is undo-sensitive will only be sensitive 
- *  when it is possible to call undo_sequence_undo on its associated 
- *  GundoSequence (that is, when undo_sequence_can_undo returns TRUE).  
- *  A widget that is redo_sensitive will only be sensitive when it is 
- *  possible to call undo_sequence_redo on its associated GundoSequence 
- *  (that is, when undo_sequence_can_redo returns TRUE).
- *
- *  A widget that is made sensitive to undo/redo must be destroyed
- *  AFTER the destruction of the GundoSequence.
+/** Makes a widget sensitive to the current undo state of a GundoSequence.  
+    A widget that is undo-sensitive will only be sensitive 
+    when it is possible to call \Ref{gundo_sequence_undo} on its associated 
+    GundoSequence (that is, when \Ref{gundo_sequence_can_undo} returns TRUE).
+    
+    @param widget
+        The widget to make undo-sensitive.
+    @param seq
+        The undo sequence that the widget should be sensitive to.
  */
 void gundo_make_undo_sensitive( GtkWidget *widget, GundoSequence *seq );
+
+/** Makes a widget sensitive to the current redo state of a GundoSequence.  
+    A widget that is redo-sensitive will only be sensitive when it is 
+    possible to call \Ref{gundo_sequence_redo} on its associated GundoSequence 
+    (that is, when \Ref{gundo_sequence_can_redo} returns TRUE).
+    
+    @param widget
+        The widget to make redo-sensitive.
+    @param seq
+        The undo sequence that the widget should be sensitive to.
+ */
 void gundo_make_redo_sensitive( GtkWidget *widget, GundoSequence *seq );
 
 
