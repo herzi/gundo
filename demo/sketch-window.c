@@ -10,6 +10,8 @@ struct _SketchWindow {
 	GtkWindow  window;
 	Sketch   * s;
 	GtkWidget* da;
+	GtkWidget* statusbar;
+	guint context_id;
 	GtkToolItem* redo,
 		   * undo,
 		   * clear;
@@ -184,6 +186,16 @@ sketch_window_init(SketchWindow* self) {
 		}
 		
 		/* statusbar */
+		{
+		
+			self->statusbar = gtk_statusbar_new();
+			
+			self->context_id = gtk_statusbar_get_context_id(self->statusbar, "sketch");
+			gtk_statusbar_push(self->statusbar, self->context_id, "click and drag to create lines");
+			
+			gtk_box_pack_end(GTK_BOX(vbox), self->statusbar, FALSE, FALSE, 0);
+		}	
+		
 		gtk_container_add(GTK_CONTAINER(self), vbox);
 	}
     

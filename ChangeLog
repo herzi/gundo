@@ -1,3 +1,8 @@
+2005-10-03  Raphael Fuchs  <r.fuchs-sursee@bluewin.ch>
+
+
+	* demo/sketch-window.c: (sketch_window_init):
+
 2005-10-03  Sven Herzberg  <herzi@gnome-de.org>
 
 	* Makefile.am:
