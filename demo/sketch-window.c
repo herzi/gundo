@@ -190,8 +190,10 @@ sketch_window_init(SketchWindow* self) {
 		
 			self->statusbar = gtk_statusbar_new();
 			
-			self->context_id = gtk_statusbar_get_context_id(self->statusbar, "sketch");
-			gtk_statusbar_push(self->statusbar, self->context_id, "click and drag to create lines");
+			self->context_id = gtk_statusbar_get_context_id(GTK_STATUSBAR(self->statusbar),
+									"sketch");
+			gtk_statusbar_push(GTK_STATUSBAR(self->statusbar), self->context_id, 
+					   "click and drag to create lines");
 			
 			gtk_box_pack_end(GTK_BOX(vbox), self->statusbar, FALSE, FALSE, 0);
 		}	

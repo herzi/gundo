@@ -1,3 +1,8 @@
+2005-10-05  Raphael Fuchs  <r.fuchs-sursee@bluewin.ch>
+
+
+	* demo/sketch-window.c: Added casts to fix warnings
+
 2005-10-03  Raphael Fuchs  <r.fuchs-sursee@bluewin.ch>
 
 
