@@ -1,8 +1,7 @@
-#ifndef __GUNDO_UI_H__
-#define __GUNDO_UI_H__
 /*
     Gtk Undo: Multilevel undo/redo for Gtk
     Copyright (C) 1999  Nat Pryce
+    Copyright (C) 2005  Sven Herzberg
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -19,10 +18,10 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#ifndef __GUNDO_UI_H__
+#define __GUNDO_UI_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+G_BEGIN_DECLS
 
 /** Makes a widget sensitive to the current undo state of a GundoSequence.  
     A widget that is undo-sensitive will only be sensitive 
@@ -48,8 +47,6 @@ void gundo_make_undo_sensitive( GtkWidget *widget, GundoSequence *seq );
  */
 void gundo_make_redo_sensitive( GtkWidget *widget, GundoSequence *seq );
 
+G_END_DECLS
 
-#ifdef __cplusplus
-}
-#endif
 #endif

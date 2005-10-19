@@ -1,3 +1,17 @@
+2005-10-19  Sven Herzberg  <herzi@gnome-de.org>
+
+	* demo/main.c: (main): added gpl header; fix main signature
+	* demo/sketch-window.c: (sketch_window_init): looks better now
+	* gundo/Makefile.am: added the gtk-helpers code
+	* gundo/gtk-helpers.c: added gtk_widget_get_extends
+	* gundo/gtk-helpers.h: added gtk_widget_get_extends
+	* gundo/gundo-tool-undo.c: move the popup to the correct position
+	* gundo/gundo-tool-undo.h: added the hbox to the structure
+	* gundo/gundo-ui.c: mention myself
+	* gundo/gundo-ui.h: use G_BEGIN_DECLS; mention myself
+	* gundo/gundo.c: mention myself
+	* gundo/gundo.h: mention myself
+
 2005-10-05  Raphael Fuchs  <r.fuchs-sursee@bluewin.ch>
 
 

@@ -23,6 +23,7 @@ gundo-tool-undo
 </para>
 
 @tool_item: 
+@hbox: 
 @icon_button: 
 @arrow_button: 
 @sequence: 

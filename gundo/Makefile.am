@@ -19,6 +19,8 @@ libgundo_la_CPPFLAGS=\
 	$(NULL)
 libgundo_la_SOURCES=\
 	$(gundo_HEADERS) \
+	gtk-helpers.c \
+	gtk-helpers.h \
 	gundo.c \
 	gundo-tool-undo.c \
 	gundo-ui.c \

@@ -169,7 +169,7 @@ sketch_window_init(SketchWindow* self) {
 			self->da = gtk_drawing_area_new();
 			gtk_drawing_area_size(GTK_DRAWING_AREA(self->da), 256, 256 );
 			gtk_widget_set_events(self->da, gtk_widget_get_events(self->da)
-						  |GDK_EXPOSURE_MASK|GDK_BUTTON_MOTION_MASK
+						  |GDK_EXPOSURE_MASK | GDK_BUTTON_MOTION_MASK
 						  |GDK_BUTTON_PRESS_MASK
 						  |GDK_BUTTON_RELEASE_MASK);
 			    

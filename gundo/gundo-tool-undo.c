@@ -28,6 +28,8 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkstock.h>
 
+#include "gtk-helpers.h"
+
 G_DEFINE_TYPE(GundoToolUndo, gundo_tool_undo, GTK_TYPE_TOOL_ITEM)
 
 GtkToolItem*
@@ -87,6 +89,9 @@ gtu_toggle_list(GundoToolUndo* self, GtkToggleButton* arrow) {
 	}
 	
 	if(gtk_toggle_button_get_active(arrow)) {
+		int x, y, w, h;
+		gtk_widget_get_extends(self->hbox, &x, &y, &w, &h);
+		gtk_window_move(GTK_WINDOW(popup), x, y+h);
 		gtk_widget_show(popup);
 	} else {
 		gtk_widget_hide(popup);
@@ -95,13 +100,13 @@ gtu_toggle_list(GundoToolUndo* self, GtkToggleButton* arrow) {
 
 static void
 gundo_tool_undo_init(GundoToolUndo* self) {
-	GtkWidget* hbox = gtk_hbox_new(FALSE, 0);
+	self->hbox = gtk_hbox_new(FALSE, 0);
 
 	self->icon_button = gtk_button_new_from_stock(GTK_STOCK_UNDO);
 	gtu_icon_sink(NULL, GTK_BUTTON(self->icon_button));
 	g_signal_connect_swapped(self->icon_button, "clicked",
 				 G_CALLBACK(gtu_icon_clicked), self);
-	gtk_box_pack_start(GTK_BOX(hbox), self->icon_button, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(self->hbox), self->icon_button, FALSE, FALSE, 0);
 
 	self->arrow_button = gtk_toggle_button_new();
 	gtk_button_set_relief(GTK_BUTTON(self->arrow_button), GTK_RELIEF_NONE);
@@ -112,9 +117,9 @@ gundo_tool_undo_init(GundoToolUndo* self) {
 	g_signal_connect_swapped(self->arrow_button, "toggled",
 				 G_CALLBACK(gtu_toggle_list), self);
 	gtk_container_add(GTK_CONTAINER(self->arrow_button), gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_IN));
-	gtk_box_pack_start(GTK_BOX(hbox), self->arrow_button, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(self->hbox), self->arrow_button, FALSE, FALSE, 0);
 
-	gtk_widget_show_all(hbox);
-	gtk_container_add(GTK_CONTAINER(self), hbox);
+	gtk_widget_show_all(self->hbox);
+	gtk_container_add(GTK_CONTAINER(self), self->hbox);
 }
 

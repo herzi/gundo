@@ -44,6 +44,7 @@ void         gundo_tool_undo_connect (GundoToolUndo* self,
 
 struct _GundoToolUndo {
 	GtkToolItem    tool_item;
+	GtkWidget    * hbox;
 	GtkWidget    * icon_button;
 	GtkWidget    * arrow_button;
 	GundoSequence* sequence;
