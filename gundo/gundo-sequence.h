@@ -26,9 +26,38 @@
 
 #include <gtk/gtk.h>
 
-#include <gundo.h>
-
 G_BEGIN_DECLS
+
+typedef struct _GundoSequence GundoSequence;
+typedef struct _GundoSequenceClass GundoSequenceClass;
+
+#define GUNDO_TYPE_SEQUENCE \
+    (gundo_sequence_get_type())
+#define GUNDO_SEQUENCE(object) \
+    (GTK_CHECK_CAST((object), GUNDO_TYPE_SEQUENCE, GundoSequence) )
+#define GUNDO_SEQUENCE_CLASS(klass) \
+    (GTK_CHECK_CLASS_CAST( (klass), GUNDO_TYPE_SEQUENCE, GtkWidgetClass ))
+#define GUNDO_IS_SEQUENCE(object) \
+    (GTK_CHECK_TYPE( (object), GUNDO_TYPE_SEQUENCE ))
+#define GUNDO_IS_SEQUENCE_CLASS(klass) \
+    (GTK_CHECK_CLASS_TYPE( (klass), GUNDO_TYPE_SEQUENCE ))
+
+typedef void (*GundoActionCallback)( gpointer action_data );
+typedef struct _GundoActionType GundoActionType;
+
+guint          gundo_sequence_get_type   (void);
+GundoSequence *gundo_sequence_new        (void);
+void           gundo_sequence_add_action (GundoSequence *seq, 
+                                          const GundoActionType *type, 
+                                          gpointer data );
+gboolean       gundo_sequence_can_undo   (GundoSequence *seq );
+gboolean       gundo_sequence_can_redo   (GundoSequence *seq );
+void           gundo_sequence_undo       (GundoSequence *seq );
+void           gundo_sequence_redo       (GundoSequence *seq );
+void           gundo_sequence_start_group(GundoSequence *seq );
+void           gundo_sequence_end_group  (GundoSequence *seq );
+void           gundo_sequence_abort_group(GundoSequence *seq );
+void           gundo_sequence_clear      (GundoSequence *seq );
 
 struct _GundoSequence
 {
@@ -44,6 +73,12 @@ struct _GundoSequenceClass
 
     void (*can_undo)( GundoSequence*, gboolean );
     void (*can_redo)( GundoSequence*, gboolean );
+};
+
+struct _GundoActionType {
+    GundoActionCallback undo;
+    GundoActionCallback redo;
+    GundoActionCallback free;
 };
 
 G_END_DECLS

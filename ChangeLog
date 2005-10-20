@@ -1,3 +1,17 @@
+2005-10-20  Sven Herzberg  <herzi@gnome-de.org>
+
+	* gundo/gundo-sequence.h: added the gundo-sequence prototypes to a
+	separate header file
+	* gundo/gundo-tool-undo.c: the popup window is handled as a member of
+	the tool item now
+	* gundo/gundo-tool-undo.h: the popup window belongs to a GtkToolItem
+	now
+	* gundo/gundo-ui.c: use some GObject stuff instead of GtkObject stuff
+	* gundo/gundo-ui.h: fix includes to the new headers
+	* gundo/gundo.c: use some GObject stuff instead of GtkObject stuff
+	* gundo/gundo.h: remove the sequence prototypes, serve as a general
+	header now
+
 2005-10-19  Sven Herzberg  <herzi@gnome-de.org>
 
 	* demo/main.c: (main): added gpl header; fix main signature

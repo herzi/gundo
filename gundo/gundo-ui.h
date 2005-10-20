@@ -18,8 +18,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef __GUNDO_UI_H__
-#define __GUNDO_UI_H__
+#ifndef GUNDO_UI_H
+#define GUNDO_UI_H
+
+#include <gundo/gundo-sequence.h>
+#include <gtk/gtkwidget.h>
 
 G_BEGIN_DECLS
 
@@ -49,4 +52,4 @@ void gundo_make_redo_sensitive( GtkWidget *widget, GundoSequence *seq );
 
 G_END_DECLS
 
-#endif
+#endif /* !GUNDO_UI_H */

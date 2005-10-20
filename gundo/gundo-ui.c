@@ -41,39 +41,37 @@ static void cb_set_sensitivity( GundoSequence *seq,
 }
 
 static void cb_widget_destroyed( GtkWidget *widget, Connection *cx ) {
-    gtk_signal_disconnect( GTK_OBJECT(cx->seq), cx->undo_destroy_signal );
-    gtk_signal_disconnect( GTK_OBJECT(cx->seq), cx->undo_sensitive_signal );
+    g_signal_handler_disconnect( GTK_OBJECT(cx->seq), cx->undo_destroy_signal );
+    g_signal_handler_disconnect( GTK_OBJECT(cx->seq), cx->undo_sensitive_signal );
     
     g_free(cx);
 }
 
 static void cb_undo_sequence_destroyed( GundoSequence *seq, Connection *cx ) {
-    gtk_signal_disconnect( GTK_OBJECT(cx->widget), cx->widget_destroy_signal );
+    g_signal_handler_disconnect( GTK_OBJECT(cx->widget), cx->widget_destroy_signal );
     
     g_free(cx);
 }
 
-static void make_sensitive( GtkWidget *widget, 
-                            GundoSequence *seq, 
-                            char *signal_name ) 
-{
+static void
+make_sensitive(GtkWidget* widget, GundoSequence* seq, char* signal_name) {
     Connection *cx = g_new( Connection, 1 );
     
     cx->seq = seq;
     cx->widget = widget;
     
     cx->undo_sensitive_signal = 
-        gtk_signal_connect( GTK_OBJECT(seq),
+        g_signal_connect( GTK_OBJECT(seq),
                             signal_name,
                             GTK_SIGNAL_FUNC(cb_set_sensitivity),
                             widget );
     cx->undo_destroy_signal =
-        gtk_signal_connect( GTK_OBJECT(seq),
+        g_signal_connect( GTK_OBJECT(seq),
                             "destroy",
                             GTK_SIGNAL_FUNC(cb_undo_sequence_destroyed),
                             cx );
     cx->widget_destroy_signal =
-        gtk_signal_connect( GTK_OBJECT(widget),
+        g_signal_connect( GTK_OBJECT(widget),
                             "destroy",
                             GTK_SIGNAL_FUNC(cb_widget_destroyed),
                             cx );

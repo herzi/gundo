@@ -21,12 +21,15 @@
  * USA
  */
 
-#include "gundo-tool-undo.h"
+#include <gundo/gundo-tool-undo.h>
 
 #include <gtk/gtkarrow.h>
 #include <gtk/gtkbutton.h>
+#include <gtk/gtkframe.h>
 #include <gtk/gtkhbox.h>
+#include <gtk/gtklabel.h>
 #include <gtk/gtkstock.h>
+#include <gtk/gtktogglebutton.h>
 
 #include "gtk-helpers.h"
 
@@ -76,25 +79,26 @@ gtu_icon_sink(GtkWidget* arrow, GtkButton* icon) {
 
 static void
 gtu_toggle_list(GundoToolUndo* self, GtkToggleButton* arrow) {
-	static GtkWidget* popup = NULL;
-	
-	if(!popup) {
+	if(!self->popup_window) {
 		GtkWidget* frame;
-		popup = gtk_window_new(GTK_WINDOW_POPUP);
+		self->popup_window = gtk_window_new(GTK_WINDOW_POPUP);
+		gtk_window_set_screen(GTK_WINDOW(self->popup_window),
+				      gtk_widget_get_screen(GTK_WIDGET(self)));
 		frame = gtk_frame_new(NULL);
 		gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_OUT);
-		gtk_container_add(GTK_CONTAINER(popup), frame);
+		gtk_container_add(GTK_CONTAINER(self->popup_window), frame);
 		gtk_container_add(GTK_CONTAINER(frame), gtk_label_new("This is the undo list popup"));
 		gtk_widget_show_all(frame);
 	}
 	
 	if(gtk_toggle_button_get_active(arrow)) {
-		int x, y, w, h;
+		gint x, y, w, h;
 		gtk_widget_get_extends(self->hbox, &x, &y, &w, &h);
-		gtk_window_move(GTK_WINDOW(popup), x, y+h);
-		gtk_widget_show(popup);
+#warning "FIXME: make it always visible, like the menu popups are"
+		gtk_window_move(GTK_WINDOW(self->popup_window), x, y+h);
+		gtk_widget_show(self->popup_window);
 	} else {
-		gtk_widget_hide(popup);
+		gtk_widget_hide(self->popup_window);
 	}
 }
 
