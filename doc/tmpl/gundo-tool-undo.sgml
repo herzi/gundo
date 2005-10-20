@@ -26,6 +26,7 @@ gundo-tool-undo
 @hbox: 
 @icon_button: 
 @arrow_button: 
+@popup_window: 
 @sequence: 
 
 <!-- ##### TYPEDEF GundoToolUndoClass ##### -->

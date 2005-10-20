@@ -1,11 +1,11 @@
 #ifndef SKETCH_WINDOW_H
 #define SKETCH_WINDOW_H
 
-#include <gtk/gtkwidget.h>
+#include <gtk/gtkwindow.h>
 #include "sketch.h"
 
 typedef struct _SketchWindow SketchWindow;
-typedef GtkWindowClass SketchWindowClass;
+typedef struct _GtkWindowClass SketchWindowClass;
 
 #define SKETCH_TYPE_WINDOW         (sketch_window_get_type())
 #define SKETCH_WINDOW(o)           (G_TYPE_CHECK_INSTANCE_CAST((o), SKETCH_TYPE_WINDOW, SketchWindow))

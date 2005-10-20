@@ -1,6 +1,8 @@
+#warning "FIXME: add gpl header"
 
-#include <stdio.h>
-#include "gundo.h"
+#include <stdlib.h>
+
+#include <gundo.h>
 
 #ifndef VERBOSE
 #define VERBOSE 0

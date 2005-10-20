@@ -1,5 +1,14 @@
 2005-10-20  Sven Herzberg  <herzi@gnome-de.org>
 
+	* Makefile.am: added gundo-ui to the sub folders
+	* configure.in: added gundo-ui to the build folders
+	* demo/sketch-window.c: reduce the number of warnings from the code
+	* demo/sketch-window.h: reduce the number of warnings from the code
+	* doc/tmpl/gundo-tool-undo.sgml: updated to new API
+	* test/tundo.c: reduced the number of warnings
+
+2005-10-20  Sven Herzberg  <herzi@gnome-de.org>
+
 	* gundo/gundo-sequence.h: added the gundo-sequence prototypes to a
 	separate header file
 	* gundo/gundo-tool-undo.c: the popup window is handled as a member of

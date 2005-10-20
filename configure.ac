@@ -24,6 +24,7 @@ AC_OUTPUT([
   demo/Makefile
   doc/Makefile
   gundo/Makefile
+  gundo-ui/Makefile
   test/Makefile
 ])
 

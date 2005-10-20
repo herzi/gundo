@@ -1,8 +1,19 @@
+#warning "FIXME: add GPL header"
+
 #include "sketch-window.h"
 
 #include <gundo/gundo.h>
 #include <gundo/gundo-ui.h>
 #include <gundo/gundo-tool-undo.h>
+
+#include <gtk/gtkdrawingarea.h>
+#include <gtk/gtkmain.h>
+#include <gtk/gtkseparatortoolitem.h>
+#include <gtk/gtkstatusbar.h>
+#include <gtk/gtkstock.h>
+#include <gtk/gtktoolbar.h>
+#include <gtk/gtktoolbutton.h>
+#include <gtk/gtkvbox.h>
 
 #include "stroke.h"
 
