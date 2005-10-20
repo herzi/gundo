@@ -21,7 +21,7 @@
  * USA
  */
 
-#include <gundo/gundo-tool-undo.h>
+#include <gundo-ui/gundo-tool-undo.h>
 
 #include <gtk/gtkarrow.h>
 #include <gtk/gtkbutton.h>

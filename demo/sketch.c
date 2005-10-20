@@ -26,8 +26,7 @@
 #include "sketch.h"
 
 #include <gtk/gtk.h>
-#include <gundo/gundo.h>
-#include <gundo/gundo-ui.h>
+#include <gundo-ui/gundo-ui.h>
 
 #include "stroke.h"
 

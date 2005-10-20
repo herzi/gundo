@@ -3,8 +3,7 @@
 #include "sketch-window.h"
 
 #include <gundo/gundo.h>
-#include <gundo/gundo-ui.h>
-#include <gundo/gundo-tool-undo.h>
+#include <gundo-ui/gundo-ui.h>
 
 #include <gtk/gtkdrawingarea.h>
 #include <gtk/gtkmain.h>

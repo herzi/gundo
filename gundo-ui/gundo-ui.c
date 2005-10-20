@@ -19,8 +19,7 @@
 */
 
 
-#include "gundo.h"
-#include "gundo-ui.h"
+#include <gundo-ui/gundo-ui.h>
 
 
 typedef struct Connection Connection;
@@ -40,9 +39,11 @@ static void cb_set_sensitivity( GundoSequence *seq,
     gtk_widget_set_sensitive( widget, sensitive );
 }
 
-static void cb_widget_destroyed( GtkWidget *widget, Connection *cx ) {
-    g_signal_handler_disconnect( GTK_OBJECT(cx->seq), cx->undo_destroy_signal );
-    g_signal_handler_disconnect( GTK_OBJECT(cx->seq), cx->undo_sensitive_signal );
+static void cb_widget_destroyed(GtkWidget *widget, Connection *cx) {
+#ifdef RE_INTRODUCE_DESTROY_ON_SEQ
+    g_signal_handler_disconnect(G_OBJECT(cx->seq), cx->undo_destroy_signal );
+    g_signal_handler_disconnect(G_OBJECT(cx->seq), cx->undo_sensitive_signal );
+#endif
     
     g_free(cx);
 }
@@ -61,19 +62,22 @@ make_sensitive(GtkWidget* widget, GundoSequence* seq, char* signal_name) {
     cx->widget = widget;
     
     cx->undo_sensitive_signal = 
-        g_signal_connect( GTK_OBJECT(seq),
+        g_signal_connect( G_OBJECT(seq),
                             signal_name,
-                            GTK_SIGNAL_FUNC(cb_set_sensitivity),
+                            G_CALLBACK(cb_set_sensitivity),
                             widget );
+#warning "FIXME: re-introduce this as a weak reference"
+#ifdef RE_INTRODUCE_DESTROY_ON_SEQ
     cx->undo_destroy_signal =
-        g_signal_connect( GTK_OBJECT(seq),
+        g_signal_connect( G_OBJECT(seq),
                             "destroy",
-                            GTK_SIGNAL_FUNC(cb_undo_sequence_destroyed),
+                            G_CALLBACK(cb_undo_sequence_destroyed),
                             cx );
+#endif
     cx->widget_destroy_signal =
-        g_signal_connect( GTK_OBJECT(widget),
+        g_signal_connect( G_OBJECT(widget),
                             "destroy",
-                            GTK_SIGNAL_FUNC(cb_widget_destroyed),
+                            G_CALLBACK(cb_widget_destroyed),
                             cx );
 }
 

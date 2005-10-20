@@ -3,13 +3,14 @@
 noinst_PROGRAMS=sketch
 
 sketch_CPPFLAGS=\
-	$(GUNDO_CFLAGS) \
+	$(GUNDO_UI_CFLAGS) \
 	$(DEBUG_CFLAGS) \
 	-I$(top_srcdir)/gundo \
 	$(NULL)
 sketch_LDADD=\
-	$(GUNDO_LIBS) \
+	$(GUNDO_UI_LIBS) \
 	$(top_builddir)/gundo/libgundo.la \
+	$(top_builddir)/gundo-ui/libgundo-ui.la \
 	$(NULL)
 sketch_SOURCES=\
 	main.c \

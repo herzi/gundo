@@ -24,23 +24,19 @@
 #ifndef GUNDO_SEQUENCE_H
 #define GUNDO_SEQUENCE_H
 
-#include <gtk/gtk.h>
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
 typedef struct _GundoSequence GundoSequence;
 typedef struct _GundoSequenceClass GundoSequenceClass;
 
-#define GUNDO_TYPE_SEQUENCE \
-    (gundo_sequence_get_type())
-#define GUNDO_SEQUENCE(object) \
-    (GTK_CHECK_CAST((object), GUNDO_TYPE_SEQUENCE, GundoSequence) )
-#define GUNDO_SEQUENCE_CLASS(klass) \
-    (GTK_CHECK_CLASS_CAST( (klass), GUNDO_TYPE_SEQUENCE, GtkWidgetClass ))
-#define GUNDO_IS_SEQUENCE(object) \
-    (GTK_CHECK_TYPE( (object), GUNDO_TYPE_SEQUENCE ))
-#define GUNDO_IS_SEQUENCE_CLASS(klass) \
-    (GTK_CHECK_CLASS_TYPE( (klass), GUNDO_TYPE_SEQUENCE ))
+#define GUNDO_TYPE_SEQUENCE         (gundo_sequence_get_type())
+#define GUNDO_SEQUENCE(i)           (G_TYPE_CHECK_INSTANCE_CAST((i), GUNDO_TYPE_SEQUENCE, GundoSequence))
+#define GUNDO_SEQUENCE_CLASS(c)     (G_TYPE_CHECK_CLASS_CAST( (c), GUNDO_TYPE_SEQUENCE, GundoSequenceClass))
+#define GUNDO_IS_SEQUENCE(i)        (G_TYPE_CHECK_INSTANCE_TYPE((i), GUNDO_TYPE_SEQUENCE))
+#define GUNDO_IS_SEQUENCE_CLASS(c)  (G_TYPE_CHECK_CLASS_TYPE((c), GUNDO_TYPE_SEQUENCE))
+#define GUNDO_SEQUENCE_GET_CLASS(i) (G_TYPE_INSTANCE_GET_CLASS((i), GUNDO_TYPE_SEQUENCE, GundoSequenceClass))
 
 typedef void (*GundoActionCallback)( gpointer action_data );
 typedef struct _GundoActionType GundoActionType;
@@ -61,15 +57,15 @@ void           gundo_sequence_clear      (GundoSequence *seq );
 
 struct _GundoSequence
 {
-    GtkObject base;
-    GArray *actions;
-    int next_redo;
-    GundoSequence *group;
+	GObject        base_object;
+	GArray       * actions;
+	int            next_redo;
+	GundoSequence* group;
 };
 
 struct _GundoSequenceClass
 {
-    GtkObjectClass base;
+    GObjectClass object_class;
 
     void (*can_undo)( GundoSequence*, gboolean );
     void (*can_redo)( GundoSequence*, gboolean );

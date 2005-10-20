@@ -1,5 +1,26 @@
 2005-10-20  Sven Herzberg  <herzi@gnome-de.org>
 
+	* configure.in: fixed the dependencies for the two libraries
+	* demo/Makefile.am: fix dependencies
+	* demo/sketch-window.c: fix includes
+	* demo/sketch.c: fix includes
+	* gundo-ui/Makefile.am: added code to build the ui library separately
+	* gundo-ui/gundo-tool-undo.c: fix includes
+	* gundo-ui/gundo-ui.c: fix includes and GObject <> GtkObject stuff
+	* gundo-ui/gundo-ui.h: fix includes
+	* gundo/Makefile.am: removed ui dependent code
+	* gundo/gtk-helpers.c,
+	* gundo/gtk-helpers.h,
+	* gundo/gundo-tool-undo.c,
+	* gundo/gundo-tool-undo.h,
+	* gundo/gundo-ui.c,
+	* gundo/gundo-ui.h: moved to gundo-ui
+	* gundo/gundo-sequence.h: extend GObject instead of GtkObject now
+	* gundo/gundo.c: extend GObject instead of GtkObject
+	* test/tundo.c: use GObject calls; use g_type_init
+
+2005-10-20  Sven Herzberg  <herzi@gnome-de.org>
+
 	* Makefile.am: added gundo-ui to the sub folders
 	* configure.in: added gundo-ui to the build folders
 	* demo/sketch-window.c: reduce the number of warnings from the code

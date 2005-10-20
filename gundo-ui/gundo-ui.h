@@ -21,8 +21,10 @@
 #ifndef GUNDO_UI_H
 #define GUNDO_UI_H
 
-#include <gundo/gundo-sequence.h>
+#include <gundo/gundo.h>
 #include <gtk/gtkwidget.h>
+
+#include <gundo-ui/gundo-tool-undo.h>
 
 G_BEGIN_DECLS
 

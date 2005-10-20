@@ -69,7 +69,7 @@ static void test_undo() {
     gundo_sequence_redo( seq );
     check_value( 1, "redid increment again" );
     
-    gtk_object_destroy( GTK_OBJECT(seq) );
+    g_object_unref(G_OBJECT(seq));
     check_value( 1, "freed undo sequence" );
 }
 
@@ -98,12 +98,12 @@ static void test_groups() {
     gundo_sequence_redo( seq );
     check_value( 5, "redid the group of actions" );
     
-    gtk_object_destroy( GTK_OBJECT(seq) );
+    g_object_unref(G_OBJECT(seq));
     check_value( 5, "freed undo sequence" );
 }
 
 int main( int argc, char **argv ) {
-    gtk_init( &argc, &argv );
+    g_type_init();
     test_undo();
     test_groups();
     printf( "%s: OK\n", argv[0] );

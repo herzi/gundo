@@ -8,7 +8,13 @@ CXX=no
 F77=no
 AC_PROG_LIBTOOL
 
-PKG_CHECK_MODULES(GUNDO,[gtk+-2.0])
+PKG_CHECK_MODULES(GUNDO,[
+		gobject-2.0
+		])
+
+PKG_CHECK_MODULES(GUNDO_UI,[
+		gtk+-2.0
+		])
 
 GTK_DOC_CHECK()
 

@@ -17,21 +17,3 @@ gundo-ui
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### FUNCTION gundo_make_undo_sensitive ##### -->
-<para>
-
-</para>
-
-@widget: 
-@seq: 
-
-
-<!-- ##### FUNCTION gundo_make_redo_sensitive ##### -->
-<para>
-
-</para>
-
-@widget: 
-@seq: 
-
-
