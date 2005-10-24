@@ -1,5 +1,9 @@
 2005-10-24  Sven Herzberg  <herzi@gnome-de.org>
 
+	* COPYING.LIB: added LGPL to tell automake to not generate COPYING
+
+2005-10-24  Sven Herzberg  <herzi@gnome-de.org>
+
 	* demo/sketch-window.c: fix the call for the undo tool item
 	* doc/Makefile.am: fix cflags and libs
 	* doc/gundo.types: added types for the documentation
