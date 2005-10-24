@@ -1,5 +1,12 @@
 2005-10-24  Sven Herzberg  <herzi@gnome-de.org>
 
+	* gundo/Makefile.am: added history stuff
+	* gundo/gobject-helpers.h: added G_DEFINE_IFACE
+	* gundo/gundo-history.c: added an interface for the history
+	* gundo/gundo-history.h: added an iterface for the history
+
+2005-10-24  Sven Herzberg  <herzi@gnome-de.org>
+
 	* Makefile.am: build translations too
 	* configure.in: speed tuning for libtool; enable intltool
 	* gundo-ui/Makefile.am: build the tree stuff
