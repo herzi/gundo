@@ -1,5 +1,19 @@
 2005-10-24  Sven Herzberg  <herzi@gnome-de.org>
 
+	* demo/sketch-window.c: use _set_history for the tool item now
+	* gundo/Makefile.am: added the history view
+	* gundo/gobject-helpers.h: added an extra way to specify an interface
+	* gundo/gundo.h: include the history view too
+	* gundo/gundo-history-view.c,
+	* gundo/gundo-history-view.h: added an interface for the view
+	component of the MVC
+	* gundo-ui/gundo-popup-model.h: added an lgpl banner
+	* gundo-ui/gundo-tool-undo.c: implement the hisory view, 
+	* gundo-ui/gundo-tool-undo.h: renamed _connect to _set_history
+	* test/tundo.c: added lgpl banner
+
+2005-10-24  Sven Herzberg  <herzi@gnome-de.org>
+
 	* autogen.sh: include the macros folder for aclocal
 	* configure.in: ensure the macros folder is available, use the new
 	cflags handling stuff

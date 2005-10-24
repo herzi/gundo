@@ -37,10 +37,11 @@ typedef GtkToolItemClass GundoToolUndoClass;
 #define GUNDO_IS_TOOL_UNDO_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE((k), GUNDO_TYPE_TOOL_UNDO))
 #define GUNDO_TOOL_UNDO_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS((o), GUNDO_TYPE_TOOL_UNDO, GundoToolUndoClass))
 
-GType        gundo_tool_undo_get_type(void);
-GtkToolItem* gundo_tool_undo_new     (void);
-void         gundo_tool_undo_connect (GundoToolUndo* self,
-				      GundoHistory * history);
+GType        gundo_tool_undo_get_type   (void);
+
+GtkToolItem* gundo_tool_undo_new        (void);
+void         gundo_tool_undo_set_history(GundoToolUndo* self,
+				         GundoHistory * history);
 
 struct _GundoToolUndo {
 	GtkToolItem    tool_item;

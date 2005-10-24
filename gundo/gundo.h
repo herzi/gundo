@@ -21,6 +21,7 @@
 #define GUNDO_H
 
 #include <gundo-history.h>
+#include <gundo-history-view.h>
 #include <gundo-sequence.h>
 
 #endif /* !GUNDO_H */

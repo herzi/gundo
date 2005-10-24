@@ -24,21 +24,32 @@
 #ifndef GOBJECT_HELPERS_H
 #define GOBJECT_HELPERS_H
 
-#define G_DEFINE_IFACE(TypeName, type_name, parent) \
+#define G_DEFINE_IFACE_EXTENDED(TypeName, type_name, parent, type_init) \
 GType \
 type_name##_get_type(void) { \
 	static GType type = 0; \
 	\
-	if(!type) { \
+	if(G_UNLIKELY(!type)) { \
 		static const GTypeInfo info = { \
-			sizeof(TypeName##Iface) \
+			sizeof(TypeName##Iface), \
+			NULL, \
+			NULL, \
+			(GClassInitFunc)type_init \
 		}; \
 		\
 		type = g_type_register_static(parent, #TypeName, &info, 0); \
+		g_type_interface_add_prerequisite(type, G_TYPE_OBJECT); \
 	} \
 	\
 	return type; \
 }
+
+#define G_DEFINE_IFACE(TypeName, type_name, parent)  G_DEFINE_IFACE_EXTENDED(TypeName, type_name, parent, NULL)
+
+#define G_DEFINE_IFACE_FULL(TypeName, type_name, parent) \
+static void type_name##_class_init(gpointer iface); \
+\
+G_DEFINE_IFACE_EXTENDED(TypeName, type_name, parent, type_name##_class_init)
 
 #endif /* GOBJECT_HELPERS_H */
 

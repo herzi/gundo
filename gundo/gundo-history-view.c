@@ -21,18 +21,26 @@
  * USA
  */
 
-#ifndef GUNDO_POPUP_MODEL_H
-#define GUNDO_POPUP_MODEL_H
+#include <gundo/gundo-history-view.h>
 
-#include <glib/gmacros.h>
+#include <gundo/gundo.h>
 
-G_BEGIN_DECLS
+#include "gobject-helpers.h"
 
-enum {
-	POPUP_COLUMN_TEXT,
-	POPUP_N_COLUMNS
-};
+G_DEFINE_IFACE_FULL(GundoHistoryView, gundo_history_view, G_TYPE_INTERFACE);
 
-G_END_DECLS
+void
+_gundo_history_view_install_properties(GObjectClass *go_class, gint prop_id_history) {
+	g_object_class_override_property(go_class, prop_id_history, "history");
+}
 
-#endif /* !GUNDO_POPUP_MODEL_H */
+static void
+gundo_history_view_class_init(gpointer iface) {
+	g_object_interface_install_property(iface,
+					    g_param_spec_object("history",
+						    		"History",
+								"The GundoHistory that's connected to this view",
+								GUNDO_TYPE_HISTORY,
+								G_PARAM_READWRITE));
+}
+

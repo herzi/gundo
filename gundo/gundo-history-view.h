@@ -21,18 +21,27 @@
  * USA
  */
 
-#ifndef GUNDO_POPUP_MODEL_H
-#define GUNDO_POPUP_MODEL_H
+#ifndef GUNDO_HISTORY_VIEW_H
+#define GUNDO_HISTORY_VIEW_H
 
-#include <glib/gmacros.h>
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
-enum {
-	POPUP_COLUMN_TEXT,
-	POPUP_N_COLUMNS
-};
+typedef struct _GundoHistoryView GundoHistoryView;
+typedef struct _GTypeInterface   GundoHistoryViewIface;
+
+#define GUNDO_TYPE_HISTORY_VIEW    (gundo_history_view_get_type())
+#define GUNDO_HISTORY_VIEW(i)      (G_TYPE_CHECK_INSTANCE_CAST((i), GUNDO_TYPE_HISTORY_VIEW, GundoHistoryView))
+#define GUNDO_IS_HISTORY_VIEW(i)   (G_TYPE_CHECK_INSTANCE_TYPE((i), GUNDO_TYPE_HISTORY_VIEW))
+#define GUNDO_GET_HISTORY_CLASS(i) (G_TYPE_INSTANCE_GET_INTERFACE((i), GUNDO_TYPE_HISTORY_VIEW, GundoHistoryViewIface))
+
+GType gundo_history_view_get_type(void);
+
+void _gundo_history_view_install_properties(GObjectClass *go_class,
+					    gint prop_id_history);
 
 G_END_DECLS
 
-#endif /* !GUNDO_POPUP_MODEL_H */
+#endif /* !GUNDO_HISTORY_VIEW_H */
+

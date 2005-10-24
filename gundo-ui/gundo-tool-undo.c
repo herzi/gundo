@@ -44,7 +44,15 @@
 #include "gtk-helpers.h"
 #include "gundo-popup-model.h"
 
-G_DEFINE_TYPE(GundoToolUndo, gundo_tool_undo, GTK_TYPE_TOOL_ITEM)
+enum {
+	PROP_0,
+	PROP_HISTORY
+};
+
+static void gtu_history_view_init(GundoHistoryViewIface* iface);
+
+G_DEFINE_TYPE_WITH_CODE(GundoToolUndo, gundo_tool_undo, GTK_TYPE_TOOL_ITEM,
+			G_IMPLEMENT_INTERFACE(GUNDO_TYPE_HISTORY_VIEW, gtu_history_view_init));
 
 GtkToolItem*
 gundo_tool_undo_new(void) {
@@ -52,7 +60,7 @@ gundo_tool_undo_new(void) {
 }
 
 void
-gundo_tool_undo_connect(GundoToolUndo* self, GundoHistory* history) {
+gundo_tool_undo_set_history(GundoToolUndo* self, GundoHistory* history) {
 	if(self->history) {
 		g_object_unref(self->history);
 #warning "gundo_tool_undo_connect(): FIXME: disconnect from unused sequences"
@@ -68,14 +76,52 @@ gundo_tool_undo_connect(GundoToolUndo* self, GundoHistory* history) {
 }
 
 static void
-gundo_tool_undo_class_init(GundoToolUndoClass* self) {
+gtu_finalize(GObject* object) {
+	if(G_OBJECT_CLASS(gundo_tool_undo_parent_class)->finalize) {
+		G_OBJECT_CLASS(gundo_tool_undo_parent_class)->finalize(object);
+	}
+}
+
+static void
+gtu_get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec) {
+	switch(prop_id) {
+	case PROP_HISTORY:
+		g_value_set_object(value, GUNDO_TOOL_UNDO(object)->history);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+gtu_set_property(GObject* object, guint prop_id, GValue const* value, GParamSpec* pspec) {
+	switch(prop_id) {
+	case PROP_HISTORY:
+		gundo_tool_undo_set_history(GUNDO_TOOL_UNDO(object), g_value_get_object(value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+gundo_tool_undo_class_init(GundoToolUndoClass* self_class) {
+	GObjectClass* go_class = G_OBJECT_CLASS(self_class);
+
+	go_class->finalize     = gtu_finalize;
+	go_class->get_property = gtu_get_property;
+	go_class->set_property = gtu_set_property;
+	_gundo_history_view_install_properties(go_class, PROP_HISTORY);
 #warning "gundo_tool_undo_class_init(): FIXME: listen to the toolbar_reconfigured signal"
 #warning "gundo_tool_undo_class_init(): FIXME: disconnect from the sequence on delete"
 }
 
 static void
 gtu_icon_clicked(GundoToolUndo* self, GtkWidget* icon) {
-	gundo_sequence_undo(self->history);
+#warning "gtu_icon_clicked(): FIXME: remove the cast ond only use the history"
+	gundo_sequence_undo(GUNDO_SEQUENCE(self->history));
 }
 
 static void
@@ -121,7 +167,7 @@ gtu_toggle_list(GundoToolUndo* self, GtkToggleButton* arrow) {
 		screen = gtk_widget_get_screen(self->popup_window);
 		max_x = gdk_screen_get_width(screen);
 		max_y = gdk_screen_get_height(screen);
-#warning "FIXME: get the size of the window"
+#warning "gtu_toggle_list(): FIXME: get the size of the window"
 
 		//gtk_widget_get_extends(self->popup_window, NULL, NULL, &pop_w, &pop_h);
 		pop_w = w;
@@ -135,7 +181,7 @@ gtu_toggle_list(GundoToolUndo* self, GtkToggleButton* arrow) {
 		if(y+h <= max_y) {
 			y += h;
 		} else {
-#warning "FIXME: put the popup over the tool item"
+#warning "gtu_toggle_list(): FIXME: put the popup over the tool item"
 			y -= pop_h;
 		}
 
@@ -169,5 +215,12 @@ gundo_tool_undo_init(GundoToolUndo* self) {
 
 	gtk_widget_show_all(self->hbox);
 	gtk_container_add(GTK_CONTAINER(self), self->hbox);
+}
+
+/* GundoHistoryView interface */
+
+static void
+gtu_history_view_init(GundoHistoryViewIface* iface) {
+#warning "gtu_history_view_init(): FIXME: listen for changes in the history the clean way"
 }
 
