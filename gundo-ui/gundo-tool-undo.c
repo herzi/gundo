@@ -21,17 +21,26 @@
  * USA
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <gundo-ui/gundo-tool-undo.h>
 
+#include <glib/gi18n-lib.h>
 #include <gtk/gtkarrow.h>
 #include <gtk/gtkbutton.h>
+#include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
+#include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtktogglebutton.h>
+#include <gtk/gtktreeview.h>
 
 #include "gtk-helpers.h"
+#include "gundo-popup-model.h"
 
 G_DEFINE_TYPE(GundoToolUndo, gundo_tool_undo, GTK_TYPE_TOOL_ITEM)
 
@@ -81,22 +90,55 @@ static void
 gtu_toggle_list(GundoToolUndo* self, GtkToggleButton* arrow) {
 	if(!self->popup_window) {
 		GtkWidget* frame;
+		GtkWidget* scrolled;
+		GtkTreeViewColumn* column;
 		self->popup_window = gtk_window_new(GTK_WINDOW_POPUP);
 		gtk_window_set_screen(GTK_WINDOW(self->popup_window),
 				      gtk_widget_get_screen(GTK_WIDGET(self)));
 		frame = gtk_frame_new(NULL);
 		gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_OUT);
 		gtk_container_add(GTK_CONTAINER(self->popup_window), frame);
-		gtk_container_add(GTK_CONTAINER(frame), gtk_label_new("This is the undo list popup"));
+		self->popup_tree = gtk_tree_view_new();
+		column = gtk_tree_view_column_new_with_attributes(_("Undo Actions"),
+				gtk_cell_renderer_text_new(),
+				"text", POPUP_COLUMN_TEXT,
+				NULL);
+		scrolled = gtk_scrolled_window_new(NULL, NULL);
+		gtk_container_add(GTK_CONTAINER(scrolled), self->popup_tree);
+		gtk_container_add(GTK_CONTAINER(frame), scrolled);
 		gtk_widget_show_all(frame);
 	}
 	
 	if(gtk_toggle_button_get_active(arrow)) {
-		gint x, y, w, h;
+		gint       x, y, w, h;
+		gint       max_x, max_y;
+		gint       pop_w, pop_h;
+		GdkScreen* screen;
+		
 		gtk_widget_get_extends(self->hbox, &x, &y, &w, &h);
-#warning "FIXME: make it always visible, like the menu popups are"
-		gtk_window_move(GTK_WINDOW(self->popup_window), x, y+h);
+		screen = gtk_widget_get_screen(self->popup_window);
+		max_x = gdk_screen_get_width(screen);
+		max_y = gdk_screen_get_height(screen);
+#warning "FIXME: get the size of the window"
+
+		//gtk_widget_get_extends(self->popup_window, NULL, NULL, &pop_w, &pop_h);
+		pop_w = w;
+		pop_h = h;
+
+		if(x+pop_w <= max_x) {
+			// leave x as it is
+		} else {
+			//x = max_x - pop_w;
+		}
+		if(y+h <= max_y) {
+			y += h;
+		} else {
+#warning "FIXME: put the popup over the tool item"
+			y -= pop_h;
+		}
+
 		gtk_widget_show(self->popup_window);
+		gtk_window_move(GTK_WINDOW(self->popup_window), x, y);
 	} else {
 		gtk_widget_hide(self->popup_window);
 	}

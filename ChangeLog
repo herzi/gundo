@@ -1,3 +1,17 @@
+2005-10-24  Sven Herzberg  <herzi@gnome-de.org>
+
+	* Makefile.am: build translations too
+	* configure.in: speed tuning for libtool; enable intltool
+	* gundo-ui/Makefile.am: build the tree stuff
+	* gundo-ui/gundo-popup-model.h: generic header for all tree models
+	* gundo-ui/gundo-tool-undo.c: replace the label in the popup with a
+	tree
+	* gundo-ui/gundo-tool-undo.h: added the popup tree as an attribute
+	* gundo-ui/gundo-tree-model-undo.h: started some tree model interface
+	stuff
+	* po/POTFILES.in: added gundo-tool-undo.c
+	* po/de.po: added german translation
+
 2005-10-20  Sven Herzberg  <herzi@gnome-de.org>
 
 	* configure.in: fixed the dependencies for the two libraries

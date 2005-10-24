@@ -4,4 +4,5 @@ SUBDIRS=\
 	test \
 	doc \
 	demo \
+	po \
 	$(NULL)

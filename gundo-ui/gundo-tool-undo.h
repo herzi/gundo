@@ -48,6 +48,7 @@ struct _GundoToolUndo {
 	GtkWidget    * icon_button;
 	GtkWidget    * arrow_button;
 	GtkWidget    * popup_window;
+	GtkWidget    * popup_tree;
 	GundoSequence* sequence;
 };
 
