@@ -57,28 +57,24 @@
  * @see #GundoActionType
  */
 
+enum {
+	PROP_0,
+	PROP_CAN_UNDO,
+	PROP_CAN_REDO
+};
+
 typedef struct _UndoAction UndoAction;
 struct _UndoAction {
     const GundoActionType *type;
     gpointer data;
 };
 
-enum UndoSignalType {
-    UNDO_SEQUENCE_SIGNAL_CAN_UNDO,
-    UNDO_SEQUENCE_SIGNAL_CAN_REDO,
-    UNDO_SEQUENCE_SIGNAL_LAST = UNDO_SEQUENCE_SIGNAL_CAN_REDO
-};
-
-
 static void gundo_sequence_class_init( GundoSequenceClass* );
 static void gundo_sequence_init( GundoSequence* );
-static void gundo_sequence_finalize( GObject *object );
 static void group_undo( GundoSequence *seq );
 static void group_redo( GundoSequence *seq );
 static void free_actions( int actc, UndoAction *actv );
 
-
-static gint gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_LAST+1];
 
 static GundoActionType gundo_action_group = {
     (GundoActionCallback)group_undo,
@@ -92,43 +88,6 @@ static void gs_history_iface_init(GundoHistoryIface* iface);
 G_DEFINE_TYPE_WITH_CODE(GundoSequence, gundo_sequence, G_TYPE_OBJECT,
 			G_IMPLEMENT_INTERFACE(GUNDO_TYPE_HISTORY, gs_history_iface_init));
 
-static void gundo_sequence_class_init( GundoSequenceClass *self_class ) {
-    GObjectClass *go_class = G_OBJECT_CLASS(self_class);
-    go_class->finalize = gundo_sequence_finalize;
-   
-    /**
-     * GundoSequence::can_undo;
-     *
-     * Fired when the undo sequence transitions from a state where it
-     * cannot undo actions to one where it can.
-     */
-    
-    gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO] = 
-        gtk_signal_new( "can_undo",
-                        G_SIGNAL_RUN_FIRST,
-                        gundo_sequence_get_type(),
-                        G_STRUCT_OFFSET( GundoSequenceClass, can_undo ),
-                        g_cclosure_marshal_VOID__BOOLEAN,
-                        G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
-    
-    /**
-     * GundoSequence::can_redo;
-     *
-     * Fired when the undo sequence transitions from a state where it
-     * cannot redo actions to one where it can.
-     */
-    gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO] = 
-        gtk_signal_new( "can_redo",
-                        G_SIGNAL_RUN_FIRST,
-                        gundo_sequence_get_type(),
-                        G_STRUCT_OFFSET( GundoSequenceClass, can_redo ),
-                        g_cclosure_marshal_VOID__BOOLEAN,
-                        G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
-    
-    self_class->can_undo = NULL;
-    self_class->can_redo = NULL;
-}
-
 static void gundo_sequence_init( GundoSequence *seq ) {
     seq->actions = g_array_new( FALSE, FALSE, sizeof(UndoAction) );
     seq->next_redo = 0;
@@ -136,7 +95,7 @@ static void gundo_sequence_init( GundoSequence *seq ) {
 }
 
 static void
-gundo_sequence_finalize(GObject *object) {
+gs_finalize(GObject *object) {
 	GundoSequence *seq;
 
 	g_return_if_fail(object);
@@ -153,6 +112,45 @@ gundo_sequence_finalize(GObject *object) {
 	if(G_OBJECT_CLASS(gundo_sequence_parent_class)->finalize) {
 		G_OBJECT_CLASS(gundo_sequence_parent_class)->finalize(object);
 	}
+}
+
+static void
+gs_get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec) {
+	GundoHistory* history = GUNDO_HISTORY(object);
+	
+	switch(prop_id) {
+	case PROP_CAN_REDO:
+		g_value_set_boolean(value, gundo_history_can_redo(history));
+		break;
+	case PROP_CAN_UNDO:
+		g_value_set_boolean(value, gundo_history_can_undo(history));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+gs_set_property(GObject* object, guint prop_id, GValue const* value, GParamSpec* pspec) {
+	switch(prop_id) {
+	case PROP_CAN_REDO:
+	case PROP_CAN_UNDO:
+		// these two cannot be set
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+gundo_sequence_class_init(GundoSequenceClass *self_class) {
+	GObjectClass *go_class = G_OBJECT_CLASS(self_class);
+	go_class->finalize     = gs_finalize;
+	go_class->get_property = gs_get_property;
+	go_class->set_property = gs_set_property;
+
+	gundo_history_install_properties(go_class, PROP_CAN_UNDO, PROP_CAN_REDO);
 }
 
 
@@ -197,12 +195,12 @@ gundo_sequence_clear(GundoSequence *seq) {
 	}
 
 	if(could_undo) {
-		g_signal_emit(G_OBJECT(seq), gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO],
-			      0, FALSE);
+		// now we definitely can't undo
+		g_object_notify(G_OBJECT(seq), "can-undo");
 	}
 	if(could_redo) {
-		g_signal_emit(G_OBJECT(seq), gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO],
-			      0, FALSE);
+		// now we definitely can't redo
+		g_object_notify(G_OBJECT(seq), "can-redo");
 	}
 }
 
@@ -219,10 +217,8 @@ gundo_sequence_clear(GundoSequence *seq) {
  * been started, the action is appended to the end of the most recently
  * started group.
  */
-void gundo_sequence_add_action( GundoSequence *seq, 
-                               const GundoActionType *type, 
-                               gpointer data ) 
-{
+void
+gundo_sequence_add_action(GundoSequence* seq, GundoActionType const* type, gpointer data) {
 	if( seq->group ) {
 		gundo_sequence_add_action( seq->group, type, data );
 	} else {
@@ -244,14 +240,16 @@ void gundo_sequence_add_action( GundoSequence *seq,
 		seq->next_redo++;
 
 		if(!could_undo) {
-			g_signal_emit(G_OBJECT(seq), gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO],
-				      0, TRUE);
+			// now we definitely can undo
+			g_object_notify(G_OBJECT(seq), "can-undo");
 		}
 		if(could_redo) {
-			g_signal_emit(G_OBJECT(seq), gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO],
-				      0, FALSE);
+			// now we definitely can't redo
+			g_object_notify(G_OBJECT(seq), "can-redo");
 		}
 	}
+
+	
 }
 
 /**
@@ -336,12 +334,12 @@ void gundo_sequence_undo( GundoSequence *seq ) {
 				(action->type->undo)( action->data );
 
 	if(!could_redo) {
-		g_signal_emit(G_OBJECT(seq), gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO],
-			      0, TRUE);
+		// now we definitely can redo
+		g_object_notify(G_OBJECT(seq), "can-redo");
 	}
 	if(!gundo_history_can_undo(GUNDO_HISTORY(seq))) {
-		g_signal_emit(G_OBJECT(seq), gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO],
-			      0, FALSE);
+		// so, we can't undo anymore
+		g_object_notify(G_OBJECT(seq), "can-undo");
 	}
 }
 
@@ -354,28 +352,26 @@ void gundo_sequence_undo( GundoSequence *seq ) {
         The undo sequence.
  */
 void gundo_sequence_redo( GundoSequence *seq ) {
-    UndoAction *action;
-    gboolean could_undo;
-    
-    g_return_if_fail( seq->group == NULL );
-    g_return_if_fail( gundo_history_can_redo(GUNDO_HISTORY(seq) ));
-    
-    could_undo = gundo_history_can_undo(GUNDO_HISTORY(seq));
-    
-    action = &g_array_index( seq->actions, UndoAction, seq->next_redo );
-    seq->next_redo++;
-    (action->type->redo)( action->data );
-    
-    if(!could_undo) {
-        g_signal_emit(G_OBJECT(seq),
-                         gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO],
-                         0, TRUE );
-    }
-    if(!gundo_history_can_redo(GUNDO_HISTORY(seq))) {
-        g_signal_emit(G_OBJECT(seq),
-                         gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO],
-                         0, FALSE );
-    }
+	UndoAction *action;
+	gboolean could_undo;
+
+	g_return_if_fail( seq->group == NULL );
+	g_return_if_fail( gundo_history_can_redo(GUNDO_HISTORY(seq) ));
+
+	could_undo = gundo_history_can_undo(GUNDO_HISTORY(seq));
+
+	action = &g_array_index( seq->actions, UndoAction, seq->next_redo );
+	seq->next_redo++;
+	(action->type->redo)( action->data );
+
+	if(!could_undo) {
+		// now we can definitely undo
+		g_object_notify(G_OBJECT(seq), "can-undo");
+	}
+	if(!gundo_history_can_redo(GUNDO_HISTORY(seq))) {
+		// so we can't redo anymore
+		g_object_notify(G_OBJECT(seq), "can-redo");
+	}
 }
 
 

@@ -29,7 +29,7 @@
 G_BEGIN_DECLS
 
 typedef struct _GundoSequence GundoSequence;
-typedef struct _GundoSequenceClass GundoSequenceClass;
+typedef struct _GObjectClass  GundoSequenceClass;
 
 #define GUNDO_TYPE_SEQUENCE         (gundo_sequence_get_type())
 #define GUNDO_SEQUENCE(i)           (G_TYPE_CHECK_INSTANCE_CAST((i), GUNDO_TYPE_SEQUENCE, GundoSequence))
@@ -59,14 +59,6 @@ struct _GundoSequence
 	GArray       * actions;
 	guint          next_redo;
 	GundoSequence* group;
-};
-
-struct _GundoSequenceClass
-{
-    GObjectClass object_class;
-
-    void (*can_undo)( GundoSequence*, gboolean );
-    void (*can_redo)( GundoSequence*, gboolean );
 };
 
 struct _GundoActionType {

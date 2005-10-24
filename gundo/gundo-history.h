@@ -36,10 +36,14 @@ typedef struct _GundoHistoryIface GundoHistoryIface;
 #define GUNDO_IS_HISTORY(i)        (G_TYPE_CHECK_INSTANCE_TYPE((i), GUNDO_TYPE_HISTORY))
 #define GUNDO_HISTORY_GET_CLASS(i) (G_TYPE_INSTANCE_GET_INTERFACE((i), GUNDO_TYPE_HISTORY, GundoHistoryIface))
 
-GType gundo_history_get_type(void);
+GType    gundo_history_get_type(void);
 
-gboolean       gundo_history_can_redo   (GundoHistory *self);
-gboolean       gundo_history_can_undo   (GundoHistory *self);
+gboolean gundo_history_can_redo   (GundoHistory *self);
+gboolean gundo_history_can_undo   (GundoHistory *self);
+
+void     gundo_history_install_properties(GObjectClass* go_class,
+					  guint id_undo,
+					  guint id_redo);
 
 struct _GundoHistoryIface {
 	GTypeInterface base_interface;

@@ -24,22 +24,35 @@
 #ifndef GUNDO_HISTORY_VIEW_H
 #define GUNDO_HISTORY_VIEW_H
 
-#include <glib-object.h>
+#include <gundo-history.h>
 
 G_BEGIN_DECLS
 
-typedef struct _GundoHistoryView GundoHistoryView;
-typedef struct _GTypeInterface   GundoHistoryViewIface;
+typedef struct _GundoHistoryView      GundoHistoryView;
+typedef struct _GundoHistoryViewIface GundoHistoryViewIface;
 
-#define GUNDO_TYPE_HISTORY_VIEW    (gundo_history_view_get_type())
-#define GUNDO_HISTORY_VIEW(i)      (G_TYPE_CHECK_INSTANCE_CAST((i), GUNDO_TYPE_HISTORY_VIEW, GundoHistoryView))
-#define GUNDO_IS_HISTORY_VIEW(i)   (G_TYPE_CHECK_INSTANCE_TYPE((i), GUNDO_TYPE_HISTORY_VIEW))
-#define GUNDO_GET_HISTORY_CLASS(i) (G_TYPE_INSTANCE_GET_INTERFACE((i), GUNDO_TYPE_HISTORY_VIEW, GundoHistoryViewIface))
+#define GUNDO_TYPE_HISTORY_VIEW         (gundo_history_view_get_type())
+#define GUNDO_HISTORY_VIEW(i)           (G_TYPE_CHECK_INSTANCE_CAST((i), GUNDO_TYPE_HISTORY_VIEW, GundoHistoryView))
+#define GUNDO_IS_HISTORY_VIEW(i)        (G_TYPE_CHECK_INSTANCE_TYPE((i), GUNDO_TYPE_HISTORY_VIEW))
+#define GUNDO_HISTORY_VIEW_GET_CLASS(i) (G_TYPE_INSTANCE_GET_INTERFACE((i), GUNDO_TYPE_HISTORY_VIEW, GundoHistoryViewIface))
 
 GType gundo_history_view_get_type(void);
 
+void gundo_history_view_register  (GundoHistoryView* self,
+				   GundoHistory    * history);
+void gundo_history_view_unregister(GundoHistoryView* self,
+				   GundoHistory    * history);
+
 void _gundo_history_view_install_properties(GObjectClass *go_class,
 					    gint prop_id_history);
+
+struct _GundoHistoryViewIface {
+	GTypeInterface base_interface;
+
+	/* vtable */
+	void (*notify_can_undo) (GundoHistoryView* self,
+				 gboolean          can_undo);
+};
 
 G_END_DECLS
 

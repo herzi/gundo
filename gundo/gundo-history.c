@@ -25,7 +25,7 @@
 
 #include "gobject-helpers.h"
 
-G_DEFINE_IFACE(GundoHistory, gundo_history, G_TYPE_INTERFACE);
+G_DEFINE_IFACE_FULL(GundoHistory, gundo_history, G_TYPE_INTERFACE);
 
 /**
  * gundo_history_can_redo:
@@ -56,5 +56,28 @@ gundo_history_can_undo(GundoHistory* self) {
 	g_return_val_if_fail(GUNDO_HISTORY_GET_CLASS(self)->can_undo, FALSE);
 
 	return GUNDO_HISTORY_GET_CLASS(self)->can_undo(self);
+}
+
+/* GInterface stuff */
+void
+gundo_history_install_properties(GObjectClass* go_class, guint id_undo, guint id_redo) {
+	g_object_class_override_property(go_class, id_undo, "can-undo");
+	g_object_class_override_property(go_class, id_redo, "can-redo");
+}
+
+static void
+gundo_history_class_init(gpointer iface) {
+	g_object_interface_install_property(iface,
+					    g_param_spec_boolean("can-undo",
+						    		 "can undo",
+								 "Is it possible to undo any action",
+								 FALSE,
+								 G_PARAM_READABLE));
+	g_object_interface_install_property(iface,
+					    g_param_spec_boolean("can-redo",
+						    		 "can redo",
+								 "Is it possible to redo any action",
+								 FALSE,
+								 G_PARAM_READABLE));
 }
 

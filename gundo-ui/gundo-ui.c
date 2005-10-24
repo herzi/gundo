@@ -21,10 +21,11 @@
 
 #include <gundo-ui/gundo-ui.h>
 
+#include <string.h>
 
 typedef struct Connection Connection;
 struct Connection {
-    GundoSequence *seq;
+    GundoHistory *history;
     guint undo_sensitive_signal;
     guint undo_destroy_signal;
     GtkWidget *widget;
@@ -32,11 +33,15 @@ struct Connection {
 };
 
 
-static void cb_set_sensitivity( GundoSequence *seq, 
-                                gboolean sensitive, 
-                                GtkWidget *widget ) 
-{
-    gtk_widget_set_sensitive( widget, sensitive );
+static void
+cb_set_sensitivity(GundoHistory* history, GParamSpec* pspec, GtkWidget* widget) {
+	gboolean sensitive;
+	if(!strcmp(pspec->name, "can-undo")) {
+		sensitive = gundo_history_can_undo(history);
+	} else {
+		sensitive = gundo_history_can_redo(history);
+	}
+	gtk_widget_set_sensitive( widget, sensitive );
 }
 
 static void cb_widget_destroyed(GtkWidget *widget, Connection *cx) {
@@ -55,21 +60,21 @@ static void cb_undo_sequence_destroyed( GundoSequence *seq, Connection *cx ) {
 }
 
 static void
-make_sensitive(GtkWidget* widget, GundoSequence* seq, char* signal_name) {
+make_sensitive(GtkWidget* widget, GundoHistory* history, char* signal_name) {
     Connection *cx = g_new( Connection, 1 );
     
-    cx->seq = seq;
+    cx->history = history;
     cx->widget = widget;
     
     cx->undo_sensitive_signal = 
-        g_signal_connect( G_OBJECT(seq),
+        g_signal_connect( G_OBJECT(history),
                             signal_name,
                             G_CALLBACK(cb_set_sensitivity),
                             widget );
 #warning "FIXME: re-introduce this as a weak reference"
 #ifdef RE_INTRODUCE_DESTROY_ON_SEQ
     cx->undo_destroy_signal =
-        g_signal_connect( G_OBJECT(seq),
+        g_signal_connect( G_OBJECT(history),
                             "destroy",
                             G_CALLBACK(cb_undo_sequence_destroyed),
                             cx );
@@ -93,8 +98,7 @@ make_sensitive(GtkWidget* widget, GundoSequence* seq, char* signal_name) {
  */
 void
 gundo_make_undo_sensitive(GtkWidget *widget, GundoHistory *history) {
-#warning "gundo_make_undo_sensitive(): FIXME: remove this cast and use the history"
-	make_sensitive(widget, GUNDO_SEQUENCE(history), "can_undo");
+	make_sensitive(widget, history, "notify::can-undo");
 	gtk_widget_set_sensitive(widget, gundo_history_can_undo(history));
 }
 
@@ -110,8 +114,7 @@ gundo_make_undo_sensitive(GtkWidget *widget, GundoHistory *history) {
  */
 void
 gundo_make_redo_sensitive(GtkWidget *widget, GundoHistory *history) {
-#warning "gundo_make_undo_sensitive(): FIXME: remove this cast and use the history"
-    make_sensitive(widget, GUNDO_SEQUENCE(history), "can_redo");
+    make_sensitive(widget, history, "notify::can-redo");
     gtk_widget_set_sensitive(widget, gundo_history_can_redo(history));
 }
 

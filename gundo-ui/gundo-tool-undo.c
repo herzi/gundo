@@ -62,21 +62,31 @@ gundo_tool_undo_new(void) {
 void
 gundo_tool_undo_set_history(GundoToolUndo* self, GundoHistory* history) {
 	if(self->history) {
+		gundo_history_view_unregister(GUNDO_HISTORY_VIEW(self), self->history);
 		g_object_unref(self->history);
-#warning "gundo_tool_undo_connect(): FIXME: disconnect from unused sequences"
 		self->history = NULL;
 	}
 
 	if(history) {
 		self->history = g_object_ref(history);
-		gundo_make_undo_sensitive(GTK_WIDGET(self), self->history);
+		gundo_history_view_register(GUNDO_HISTORY_VIEW(self), self->history);
 	} else {
 		gtk_widget_set_sensitive(GTK_WIDGET(self), FALSE);
 	}
+
+	g_object_notify(G_OBJECT(self), "history");
 }
 
 static void
 gtu_finalize(GObject* object) {
+	GundoToolUndo* self = GUNDO_TOOL_UNDO(object);
+	
+	if(self->history) {
+		gundo_history_view_unregister(GUNDO_HISTORY_VIEW(self), self->history);
+		g_object_unref(self->history);
+		self->history = NULL;
+	}
+
 	if(G_OBJECT_CLASS(gundo_tool_undo_parent_class)->finalize) {
 		G_OBJECT_CLASS(gundo_tool_undo_parent_class)->finalize(object);
 	}
@@ -220,7 +230,12 @@ gundo_tool_undo_init(GundoToolUndo* self) {
 /* GundoHistoryView interface */
 
 static void
+gtu_notify_can_undo(GundoHistoryView* view, gboolean can_undo) {
+	gtk_widget_set_sensitive(GTK_WIDGET(view), can_undo);
+}
+
+static void
 gtu_history_view_init(GundoHistoryViewIface* iface) {
-#warning "gtu_history_view_init(): FIXME: listen for changes in the history the clean way"
+	iface->notify_can_undo = gtu_notify_can_undo;
 }
 

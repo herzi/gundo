@@ -1,5 +1,20 @@
 2005-10-24  Sven Herzberg  <herzi@gnome-de.org>
 
+	* gundo-ui/gundo-tool-undo.c: use the view actions to make the widget
+	(in)sensitive now; notify correctly about a history change
+	* gundo-ui/gundo-ui.c: use the gundo history now in the connection,
+	listen to the new signals now
+	* gundo/gundo-history-view.c: added the (un)register calls, added
+	signal handling for the can-undo stuff
+	* gundo/gundo-history-view.h: added the (un)register calls
+	* gundo/gundo-history.c: added the properties
+	* gundo/gundo-history.h: added the properties
+	* gundo/gundo-sequence.c: added the can-undo and can-redo properties;
+	removed the old signal handling code
+	* gundo/gundo-sequence.h: made the class simpler
+
+2005-10-24  Sven Herzberg  <herzi@gnome-de.org>
+
 	* demo/sketch-window.c: use _set_history for the tool item now
 	* gundo/Makefile.am: added the history view
 	* gundo/gobject-helpers.h: added an extra way to specify an interface
