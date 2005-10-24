@@ -40,6 +40,7 @@ GType    gundo_history_get_type(void);
 
 gboolean gundo_history_can_redo   (GundoHistory *self);
 gboolean gundo_history_can_undo   (GundoHistory *self);
+void     gundo_history_undo       (GundoHistory *self);
 
 void     gundo_history_install_properties(GObjectClass* go_class,
 					  guint id_undo,
@@ -50,6 +51,8 @@ struct _GundoHistoryIface {
 
 	gboolean (*can_redo) (GundoHistory* self);
 	gboolean (*can_undo) (GundoHistory* self);
+
+	void     (*undo)     (GundoHistory* self);
 };
 
 G_END_DECLS

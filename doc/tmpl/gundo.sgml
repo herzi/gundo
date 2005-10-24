@@ -52,14 +52,6 @@ GundoSequence
 @data: 
 
 
-<!-- ##### FUNCTION gundo_sequence_undo ##### -->
-<para>
-
-</para>
-
-@seq: 
-
-
 <!-- ##### FUNCTION gundo_sequence_redo ##### -->
 <para>
 

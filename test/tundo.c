@@ -77,17 +77,18 @@ static void do_inc( GundoSequence *seq ) {
 }
 
 static void test_undo() {
-    GundoSequence *seq = gundo_sequence_new();
+    GundoSequence* seq = gundo_sequence_new();
+    GundoHistory * history = GUNDO_HISTORY(seq);
     
     count = 0;
     
     do_inc(seq);
     check_value( 1, "added undo action" );
-    gundo_sequence_undo( seq );
+    gundo_history_undo(history);
     check_value( 0, "undid increment" );
     gundo_sequence_redo( seq );
     check_value( 1, "redid increment" );
-    gundo_sequence_undo( seq );
+    gundo_history_undo(history);
     check_value( 0, "undid increment again" );
     gundo_sequence_redo( seq );
     check_value( 1, "redid increment again" );
@@ -98,6 +99,7 @@ static void test_undo() {
 
 static void test_groups() {
     GundoSequence *seq = gundo_sequence_new();
+    GundoHistory * history = GUNDO_HISTORY(seq);
     
     count = 0;
     
@@ -112,9 +114,9 @@ static void test_groups() {
     gundo_sequence_end_group( seq );
     
     check_value( 5, "performed a group of undoable actions" );
-    gundo_sequence_undo( seq );
+    gundo_history_undo(history);
     check_value( 1, "undid the group" );
-    gundo_sequence_undo( seq );
+    gundo_history_undo(history);
     check_value( 0, "undid the initial single action" );
     gundo_sequence_redo( seq );
     check_value( 1, "redid the initial single action" );

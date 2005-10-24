@@ -1,5 +1,15 @@
 2005-10-24  Sven Herzberg  <herzi@gnome-de.org>
 
+	* doc/tmpl/gundo.sgml: API update
+	* gundo-ui/gundo-tool-undo.c: got rid of the sequence specific code
+	* gundo/gundo-history.c: added undo
+	* gundo/gundo-history.h: added undo
+	* gundo/gundo-sequence.c: implement undo from the history
+	* gundo/gundo-sequence.h: remove undo
+	* test/tundo.c: API update
+
+2005-10-24  Sven Herzberg  <herzi@gnome-de.org>
+
 	* gundo-ui/gundo-tool-undo.c: use the view actions to make the widget
 	(in)sensitive now; notify correctly about a history change
 	* gundo-ui/gundo-ui.c: use the gundo history now in the connection,

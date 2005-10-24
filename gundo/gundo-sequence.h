@@ -46,7 +46,6 @@ GundoSequence *gundo_sequence_new        (void);
 void           gundo_sequence_add_action (GundoSequence *seq, 
                                           const GundoActionType *type, 
                                           gpointer data );
-void           gundo_sequence_undo       (GundoSequence *seq );
 void           gundo_sequence_redo       (GundoSequence *seq );
 void           gundo_sequence_start_group(GundoSequence *seq );
 void           gundo_sequence_end_group  (GundoSequence *seq );

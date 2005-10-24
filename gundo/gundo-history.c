@@ -58,6 +58,21 @@ gundo_history_can_undo(GundoHistory* self) {
 	return GUNDO_HISTORY_GET_CLASS(self)->can_undo(self);
 }
 
+/**
+ * gundo_history_undo:
+ * @self: a #GundoHistory
+ *
+ * Undoes the action at the end of the history.
+ * 
+ * <em>Prerequisites</em>: no group is being constructed && undo_sequence_can_undo(seq).
+ */
+void
+gundo_history_undo(GundoHistory* self) {
+	g_return_if_fail(GUNDO_HISTORY_GET_CLASS(self)->undo);
+
+	GUNDO_HISTORY_GET_CLASS(self)->undo(self);
+}
+
 /* GInterface stuff */
 void
 gundo_history_install_properties(GObjectClass* go_class, guint id_undo, guint id_redo) {

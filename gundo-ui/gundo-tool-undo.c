@@ -125,13 +125,11 @@ gundo_tool_undo_class_init(GundoToolUndoClass* self_class) {
 	go_class->set_property = gtu_set_property;
 	_gundo_history_view_install_properties(go_class, PROP_HISTORY);
 #warning "gundo_tool_undo_class_init(): FIXME: listen to the toolbar_reconfigured signal"
-#warning "gundo_tool_undo_class_init(): FIXME: disconnect from the sequence on delete"
 }
 
 static void
 gtu_icon_clicked(GundoToolUndo* self, GtkWidget* icon) {
-#warning "gtu_icon_clicked(): FIXME: remove the cast ond only use the history"
-	gundo_sequence_undo(GUNDO_SEQUENCE(self->history));
+	gundo_history_undo(self->history);
 }
 
 static void

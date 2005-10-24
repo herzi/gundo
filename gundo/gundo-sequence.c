@@ -312,37 +312,6 @@ void gundo_sequence_abort_group( GundoSequence *seq ) {
     }
 }
 
-/**
- * gundo_sequence_undo:
- * @seq: a #GundoSequence
- *
- * Undoes the action at the end of the action sequence.
- * 
- * <em>Prerequisites</em>: no group is being constructed && undo_sequence_can_undo(seq).
- */
-void gundo_sequence_undo( GundoSequence *seq ) {
-	UndoAction *action;
-	gboolean could_redo;
-
-	g_return_if_fail( seq->group == NULL );
-	g_return_if_fail( gundo_history_can_undo(GUNDO_HISTORY(seq) ));
-
-	could_redo = gundo_history_can_redo(GUNDO_HISTORY(seq));
-
-	seq->next_redo--;
-	action = &g_array_index( seq->actions, UndoAction, seq->next_redo );
-				(action->type->undo)( action->data );
-
-	if(!could_redo) {
-		// now we definitely can redo
-		g_object_notify(G_OBJECT(seq), "can-redo");
-	}
-	if(!gundo_history_can_undo(GUNDO_HISTORY(seq))) {
-		// so, we can't undo anymore
-		g_object_notify(G_OBJECT(seq), "can-undo");
-	}
-}
-
 
 /** Redoes the last action that was undone.
     <p>
@@ -375,9 +344,10 @@ void gundo_sequence_redo( GundoSequence *seq ) {
 }
 
 
-static void group_undo( GundoSequence *seq ) {
-	while(gundo_history_can_undo(GUNDO_HISTORY(seq))) {
-		gundo_sequence_undo(seq);
+static void group_undo( GundoSequence *self ) {
+	GundoHistory* history = GUNDO_HISTORY(self);
+	while(gundo_history_can_undo(history)) {
+		gundo_history_undo(history);
 	}
 }
 
@@ -412,9 +382,37 @@ gs_can_undo(GundoHistory *history) {
 }
 
 static void
+gs_undo(GundoHistory* history) {
+	GundoSequence* self;
+	UndoAction   * action;
+	gboolean       could_redo;
+
+	self = GUNDO_SEQUENCE(history);
+
+	g_return_if_fail(self->group == NULL);
+	g_return_if_fail(gundo_history_can_undo(history));
+
+	could_redo = gundo_history_can_redo(history);
+
+	self->next_redo--;
+	action = &g_array_index( self->actions, UndoAction, self->next_redo );
+				(action->type->undo)( action->data );
+
+	if(!could_redo) {
+		// now we definitely can redo
+		g_object_notify(G_OBJECT(self), "can-redo");
+	}
+	if(!gundo_history_can_undo(history)) {
+		// so, we can't undo anymore
+		g_object_notify(G_OBJECT(self), "can-undo");
+	}
+}
+
+static void
 gs_history_iface_init(GundoHistoryIface* iface) {
 	iface->can_redo = gs_can_redo;
 	iface->can_undo = gs_can_undo;
+	iface->undo     = gs_undo;
 }
 
 
