@@ -57,7 +57,7 @@ struct _GundoSequence
 {
 	GObject        base_object;
 	GArray       * actions;
-	int            next_redo;
+	guint          next_redo;
 	GundoSequence* group;
 };
 

@@ -27,29 +27,9 @@
 
 G_BEGIN_DECLS
 
-/** Makes a widget sensitive to the current undo state of a GundoSequence.  
-    A widget that is undo-sensitive will only be sensitive 
-    when it is possible to call \Ref{gundo_sequence_undo} on its associated 
-    GundoSequence (that is, when \Ref{gundo_sequence_can_undo} returns TRUE).
-    
-    @param widget
-        The widget to make undo-sensitive.
-    @param seq
-        The undo sequence that the widget should be sensitive to.
- */
-void gundo_make_undo_sensitive( GtkWidget *widget, GundoSequence *seq );
+void gundo_make_undo_sensitive(GtkWidget *widget, GundoHistory *history);
 
-/** Makes a widget sensitive to the current redo state of a GundoSequence.  
-    A widget that is redo-sensitive will only be sensitive when it is 
-    possible to call \Ref{gundo_sequence_redo} on its associated GundoSequence 
-    (that is, when \Ref{gundo_sequence_can_redo} returns TRUE).
-    
-    @param widget
-        The widget to make redo-sensitive.
-    @param seq
-        The undo sequence that the widget should be sensitive to.
- */
-void gundo_make_redo_sensitive( GtkWidget *widget, GundoSequence *seq );
+void gundo_make_redo_sensitive(GtkWidget *widget, GundoHistory *history);
 
 G_END_DECLS
 

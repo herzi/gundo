@@ -11,6 +11,7 @@ configure
 depcomp
 .deps
 diff
+.diff.swp
 gtk-doc.make
 INSTALL
 install-sh

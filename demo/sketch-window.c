@@ -1,4 +1,27 @@
-#warning "FIXME: add GPL header"
+/* This file is part of gundo, a multilevel undo/redo facility for GTK+
+ * 
+ * AUTHORS
+ *	Nat Pryce
+ *	Sven Herzberg		<herzi@gnome-de.org>
+ *
+ * Copyright (C) 1999		Nat Pryce
+ * Copyright (C) 2005		Sven Herzberg
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ * USA
+ */
 
 #include "sketch-window.h"
 
@@ -67,8 +90,8 @@ sketch_window_set_sketch(SketchWindow* win, Sketch* sketch) {
 	gtk_object_sink(GTK_OBJECT(sketch));
 
 	gundo_tool_undo_connect(GUNDO_TOOL_UNDO(win->undo), GUNDO_HISTORY(sketch_get_actions(sketch)));
-	gundo_make_redo_sensitive(GTK_WIDGET(win->redo),  sketch_get_actions(sketch));
-	gundo_make_undo_sensitive(GTK_WIDGET(win->clear), sketch_get_actions(sketch));
+	gundo_make_redo_sensitive(GTK_WIDGET(win->redo),  GUNDO_HISTORY(sketch_get_actions(sketch)));
+	gundo_make_undo_sensitive(GTK_WIDGET(win->clear), GUNDO_HISTORY(sketch_get_actions(sketch)));
 
 	g_signal_connect_swapped(sketch, "stroke-added",
 			         G_CALLBACK(sw_stroke_added), win);

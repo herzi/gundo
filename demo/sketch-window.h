@@ -17,6 +17,7 @@ typedef struct _GtkWindowClass SketchWindowClass;
 GType      sketch_window_get_type(void);
 
 GtkWidget* sketch_window_new(void);
+Sketch*    sketch_window_get_sketch(SketchWindow* win);
 void       sketch_window_set_sketch(SketchWindow* win, Sketch* sketch);
 
 #endif /* !SKETCH_WINDOW_H */

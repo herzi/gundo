@@ -91,9 +91,11 @@ make_sensitive(GtkWidget* widget, GundoSequence* seq, char* signal_name) {
  * when it is possible to call \Ref{gundo_sequence_undo} on its associated
  * GundoSequence (that is, when \Ref{gundo_history_can_undo} returns TRUE).
  */
-void gundo_make_undo_sensitive( GtkWidget *widget, GundoSequence *seq ) {
-    make_sensitive( widget, seq, "can_undo" );
-    gtk_widget_set_sensitive( widget, gundo_history_can_undo(seq) );
+void
+gundo_make_undo_sensitive(GtkWidget *widget, GundoHistory *history) {
+#warning "gundo_make_undo_sensitive(): FIXME: remove this cast and use the history"
+	make_sensitive(widget, GUNDO_SEQUENCE(history), "can_undo");
+	gtk_widget_set_sensitive(widget, gundo_history_can_undo(history));
 }
 
 /**
@@ -106,9 +108,11 @@ void gundo_make_undo_sensitive( GtkWidget *widget, GundoSequence *seq ) {
  * possible to call \Ref{gundo_sequence_redo} on its associated GundoSequence 
  * (that is, when \Ref{gundo_history_can_redo} returns TRUE).
  */
-void gundo_make_redo_sensitive( GtkWidget *widget, GundoSequence *seq ) {
-    make_sensitive( widget, seq, "can_redo" );
-    gtk_widget_set_sensitive( widget, gundo_history_can_redo(seq) );
+void
+gundo_make_redo_sensitive(GtkWidget *widget, GundoHistory *history) {
+#warning "gundo_make_undo_sensitive(): FIXME: remove this cast and use the history"
+    make_sensitive(widget, GUNDO_SEQUENCE(history), "can_redo");
+    gtk_widget_set_sensitive(widget, gundo_history_can_redo(history));
 }
 
 

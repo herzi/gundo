@@ -37,7 +37,7 @@ sketch_new(void) {
 
 void
 sketch_clear(Sketch* s) {
-	int i;
+	guint i;
 
 	gundo_sequence_clear(s->actions);
 

@@ -39,6 +39,8 @@
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtktreeview.h>
 
+#include <gundo-ui/gundo-ui.h>
+
 #include "gtk-helpers.h"
 #include "gundo-popup-model.h"
 

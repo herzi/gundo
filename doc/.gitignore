@@ -1,5 +1,6 @@
 gundo.args
 gundo-decl-list.txt
+gundo-decl-list.txt.bak
 gundo-decl.txt
 gundo.hierarchy
 gundo.interfaces
@@ -11,6 +12,7 @@ gundo-unused.txt
 html
 html-build.stamp
 html.stamp
+.libs
 Makefile
 Makefile.in
 scan-build.stamp

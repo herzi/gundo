@@ -184,8 +184,8 @@ gundo_sequence_clear(GundoSequence *seq) {
 
 	g_return_if_fail(seq->group == NULL);
 
-	could_undo = gundo_history_can_undo(seq);
-	could_redo = gundo_history_can_redo(seq);
+	could_undo = gundo_history_can_undo(GUNDO_HISTORY(seq));
+	could_redo = gundo_history_can_redo(GUNDO_HISTORY(seq));
 
 	free_actions( seq->actions->len, (UndoAction*)seq->actions->data );
 	g_array_set_size( seq->actions, 0 );
@@ -227,8 +227,8 @@ void gundo_sequence_add_action( GundoSequence *seq,
 		gundo_sequence_add_action( seq->group, type, data );
 	} else {
 		UndoAction action;
-		gboolean could_undo = gundo_history_can_undo(seq);
-		gboolean could_redo = gundo_history_can_redo(seq);
+		gboolean could_undo = gundo_history_can_undo(GUNDO_HISTORY(seq));
+		gboolean could_redo = gundo_history_can_redo(GUNDO_HISTORY(seq));
 
 		if( seq->next_redo < seq->actions->len ) {
 			free_actions( seq->actions->len - seq->next_redo,
@@ -280,7 +280,7 @@ void gundo_sequence_start_group( GundoSequence *seq ) {
  * group.
  */
 void gundo_sequence_end_group( GundoSequence *seq ) {
-    g_assert( seq->group != NULL );
+    g_return_if_fail( seq->group != NULL );
     
     if( seq->group->group ) {
         gundo_sequence_end_group( seq->group );
@@ -303,7 +303,7 @@ void gundo_sequence_end_group( GundoSequence *seq ) {
  * Aborts the construction of a group, freeing all of its actions.
  */
 void gundo_sequence_abort_group( GundoSequence *seq ) {
-    g_assert( seq->group != NULL );
+    g_return_if_fail( seq->group != NULL );
     
     if( seq->group->group ) {
         gundo_sequence_abort_group( seq->group );
@@ -326,10 +326,10 @@ void gundo_sequence_undo( GundoSequence *seq ) {
 	UndoAction *action;
 	gboolean could_redo;
 
-	g_assert( seq->group == NULL );
-	g_assert( gundo_history_can_undo(seq) );
+	g_return_if_fail( seq->group == NULL );
+	g_return_if_fail( gundo_history_can_undo(GUNDO_HISTORY(seq) ));
 
-	could_redo = gundo_history_can_redo(seq);
+	could_redo = gundo_history_can_redo(GUNDO_HISTORY(seq));
 
 	seq->next_redo--;
 	action = &g_array_index( seq->actions, UndoAction, seq->next_redo );
@@ -339,7 +339,7 @@ void gundo_sequence_undo( GundoSequence *seq ) {
 		g_signal_emit(G_OBJECT(seq), gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO],
 			      0, TRUE);
 	}
-	if(!gundo_history_can_undo(seq)) {
+	if(!gundo_history_can_undo(GUNDO_HISTORY(seq))) {
 		g_signal_emit(G_OBJECT(seq), gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO],
 			      0, FALSE);
 	}
@@ -357,10 +357,10 @@ void gundo_sequence_redo( GundoSequence *seq ) {
     UndoAction *action;
     gboolean could_undo;
     
-    g_assert( seq->group == NULL );
-    g_assert( gundo_history_can_redo(seq) );
+    g_return_if_fail( seq->group == NULL );
+    g_return_if_fail( gundo_history_can_redo(GUNDO_HISTORY(seq) ));
     
-    could_undo = gundo_history_can_undo(seq);
+    could_undo = gundo_history_can_undo(GUNDO_HISTORY(seq));
     
     action = &g_array_index( seq->actions, UndoAction, seq->next_redo );
     seq->next_redo++;
@@ -371,7 +371,7 @@ void gundo_sequence_redo( GundoSequence *seq ) {
                          gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO],
                          0, TRUE );
     }
-    if(!gundo_history_can_redo(seq)) {
+    if(!gundo_history_can_redo(GUNDO_HISTORY(seq))) {
         g_signal_emit(G_OBJECT(seq),
                          gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO],
                          0, FALSE );
@@ -380,12 +380,16 @@ void gundo_sequence_redo( GundoSequence *seq ) {
 
 
 static void group_undo( GundoSequence *seq ) {
-    while( gundo_history_can_undo(seq) ) gundo_sequence_undo(seq);
+	while(gundo_history_can_undo(GUNDO_HISTORY(seq))) {
+		gundo_sequence_undo(seq);
+	}
 }
 
 
 static void group_redo( GundoSequence *seq ) {
-    while( gundo_history_can_redo(seq) ) gundo_sequence_redo(seq);
+	while(gundo_history_can_redo(GUNDO_HISTORY(seq))) {
+		gundo_sequence_redo(seq);
+	}
 }
 
 

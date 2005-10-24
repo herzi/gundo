@@ -1,5 +1,27 @@
 2005-10-24  Sven Herzberg  <herzi@gnome-de.org>
 
+	* autogen.sh: include the macros folder for aclocal
+	* configure.in: ensure the macros folder is available, use the new
+	cflags handling stuff
+	* demo/sketch-window.c: added lgpl header, fix the argument for the
+	set_sensitive calls
+	* demo/sketch-window.h: added a missing prototype
+	* demo/sketch.c: fix a signedness warning
+	* doc/tmpl/gundo.sgml: API update
+	* gundo-ui/gtk-helpers.h: added lgpl banner
+	* gundo-ui/gundo-tool-undo.c: include the gundo-ui header
+	* gundo-ui/gundo-ui.c: convert the header of the set_sensitive
+	functions to use the history
+	* gundo-ui/gundo-ui.h: convert the header of the set_sensitive
+	functions to use the history
+	* gundo/gundo-sequence.c: update to the current API
+	* gundo/gundo-sequence.h: update to the current API
+	* macros/aclocal-include.m4: added a macro to ensure inclusion of the
+	macros folder
+	* macros/herzi-cflags.m4: added macros for cflags handling
+
+2005-10-24  Sven Herzberg  <herzi@gnome-de.org>
+
 	* COPYING.LIB: added LGPL to tell automake to not generate COPYING
 
 2005-10-24  Sven Herzberg  <herzi@gnome-de.org>
