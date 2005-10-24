@@ -43,11 +43,13 @@ content_files=\
 # CFLAGS and LDFLAGS for compiling scan program. Only needed if your app/lib
 # contains GtkObjects/GObjects and you want to document signals and properties.
 GTKDOC_CFLAGS=\
-	-I$(top_srcdir)	\
-	$(GUNDO_CFLAGS)	\
+	-I$(top_srcdir)/gundo \
+	-I$(top_srcdir)/gundo-ui \
+	$(GUNDO_UI_CFLAGS) \
 	$(NULL)
 GTKDOC_LIBS=\
-	$(top_builddir)/gundo/libgundo-0.4.la	\
+	$(top_builddir)/gundo/libgundo.la \
+	$(top_builddir)/gundo-ui/libgundo-ui.la \
 	$(NULL)
 
 publish: all

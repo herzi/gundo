@@ -79,7 +79,6 @@ static void free_actions( int actc, UndoAction *actv );
 
 
 static gint gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_LAST+1];
-static GObjectClass *base_class = NULL;
 
 static GundoActionType gundo_action_group = {
     (GundoActionCallback)group_undo,
@@ -88,32 +87,10 @@ static GundoActionType gundo_action_group = {
     (GundoActionCallback)g_object_unref
 };
 
+static void gs_history_iface_init(GundoHistoryIface* iface);
 
-
-guint gundo_sequence_get_type () {
-    static guint gundo_sequence_type = 0;
-    
-    if( !gundo_sequence_type ) {
-        GTypeInfo type_info = {
-            sizeof(GundoSequenceClass),
-            NULL, NULL,
-            (GClassInitFunc) gundo_sequence_class_init,
-            NULL, NULL,
-            sizeof(GundoSequence), 0,
-            (GInstanceInitFunc)gundo_sequence_init,
-            NULL
-        };
-        
-        gundo_sequence_type = 
-            g_type_register_static (g_object_get_type(),
-                                    "GundoSequence",
-                                    &type_info,
-                                    0);
-    }
-    
-    return gundo_sequence_type;
-}
-
+G_DEFINE_TYPE_WITH_CODE(GundoSequence, gundo_sequence, G_TYPE_OBJECT,
+			G_IMPLEMENT_INTERFACE(GUNDO_TYPE_HISTORY, gs_history_iface_init));
 
 static void gundo_sequence_class_init( GundoSequenceClass *self_class ) {
     GObjectClass *go_class = G_OBJECT_CLASS(self_class);
@@ -150,8 +127,6 @@ static void gundo_sequence_class_init( GundoSequenceClass *self_class ) {
     
     self_class->can_undo = NULL;
     self_class->can_redo = NULL;
-    
-    base_class = g_type_class_peek_parent(self_class);
 }
 
 static void gundo_sequence_init( GundoSequence *seq ) {
@@ -175,8 +150,8 @@ gundo_sequence_finalize(GObject *object) {
 	}
 	g_array_free(seq->actions, TRUE);
 
-	if(G_OBJECT_CLASS(base_class)->finalize) {
-		G_OBJECT_CLASS(base_class)->finalize(object);
+	if(G_OBJECT_CLASS(gundo_sequence_parent_class)->finalize) {
+		G_OBJECT_CLASS(gundo_sequence_parent_class)->finalize(object);
 	}
 }
 
@@ -209,8 +184,8 @@ gundo_sequence_clear(GundoSequence *seq) {
 
 	g_return_if_fail(seq->group == NULL);
 
-	could_undo = gundo_sequence_can_undo(seq);
-	could_redo = gundo_sequence_can_redo(seq);
+	could_undo = gundo_history_can_undo(seq);
+	could_redo = gundo_history_can_redo(seq);
 
 	free_actions( seq->actions->len, (UndoAction*)seq->actions->data );
 	g_array_set_size( seq->actions, 0 );
@@ -252,8 +227,8 @@ void gundo_sequence_add_action( GundoSequence *seq,
 		gundo_sequence_add_action( seq->group, type, data );
 	} else {
 		UndoAction action;
-		gboolean could_undo = gundo_sequence_can_undo(seq);
-		gboolean could_redo = gundo_sequence_can_redo(seq);
+		gboolean could_undo = gundo_history_can_undo(seq);
+		gboolean could_redo = gundo_history_can_redo(seq);
 
 		if( seq->next_redo < seq->actions->len ) {
 			free_actions( seq->actions->len - seq->next_redo,
@@ -340,18 +315,6 @@ void gundo_sequence_abort_group( GundoSequence *seq ) {
 }
 
 /**
- * gundo_sequence_can_undo:
- * @seq: a #GundoSequence
- * 
- * Queries whether the undo sequence contains any actions that can be undone.
- *
- * Returns TRUE if there are actions that can be undone, FALSE otherwise.
- */
-gboolean gundo_sequence_can_undo( GundoSequence *seq ) {
-    return seq->next_redo > 0;
-}
-
-/**
  * gundo_sequence_undo:
  * @seq: a #GundoSequence
  *
@@ -364,9 +327,9 @@ void gundo_sequence_undo( GundoSequence *seq ) {
 	gboolean could_redo;
 
 	g_assert( seq->group == NULL );
-	g_assert( gundo_sequence_can_undo(seq) );
+	g_assert( gundo_history_can_undo(seq) );
 
-	could_redo = gundo_sequence_can_redo(seq);
+	could_redo = gundo_history_can_redo(seq);
 
 	seq->next_redo--;
 	action = &g_array_index( seq->actions, UndoAction, seq->next_redo );
@@ -376,25 +339,12 @@ void gundo_sequence_undo( GundoSequence *seq ) {
 		g_signal_emit(G_OBJECT(seq), gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO],
 			      0, TRUE);
 	}
-	if(!gundo_sequence_can_undo(seq)) {
+	if(!gundo_history_can_undo(seq)) {
 		g_signal_emit(G_OBJECT(seq), gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO],
 			      0, FALSE);
 	}
 }
 
-
-/**
- * gundo_sequence_can_redo:
- * @seq: a #GundoSequence
- * 
- * Queries whether the undo sequence contains any actions that can be redone.
- * 
- * Returns TRUE if there are actions that have already been undone, and
- * can therefore be redone, FALSE otherwise.
- */
-gboolean gundo_sequence_can_redo( GundoSequence *seq ) {
-    return seq->next_redo < seq->actions->len;
-}
 
 /** Redoes the last action that was undone.
     <p>
@@ -408,9 +358,9 @@ void gundo_sequence_redo( GundoSequence *seq ) {
     gboolean could_undo;
     
     g_assert( seq->group == NULL );
-    g_assert( gundo_sequence_can_redo(seq) );
+    g_assert( gundo_history_can_redo(seq) );
     
-    could_undo = gundo_sequence_can_undo(seq);
+    could_undo = gundo_history_can_undo(seq);
     
     action = &g_array_index( seq->actions, UndoAction, seq->next_redo );
     seq->next_redo++;
@@ -421,7 +371,7 @@ void gundo_sequence_redo( GundoSequence *seq ) {
                          gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_UNDO],
                          0, TRUE );
     }
-    if(!gundo_sequence_can_redo(seq)) {
+    if(!gundo_history_can_redo(seq)) {
         g_signal_emit(G_OBJECT(seq),
                          gundo_sequence_signals[UNDO_SEQUENCE_SIGNAL_CAN_REDO],
                          0, FALSE );
@@ -430,12 +380,12 @@ void gundo_sequence_redo( GundoSequence *seq ) {
 
 
 static void group_undo( GundoSequence *seq ) {
-    while( gundo_sequence_can_undo(seq) ) gundo_sequence_undo(seq);
+    while( gundo_history_can_undo(seq) ) gundo_sequence_undo(seq);
 }
 
 
 static void group_redo( GundoSequence *seq ) {
-    while( gundo_sequence_can_redo(seq) ) gundo_sequence_redo(seq);
+    while( gundo_history_can_redo(seq) ) gundo_sequence_redo(seq);
 }
 
 
@@ -446,3 +396,25 @@ static void free_actions( int actc, UndoAction *actv ) {
         if( (actv[i].type->free) ) (actv[i].type->free)( actv[i].data );
     }
 }
+
+/* GundoHistory implementation */
+
+static gboolean
+gs_can_redo(GundoHistory *history) {
+	GundoSequence* self = GUNDO_SEQUENCE(history);
+	return self->next_redo < self->actions->len;
+}
+
+static gboolean
+gs_can_undo(GundoHistory *history) {
+	GundoSequence* self = GUNDO_SEQUENCE(history);
+	return self->next_redo > 0;
+}
+
+static void
+gs_history_iface_init(GundoHistoryIface* iface) {
+	iface->can_redo = gs_can_redo;
+	iface->can_undo = gs_can_undo;
+}
+
+

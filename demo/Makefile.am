@@ -6,6 +6,7 @@ sketch_CPPFLAGS=\
 	$(GUNDO_UI_CFLAGS) \
 	$(DEBUG_CFLAGS) \
 	-I$(top_srcdir)/gundo \
+	-I$(top_srcdir)/gundo-ui \
 	$(NULL)
 sketch_LDADD=\
 	$(GUNDO_UI_LIBS) \

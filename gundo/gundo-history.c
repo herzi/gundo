@@ -27,3 +27,34 @@
 
 G_DEFINE_IFACE(GundoHistory, gundo_history, G_TYPE_INTERFACE);
 
+/**
+ * gundo_history_can_redo:
+ * @self: a #GundoHistory
+ * 
+ * Queries whether the undo history contains any actions that can be redone.
+ * 
+ * Returns TRUE if there are actions that have already been undone, and
+ * can therefore be redone, FALSE otherwise.
+ */
+gboolean
+gundo_history_can_redo(GundoHistory* self) {
+	g_return_val_if_fail(GUNDO_HISTORY_GET_CLASS(self)->can_redo, FALSE);
+
+	return GUNDO_HISTORY_GET_CLASS(self)->can_redo(self);
+}
+
+/**
+ * gundo_history_can_undo:
+ * @self: a #GundoHistory
+ * 
+ * Queries whether the undo history contains any actions that can be undone.
+ *
+ * Returns TRUE if there are actions that can be undone, FALSE otherwise.
+ */
+gboolean
+gundo_history_can_undo(GundoHistory* self) {
+	g_return_val_if_fail(GUNDO_HISTORY_GET_CLASS(self)->can_undo, FALSE);
+
+	return GUNDO_HISTORY_GET_CLASS(self)->can_undo(self);
+}
+

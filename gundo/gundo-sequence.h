@@ -41,13 +41,11 @@ typedef struct _GundoSequenceClass GundoSequenceClass;
 typedef void (*GundoActionCallback)( gpointer action_data );
 typedef struct _GundoActionType GundoActionType;
 
-guint          gundo_sequence_get_type   (void);
+GType          gundo_sequence_get_type   (void);
 GundoSequence *gundo_sequence_new        (void);
 void           gundo_sequence_add_action (GundoSequence *seq, 
                                           const GundoActionType *type, 
                                           gpointer data );
-gboolean       gundo_sequence_can_undo   (GundoSequence *seq );
-gboolean       gundo_sequence_can_redo   (GundoSequence *seq );
 void           gundo_sequence_undo       (GundoSequence *seq );
 void           gundo_sequence_redo       (GundoSequence *seq );
 void           gundo_sequence_start_group(GundoSequence *seq );

@@ -1,5 +1,29 @@
 2005-10-24  Sven Herzberg  <herzi@gnome-de.org>
 
+	* demo/sketch-window.c: fix the call for the undo tool item
+	* doc/Makefile.am: fix cflags and libs
+	* doc/gundo.types: added types for the documentation
+	* doc/tmpl/gundo-sequence.sgml,
+	* doc/tmpl/gundo-tool-undo.sgml,
+	* doc/tmpl/gundo-ui.sgml,
+	* doc/tmpl/gundo.sgml: some gtk-doc fixes
+	* gundo-ui/Makefile.am: fix lib depends
+	* gundo-ui/gundo-tool-undo.c: talk with GundoHistories at some places
+	now
+	* gundo-ui/gundo-tool-undo.h: it's all about GundoHistories now
+	* gundo/Makefile.am: renamed gundo.c to gundo-sequence.c
+	* gundo/gundo-history.c: moved the can_redo, can_undo stuff into the
+	history
+	* gundo/gundo-history.h: moved the can_redo, can_undo stuff into the
+	history
+	* gundo/gundo-sequence.c: use G_DEFINE_TYPE, implement the history
+	* gundo/gundo-sequence.h: fix the siganture of get_type, remove
+	can_redo and can_undo
+	* gundo/gundo.c: renamed
+	* gundo/gundo.h: include the history too
+
+2005-10-24  Sven Herzberg  <herzi@gnome-de.org>
+
 	* gundo/Makefile.am: added history stuff
 	* gundo/gobject-helpers.h: added G_DEFINE_IFACE
 	* gundo/gundo-history.c: added an interface for the history

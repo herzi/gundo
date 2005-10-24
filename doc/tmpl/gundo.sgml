@@ -52,24 +52,6 @@ GundoSequence
 @data: 
 
 
-<!-- ##### FUNCTION gundo_sequence_can_undo ##### -->
-<para>
-
-</para>
-
-@seq: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gundo_sequence_can_redo ##### -->
-<para>
-
-</para>
-
-@seq: 
-@Returns: 
-
-
 <!-- ##### FUNCTION gundo_sequence_undo ##### -->
 <para>
 

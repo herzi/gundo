@@ -20,6 +20,7 @@
 #ifndef GUNDO_H
 #define GUNDO_H
 
+#include <gundo-history.h>
 #include <gundo-sequence.h>
 
 #endif /* !GUNDO_H */

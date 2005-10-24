@@ -25,7 +25,7 @@
 #define GUNDO_TOOL_UNDO_H
 
 #include <gtk/gtktoolitem.h>
-#include <gundo-sequence.h>
+#include <gundo-history.h>
 
 typedef struct _GundoToolUndo GundoToolUndo;
 typedef GtkToolItemClass GundoToolUndoClass;
@@ -40,7 +40,7 @@ typedef GtkToolItemClass GundoToolUndoClass;
 GType        gundo_tool_undo_get_type(void);
 GtkToolItem* gundo_tool_undo_new     (void);
 void         gundo_tool_undo_connect (GundoToolUndo* self,
-				      GundoSequence* sequence);
+				      GundoHistory * history);
 
 struct _GundoToolUndo {
 	GtkToolItem    tool_item;
@@ -49,7 +49,7 @@ struct _GundoToolUndo {
 	GtkWidget    * arrow_button;
 	GtkWidget    * popup_window;
 	GtkWidget    * popup_tree;
-	GundoSequence* sequence;
+	GundoHistory * history;
 };
 
 #endif /* !GUNDO_TOOL_UNDO_H */

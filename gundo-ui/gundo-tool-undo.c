@@ -50,16 +50,16 @@ gundo_tool_undo_new(void) {
 }
 
 void
-gundo_tool_undo_connect(GundoToolUndo* self, GundoSequence* sequence) {
-	if(self->sequence) {
-		g_object_unref(self->sequence);
+gundo_tool_undo_connect(GundoToolUndo* self, GundoHistory* history) {
+	if(self->history) {
+		g_object_unref(self->history);
 #warning "gundo_tool_undo_connect(): FIXME: disconnect from unused sequences"
-		self->sequence = NULL;
+		self->history = NULL;
 	}
 
-	if(sequence) {
-		self->sequence = g_object_ref(sequence);
-		gundo_make_undo_sensitive(GTK_WIDGET(self), self->sequence);
+	if(history) {
+		self->history = g_object_ref(history);
+		gundo_make_undo_sensitive(GTK_WIDGET(self), self->history);
 	} else {
 		gtk_widget_set_sensitive(GTK_WIDGET(self), FALSE);
 	}
@@ -73,7 +73,7 @@ gundo_tool_undo_class_init(GundoToolUndoClass* self) {
 
 static void
 gtu_icon_clicked(GundoToolUndo* self, GtkWidget* icon) {
-	gundo_sequence_undo(self->sequence);
+	gundo_sequence_undo(self->history);
 }
 
 static void

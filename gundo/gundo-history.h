@@ -28,8 +28,8 @@
 
 G_BEGIN_DECLS
 
-typedef _GundoHistory;
-typedef struct _GTypeInterface GundoHistoryIface;
+typedef struct _GundoHistory GundoHistory;
+typedef struct _GundoHistoryIface GundoHistoryIface;
 
 #define GUNDO_TYPE_HISTORY         (gundo_history_get_type())
 #define GUNDO_HISTORY(i)           (G_TYPE_CHECK_INSTANCE_CAST((i), GUNDO_TYPE_HISTORY, GundoHistory))
@@ -37,6 +37,16 @@ typedef struct _GTypeInterface GundoHistoryIface;
 #define GUNDO_HISTORY_GET_CLASS(i) (G_TYPE_INSTANCE_GET_INTERFACE((i), GUNDO_TYPE_HISTORY, GundoHistoryIface))
 
 GType gundo_history_get_type(void);
+
+gboolean       gundo_history_can_redo   (GundoHistory *self);
+gboolean       gundo_history_can_undo   (GundoHistory *self);
+
+struct _GundoHistoryIface {
+	GTypeInterface base_interface;
+
+	gboolean (*can_redo) (GundoHistory* self);
+	gboolean (*can_undo) (GundoHistory* self);
+};
 
 G_END_DECLS
 

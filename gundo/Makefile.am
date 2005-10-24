@@ -18,9 +18,9 @@ libgundo_la_CPPFLAGS=\
 	$(NULL)
 libgundo_la_SOURCES=\
 	$(gundo_HEADERS) \
-	gobject-helpers.h\
-	gundo.c \
-	gundo-history.c	\
+	gobject-helpers.h \
+	gundo-history.c \
+	gundo-sequence.c \
 	$(NULL)
 libgundo_la_LDFLAGS=\
 	-version-info 2:0:2 \

@@ -1,0 +1,7 @@
+#include <gundo-ui.h>
+
+gundo_history_get_type
+gundo_sequence_get_type
+
+gundo_tool_undo_get_type
+
