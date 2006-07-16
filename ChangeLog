@@ -1,3 +1,12 @@
+2006-07-16  Sven Herzberg  <herzi@gnome-de.org>
+
+	* doc/Makefile.am,
+	* doc/gundo-docs.sgml,
+	* doc/gundo-sections.txt,
+	* doc/gundo.types,
+	* gundo/gundo-sequence.c,
+	* gundo/gundo-sequence.h: updated documentation
+
 2005-10-24  Sven Herzberg  <herzi@gnome-de.org>
 
 	* doc/tmpl/gundo.sgml: API update

@@ -10,10 +10,10 @@ DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.sgml
 # The directory containing the source code. Relative to $(srcdir).
 # gtk-doc will search all .c & .h files beneath here for inline comments
 # documenting functions and macros.
-DOC_SOURCE_DIR=../gundo
+DOC_SOURCE_DIR=..
 
 # Extra options to pass to gtkdoc-scanobj or gtkdoc-scangobj.
-SCANGOBJ_OPTIONS=--type-init-func="g_type_init()"
+SCANGOBJ_OPTIONS=--type-init-func="g_type_init();//gtk_init(&argc,&argv)"
 
 # Extra options to supply to gtkdoc-scan.
 SCAN_OPTIONS=
@@ -21,16 +21,19 @@ SCAN_OPTIONS=
 # Extra options to supply to gtkdoc-mkdb.
 MKDB_OPTIONS=--sgml-mode --output-format=xml
 
+# Extra options to supply to gtkdoc-mktmpl
+# e.g. MKTMPL_OPTIONS=--only-section-tmpl
+MKTMPL_OPTIONS=
+
 # Extra options to supply to gtkdoc-fixref.
 FIXXREF_OPTIONS=
 
 # Used for dependencies.
-HFILE_GLOB=$(top_srcdir)/gundo/*.h
-CFILE_GLOB=$(top_srcdir)/gundo/*.c
+HFILE_GLOB=$(top_srcdir)/gundo*/*.h
+CFILE_GLOB=$(top_srcdir)/gundo*/*.c
 
 # Header files to ignore when scanning.
-IGNORE_HFILES=\
-	$(NULL)
+IGNORE_HFILES=config.h
 
 # Images to copy into HTML directory.
 HTML_IMAGES=\
@@ -39,6 +42,11 @@ HTML_IMAGES=\
 # Extra SGML files that are included by $(DOC_MAIN_SGML_FILE).
 content_files=\
 	$(NULL)
+
+# SGML files where gtk-doc abbrevations (#GtkWidget) are expanded
+# These files must be listed here *and* in content_files
+# e.g. expand_content_files=running.sgml
+expand_content_files=
 
 # CFLAGS and LDFLAGS for compiling scan program. Only needed if your app/lib
 # contains GtkObjects/GObjects and you want to document signals and properties.

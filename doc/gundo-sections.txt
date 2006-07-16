@@ -1,50 +1,87 @@
 <SECTION>
-<FILE>gundo</FILE>
+<FILE>gundohistory</FILE>
+<TITLE>GundoHistory</TITLE>
+GundoHistory
+GundoHistoryIface
+gundo_history_can_redo
+gundo_history_can_undo
+gundo_history_undo
+gundo_history_install_properties
+<SUBSECTION Standard>
+GUNDO_HISTORY
+GUNDO_IS_HISTORY
+GUNDO_TYPE_HISTORY
+GUNDO_HISTORY_GET_CLASS
+<SUBSECTION Private>
+gundo_history_get_type
+</SECTION>
+
+<SECTION>
+<FILE>gundohistoryview</FILE>
+<TITLE>GundoHistoryView</TITLE>
+GundoHistoryView
+GundoHistoryViewIface
+gundo_history_view_register
+gundo_history_view_unregister
+<SUBSECTION Standard>
+GUNDO_HISTORY_VIEW
+GUNDO_IS_HISTORY_VIEW
+GUNDO_TYPE_HISTORY_VIEW
+GUNDO_HISTORY_VIEW_GET_CLASS
+<SUBSECTION Private>
+gundo_history_view_get_type
+</SECTION>
+
+<SECTION>
+<FILE>gundosequence</FILE>
+<TITLE>GundoSequence</TITLE>
+GundoSequence
+GundoSequenceClass
 GundoActionCallback
 GundoActionType
-<TITLE>GundoSequence</TITLE>
 gundo_sequence_new
+gundo_sequence_clear
 gundo_sequence_add_action
-gundo_sequence_can_undo
-gundo_sequence_can_redo
-gundo_sequence_undo
-gundo_sequence_redo
+
 gundo_sequence_start_group
 gundo_sequence_end_group
 gundo_sequence_abort_group
-gundo_sequence_clear
+
+gundo_sequence_redo
 <SUBSECTION Standard>
 GUNDO_SEQUENCE
 GUNDO_IS_SEQUENCE
 GUNDO_TYPE_SEQUENCE
-gundo_sequence_get_type
 GUNDO_SEQUENCE_CLASS
 GUNDO_IS_SEQUENCE_CLASS
+GUNDO_SEQUENCE_GET_CLASS
+<SUBSECTION Private>
+gundo_sequence_get_type
 </SECTION>
 
+
 <SECTION>
-<FILE>gundo-tool-undo</FILE>
+<FILE>gundotoolundo</FILE>
+<TITLE>GundoToolUndo</TITLE>
 GundoToolUndo
 GundoToolUndoClass
 gundo_tool_undo_new
-gundo_tool_undo_connect
+gundo_tool_undo_set_history
 <SUBSECTION Standard>
 GUNDO_TOOL_UNDO
 GUNDO_IS_TOOL_UNDO
 GUNDO_TYPE_TOOL_UNDO
-gundo_tool_undo_get_type
 GUNDO_TOOL_UNDO_CLASS
 GUNDO_IS_TOOL_UNDO_CLASS
 GUNDO_TOOL_UNDO_GET_CLASS
+<SUBSECTION Private>
+gundo_tool_undo_get_type
 </SECTION>
 
 <SECTION>
-<FILE>gundo-ui</FILE>
+<FILE>gundoui</FILE>
+<TITLE>GundoUI</TITLE>
 gundo_make_undo_sensitive
 gundo_make_redo_sensitive
-</SECTION>
-
-<SECTION>
-<FILE>gundo-sequence</FILE>
 </SECTION>
 

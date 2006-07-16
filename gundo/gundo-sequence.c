@@ -17,7 +17,17 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-
+/**
+ * SECTION:gundosequence
+ * @short_description: sequence of undo/redo actions
+ *
+ * A #GundoSequence contains a list of undoable/redoable actions. Action can be
+ * added with gundo_sequence_add_action().
+ * The list can be cleared by using gundo_sequence_clear().
+ *
+ * FIXME: write more
+ */
+ 
 #include <stdio.h>
 #include <glib.h>
 #include "gundo.h"
@@ -40,7 +50,7 @@
  * 
  * redo: Redoes an action of this type.
  * 
- * free: Frees the data about an action of this type. Can be #NULL, in which
+ * free: Frees the data about an action of this type. Can be %NULL, in which
  * case the data is not freed.
  * 
  * @see #gundo_sequence_add_action

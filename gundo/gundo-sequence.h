@@ -43,14 +43,14 @@ typedef struct _GundoActionType GundoActionType;
 
 GType          gundo_sequence_get_type   (void);
 GundoSequence *gundo_sequence_new        (void);
+void           gundo_sequence_clear      (GundoSequence *seq );
 void           gundo_sequence_add_action (GundoSequence *seq, 
                                           const GundoActionType *type, 
                                           gpointer data );
-void           gundo_sequence_redo       (GundoSequence *seq );
 void           gundo_sequence_start_group(GundoSequence *seq );
 void           gundo_sequence_end_group  (GundoSequence *seq );
 void           gundo_sequence_abort_group(GundoSequence *seq );
-void           gundo_sequence_clear      (GundoSequence *seq );
+void           gundo_sequence_redo       (GundoSequence *seq );
 
 struct _GundoSequence
 {
