@@ -17,15 +17,11 @@ all: sketch
 sketch: sketch.o
 	$(LD) $(LDFLAGS) -o $@ $^ -L$(SRCDIR) -lgundo
 
+.c.o:
+	gcc -c -o $@ $< $(CFLAGS)
+
 clean:
 	rm -f *.o *~ core
 
 again: clean all
-
-
-include depends.mk
-depends.mk: $(SOURCES) $(HEADERS)
-	$(CC) -M $(CFLAGS) $(SOURCES) > $@
-
-
 

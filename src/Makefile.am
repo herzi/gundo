@@ -32,6 +32,9 @@ $(SHARED_LIB): $(OBJECTS)
 $(STATIC_LIB): $(OBJECTS)
 	$(AR) -rs $@ $^
 
+.c.o:
+	gcc -c -o $@ $< $(CFLAGS)
+
 test: check
 check:
 	cd ../test;	$(MAKE) $(MAKEFLAGS) all
@@ -58,11 +61,4 @@ uninstall:
 	rm -f $(INSTALL_LIB_DIR)/$(STATIC_LIB)
 	rm -f $(INSTALL_LIB_DIR)/lib$(LIB_NAME).so
 	rm -f $(HHEADERS:$(SRCDIR)/=$(INSTALL_LIB_DIR)/)
-
-
-include depends.mk
-depends.mk: $(SOURCES) $(HHEADERS)
-	$(CC) -M $(CFLAGS) $(SOURCES) > $@
-
-
 
