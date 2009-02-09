@@ -7,6 +7,7 @@ lib_LTLIBRARIES=libgundo.la
 
 gundo_HEADERS=\
 	gundo.h \
+	gundo-sequence.h \
 	gundo-ui.h \
 	$(NULL)
 gundodir=$(includedir)/gundo-0.2
