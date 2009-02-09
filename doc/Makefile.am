@@ -1,13 +1,5 @@
-DOCDIR=.
-
-HHEADERS=$(wildcard ../gundo/*.h)
-
-all: html-doc
-
-html-doc:
 if WITH_DOCPP
-	$(DOCPP) --no-java-graphs --html --tables --dir $(DOCDIR) $(HHEADERS)
+all-local:
+	$(DOCPP) --no-java-graphs --html --tables --dir . $(top_srcdir)/gundo/*.h
 endif
-
-again: clean all
 
