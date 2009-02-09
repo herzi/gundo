@@ -12,6 +12,8 @@ AC_ARG_ENABLE(debug,
               [DEBUG_CFLAGS=-O2])
 AC_SUBST([DEBUG_CFLAGS])
 
+PKG_CHECK_MODULES(GUNDO,[gtk])
+
 AC_OUTPUT([
   Makefile
   demo/Makefile

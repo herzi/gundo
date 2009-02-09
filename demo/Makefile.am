@@ -3,8 +3,8 @@
 
 SRCDIR = ../gundo
 
-CFLAGS = $(shell gtk-config --cflags gtk) $(DEBUG_CFLAGS) -I$(SRCDIR)
-LDFLAGS = $(shell gtk-config --libs gtk)
+CFLAGS = $(GUNDO_CFLAGS) $(DEBUG_CFLAGS) -I$(SRCDIR)
+LDFLAGS = $(GUNDO_LIBS)
 LD = gcc
 
 SOURCES = $(wildcard *.c)

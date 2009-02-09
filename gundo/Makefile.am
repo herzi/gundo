@@ -20,6 +20,6 @@ libgundo_la_LDFLAGS=\
 	-version-info 2:0:2 \
 	$(NULL)
 
-CFLAGS = $(shell gtk-config --cflags gtk) $(DEBUG_CFLAGS)
-LDFLAGS = -shared $(shell gtk-config --libs gtk)
+CFLAGS = $(GUNDO_CFLAGS) $(DEBUG_CFLAGS)
+LDFLAGS = -shared $(GUNDO_LIBS)
 
