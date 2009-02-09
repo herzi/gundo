@@ -1,11 +1,16 @@
 # Makefile for Eggs
 
 noinst_PROGRAMS=sketch
-SRCDIR = $(top_srcdir)/gundo
 
-CFLAGS = $(GUNDO_CFLAGS) $(DEBUG_CFLAGS) -I$(SRCDIR)
-LDFLAGS = $(GUNDO_LIBS) $(top_builddir)/gundo/libgundo.la
-
+sketch_CPPFLAGS=\
+	$(GUNDO_CFLAGS) \
+	$(DEBUG_CFLAGS) \
+	-I$(top_srcdir)/gundo \
+	$(NULL)
+sketch_LDADD=\
+	$(GUNDO_LIBS) \
+	$(top_builddir)/gundo/libgundo.la \
+	$(NULL)
 sketch_SOURCES=\
 	sketch.c \
 	$(NULL)
