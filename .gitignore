@@ -5,6 +5,8 @@ config.log
 config.status
 config.sub
 configure
+depcomp
+.deps
 INSTALL
 install-sh
 libtool
