@@ -1,5 +1,3 @@
-#ifndef __UNDO_H__
-#define __UNDO_H__
 /*
     Gtk Undo: Multilevel undo/redo for Gtk
     Copyright (C) 1999  Nat Pryce
@@ -18,8 +16,10 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#ifndef __UNDO_H__
+#define __UNDO_H__
 
-#include <gtk/gtk.h>
+#include <glib-object.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,27 +49,11 @@ extern "C" {
     undone and redone.
  */
 typedef struct _GundoSequence GundoSequence;
-struct _GundoSequence
-{
-    GtkObject base;
-    GArray *actions;
-    int next_redo;
-    GundoSequence *group;
-};
-
 
 /** The Gtk object class of GundoSequence objects.  Used by the type
     checking and casting macros.
  */
 typedef struct _GundoSequenceClass GundoSequenceClass;
-struct _GundoSequenceClass
-{
-    GtkObjectClass base;
-    
-    void (*can_undo)( GundoSequence*, gboolean );
-    void (*can_redo)( GundoSequence*, gboolean );
-};
-
 
 /** The type of function called to undo or redo an action or free data
     associated with an action.
@@ -252,8 +236,8 @@ void gundo_sequence_clear( GundoSequence *seq );
 #ifdef __cplusplus
 }
 #endif
+
+#include <gundo-sequence.h>
+
 #endif
-
-
-
 

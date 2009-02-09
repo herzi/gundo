@@ -24,6 +24,28 @@
 #ifndef GUNDO_SEQUENCE_H
 #define GUNDO_SEQUENCE_H
 
-#include <gundo/gundo.h>
+#include <gtk/gtk.h>
+
+#include <gundo.h>
+
+G_BEGIN_DECLS
+
+struct _GundoSequence
+{
+    GtkObject base;
+    GArray *actions;
+    int next_redo;
+    GundoSequence *group;
+};
+
+struct _GundoSequenceClass
+{
+    GtkObjectClass base;
+
+    void (*can_undo)( GundoSequence*, gboolean );
+    void (*can_redo)( GundoSequence*, gboolean );
+};
+
+G_END_DECLS
 
 #endif /* !GUNDO_SEQUENCE_H */
