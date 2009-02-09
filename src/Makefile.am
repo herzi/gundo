@@ -22,8 +22,6 @@ STATIC_LIB = lib$(LIB_NAME).a
 INSTALL_LIB_DIR = $(shell gtk-config --prefix)/lib
 INSTALL_INC_DIR = $(shell gtk-config --prefix)/include
 
-
-
 all: $(STATIC_LIB) $(SHARED_LIB) 
 
 $(SHARED_LIB): $(OBJECTS)
@@ -44,9 +42,6 @@ demo: check
 
 clean:
 	rm -f *.o *~ core $(SHARED_LIB) $(STATIC_LIB)
-
-html-doc:
-	doc++ --no-java-graphs --html --tables --dir $(DOCDIR) $(HHEADERS)
 
 again: clean all
 
