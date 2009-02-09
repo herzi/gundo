@@ -4,8 +4,7 @@ LIB_NAME = gundo
 LIB_VERSION = 0.2.0
 
 
-CFLAGS = $(shell gtk-config --cflags gtk) -g -Wall -DDEBUG
-#CFLAGS = $(shell gtk-config --cflags gtk) -O2
+CFLAGS = $(shell gtk-config --cflags gtk) $(DEBUG_CFLAGS)
 LDFLAGS = -shared $(shell gtk-config --libs gtk)
 LD = gcc
 AR = ar

@@ -1,6 +1,13 @@
 AC_INIT(gundo,0.3.1,mailto:herzi@gnome-de.org)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 
+DEBUG_CFLAGS=
+AC_ARG_ENABLE(debug,
+              AS_HELP_STRING([--enable-debug],[enable debugging (default: no)]),
+              [DEBUG_CFLAGS="-g -Wall -DDEBUG"],
+              [DEBUG_CFLAGS=-O2])
+AC_SUBST([DEBUG_CFLAGS])
+
 AC_OUTPUT([
   Makefile
   demo/Makefile
