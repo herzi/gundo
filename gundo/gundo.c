@@ -63,8 +63,8 @@ guint gundo_sequence_get_type () {
             sizeof(GundoSequenceClass),
             (GtkClassInitFunc)gundo_sequence_class_init,
             (GtkObjectInitFunc)gundo_sequence_init,
-            (GtkArgSetFunc)NULL,
-            (GtkArgGetFunc)NULL
+            NULL,
+            NULL
         };
         
         gundo_sequence_type = 
@@ -94,9 +94,6 @@ static void gundo_sequence_class_init( GundoSequenceClass *klass ) {
                         GTK_SIGNAL_OFFSET( GundoSequenceClass, can_redo ),
                         gtk_marshal_NONE__BOOL,
                         GTK_TYPE_NONE, 1, GTK_TYPE_BOOL );
-    
-    gtk_object_class_add_signals( base, gundo_sequence_signals,
-                                  UNDO_SEQUENCE_SIGNAL_LAST+1 );
     
     klass->can_undo = NULL;
     klass->can_redo = NULL;
