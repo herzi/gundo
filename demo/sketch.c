@@ -2,7 +2,7 @@
 
 #include "gtk/gtk.h"
 #include "gundo.h"
-#include "gundo_ui.h"
+#include "gundo-ui.h"
 
 
 /*  A Stroke holds information about a single stroke of the user's "pen"

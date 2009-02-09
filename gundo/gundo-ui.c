@@ -19,7 +19,7 @@
 
 
 #include "gundo.h"
-#include "gundo_ui.h"
+#include "gundo-ui.h"
 
 
 typedef struct Connection Connection;
