@@ -11,6 +11,10 @@ gundo_HEADERS=\
 	$(NULL)
 gundodir=$(includedir)/gundo-0.2
 
+libgundo_la_CPPFLAGS=\
+	$(GUNDO_CFLAGS) \
+	$(DEBUG_CFLAGS) \
+	$(NULL)
 libgundo_la_SOURCES=\
 	$(gundo_HEADERS) \
 	gundo.c \
@@ -19,7 +23,8 @@ libgundo_la_SOURCES=\
 libgundo_la_LDFLAGS=\
 	-version-info 2:0:2 \
 	$(NULL)
+libgundo_la_LIBADD=\
+	$(GUNDO_LIBS) \
+	$(NULL)
 
-CFLAGS = $(GUNDO_CFLAGS) $(DEBUG_CFLAGS)
-LDFLAGS = -shared $(GUNDO_LIBS)
 
