@@ -41,7 +41,6 @@ demo: check
 
 clean:
 	rm -f *.o *~ core $(SHARED_LIB) $(STATIC_LIB)
-	cd ../test; $(MAKE) $(MAKEFLAGS) clean
 
 html-doc:
 	doc++ --no-java-graphs --html --tables --dir $(DOCDIR) $(HEADERS)
