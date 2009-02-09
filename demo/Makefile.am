@@ -1,27 +1,12 @@
 # Makefile for Eggs
 
-
-SRCDIR = ../gundo
+noinst_PROGRAMS=sketch
+SRCDIR = $(top_srcdir)/gundo
 
 CFLAGS = $(GUNDO_CFLAGS) $(DEBUG_CFLAGS) -I$(SRCDIR)
-LDFLAGS = $(GUNDO_LIBS)
-LD = gcc
+LDFLAGS = $(GUNDO_LIBS) $(top_builddir)/gundo/libgundo.la
 
-SOURCES = $(wildcard *.c)
-OBJECTS = $(SOURCES:.c=.o)
-
-
-
-all: sketch
-
-sketch: sketch.o
-	$(LD) $(LDFLAGS) -o $@ $^ -L$(SRCDIR) -lgundo
-
-.c.o:
-	gcc -c -o $@ $< $(CFLAGS)
-
-clean:
-	rm -f *.o *~ core
-
-again: clean all
+sketch_SOURCES=\
+	sketch.c \
+	$(NULL)
 
