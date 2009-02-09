@@ -5,7 +5,7 @@ AC_OUTPUT([
   Makefile
   demo/Makefile
   doc/Makefile
-  src/Makefile
+  gundo/Makefile
   test/Makefile
 ])
 

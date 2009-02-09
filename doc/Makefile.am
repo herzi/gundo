@@ -1,6 +1,6 @@
 DOCDIR=.
 
-HHEADERS=$(wildcard ../src/*.h)
+HHEADERS=$(wildcard ../gundo/*.h)
 
 all: html-doc
 

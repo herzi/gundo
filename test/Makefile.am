@@ -1,7 +1,7 @@
 # Makefile for Eggs
 
 
-SRCDIR = ../src
+SRCDIR = ../gundo
 
 CFLAGS = $(shell gtk-config --cflags gtk) -g -DDEBUG -I$(SRCDIR)
 LDFLAGS = $(shell gtk-config --libs gtk)

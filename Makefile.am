@@ -1,5 +1,5 @@
 SUBDIRS=\
-	src \
+	gundo \
 	test \
 	doc \
 	demo \
