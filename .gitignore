@@ -9,6 +9,7 @@ depcomp
 .deps
 INSTALL
 install-sh
+.libs
 libtool
 ltmain.sh
 Makefile
