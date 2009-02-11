@@ -8,6 +8,7 @@ lib_LTLIBRARIES=libgundo.la
 gundo_HEADERS=\
 	gundo.h \
 	gundo-sequence.h \
+	gundo-tool-undo.h \
 	gundo-ui.h \
 	$(NULL)
 gundodir=$(includedir)/gundo-0.2
@@ -19,6 +20,7 @@ libgundo_la_CPPFLAGS=\
 libgundo_la_SOURCES=\
 	$(gundo_HEADERS) \
 	gundo.c \
+	gundo-tool-undo.c \
 	gundo-ui.c \
 	$(NULL)
 libgundo_la_LDFLAGS=\
