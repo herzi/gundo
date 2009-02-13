@@ -8,6 +8,7 @@ config.sub
 configure
 depcomp
 .deps
+gtk-doc.make
 INSTALL
 install-sh
 .libs

@@ -1,0 +1,52 @@
+<!-- ##### SECTION Title ##### -->
+gundo-tool-undo
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GundoToolUndo ##### -->
+<para>
+
+</para>
+
+@tool_item: 
+@icon_button: 
+@arrow_button: 
+@sequence: 
+
+<!-- ##### TYPEDEF GundoToolUndoClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gundo_tool_undo_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gundo_tool_undo_connect ##### -->
+<para>
+
+</para>
+
+@self: 
+@sequence: 
+
+

@@ -9,10 +9,9 @@ AC_PROG_LIBTOOL
 
 PKG_CHECK_MODULES(GUNDO,[gtk+-2.0])
 
-AC_PATH_PROG(DOCPP,doc++)
-AM_CONDITIONAL(WITH_DOCPP,[test -n "$DOCPP"])
+GTK_DOC_CHECK()
 
-DEBUG_CFLAGS=
+DEBUG_CFLAGS=""
 AC_ARG_ENABLE(debug,
               AS_HELP_STRING([--enable-debug],[enable debugging (default: no)]),
               [DEBUG_CFLAGS="-g -Wall -DDEBUG"],

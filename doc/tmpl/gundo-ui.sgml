@@ -1,0 +1,37 @@
+<!-- ##### SECTION Title ##### -->
+gundo-ui
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION gundo_make_undo_sensitive ##### -->
+<para>
+
+</para>
+
+@widget: 
+@seq: 
+
+
+<!-- ##### FUNCTION gundo_make_redo_sensitive ##### -->
+<para>
+
+</para>
+
+@widget: 
+@seq: 
+
+
