@@ -259,9 +259,9 @@ gundo_sequence_add_action(GundoSequence* seq, GundoActionType const* type, gpoin
 			// now we definitely can't redo
 			g_object_notify(G_OBJECT(seq), "can-redo");
 		}
-	}
 
-	
+                gundo_history_changed (GUNDO_HISTORY (seq));
+        }
 }
 
 /**
