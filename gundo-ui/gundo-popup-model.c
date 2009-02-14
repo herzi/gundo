@@ -181,6 +181,18 @@ model_iter_has_child (GtkTreeModel* model,
   return gundo_history_can_undo (PRIV (model)->history);
 }
 
+static gboolean
+model_iter_nth_child (GtkTreeModel* model,
+                      GtkTreeIter * iter,
+                      GtkTreeIter * parent,
+                      gint          n)
+{
+  if (parent)
+    return FALSE;
+
+  return model_iter_from_index (model, iter, n);
+}
+
 static void
 implement_gtk_tree_model (GtkTreeModelIface* iface)
 {
@@ -191,5 +203,6 @@ implement_gtk_tree_model (GtkTreeModelIface* iface)
 
   iface->iter_next       = model_iter_next;
   iface->iter_has_child  = model_iter_has_child;
+  iface->iter_nth_child  = model_iter_nth_child;
 }
 
