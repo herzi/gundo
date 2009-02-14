@@ -393,6 +393,12 @@ gs_can_undo(GundoHistory *history) {
 	return self->next_redo > 0;
 }
 
+static guint
+sequence_get_n_changes (GundoHistory* history)
+{
+  return GUNDO_SEQUENCE (history)->actions->len;
+}
+
 static void
 gs_undo(GundoHistory* history) {
 	GundoSequence* self;
@@ -421,10 +427,14 @@ gs_undo(GundoHistory* history) {
 }
 
 static void
-gs_history_iface_init(GundoHistoryIface* iface) {
-	iface->can_redo = gs_can_redo;
-	iface->can_undo = gs_can_undo;
-	iface->undo     = gs_undo;
+gs_history_iface_init (GundoHistoryIface* iface)
+{
+  iface->can_redo      = gs_can_redo;
+  iface->can_undo      = gs_can_undo;
+
+  iface->get_n_changes = sequence_get_n_changes;
+
+  iface->undo          = gs_undo;
 }
 
 
