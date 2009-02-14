@@ -12,6 +12,12 @@ sketch_LDADD=\
 	$(top_builddir)/gundo/libgundo.la \
 	$(NULL)
 sketch_SOURCES=\
+	main.c \
 	sketch.c \
+	sketch.h \
+	sketch-window.c \
+	sketch-window.h \
+	stroke.h \
+	stroke.c \
 	$(NULL)
 

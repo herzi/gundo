@@ -1,251 +1,138 @@
-
-
-#include "gtk/gtk.h"
-#include "gundo.h"
-#include "gundo-ui.h"
-
-
-/*  A Stroke holds information about a single stroke of the user's "pen"
- *  on the drawing area.
+/* This file is part of gundo, a multilevel undo/redo facility for GTK+
+ * 
+ * AUTHORS
+ *	Nat Pryce
+ *	Sven Herzberg		<herzi@gnome-de.org>
+ *
+ * Copyright (C) 1999		Nat Pryce
+ * Copyright (C) 2005		Sven Herzberg
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ * USA
  */
-typedef struct Stroke Stroke;
-struct Stroke {
-    GArray *points;
-    gboolean is_visible;
+
+#include "sketch.h"
+
+#include <gtk/gtk.h>
+#include <gundo/gundo.h>
+#include <gundo/gundo-ui.h>
+
+#include "stroke.h"
+
+Sketch*
+sketch_new(void) {
+	return g_object_new(SKETCH_TYPE, NULL);;
+}
+
+void
+sketch_clear(Sketch* s) {
+	int i;
+
+	gundo_sequence_clear(s->actions);
+
+	for(i = 0; i < s->strokes->len; i++) {
+		Stroke* st = (Stroke*)g_ptr_array_index(s->strokes, i);
+		g_signal_emit_by_name(s, "stroke-removed", st);
+		stroke_destroy(st);
+	}
+
+	g_ptr_array_set_size(s->strokes, 0);
+}
+
+GundoSequence*
+sketch_get_actions(Sketch* s) {
+	g_return_val_if_fail(s, NULL);
+
+	return s->actions;
+}
+
+Stroke*
+sketch_get_last_stroke(Sketch* s) {
+	return (Stroke*)g_ptr_array_index(s->strokes, s->strokes->len - 1);
+}
+
+void
+sketch_start_stroke(Sketch* s) {
+	s->current = stroke_new();
+}
+
+void
+sketch_add_point(Sketch* s, guint x, guint y) {
+	stroke_add_point(s->current, x, y);
+}
+
+struct stroke_change {
+	Sketch* sk;
+	Stroke* st;
 };
 
+static void
+s_add_stroke(Sketch* sk, Stroke* st) {
+	g_ptr_array_add(sk->strokes, st);
+	g_signal_emit_by_name(sk, "stroke-added", st);
+}
 
-static Stroke *stroke_new();
-static void stroke_destroy( Stroke *stroke );
-static void stroke_add_point( Stroke *stroke, gint16 x, gint16 y );
+static void
+s_remove_stroke(Sketch* sk, Stroke* st) {
+	
+}
 
-static void cb_undo_stroke( Stroke *data );
-static void cb_redo_stroke( Stroke *data );
-static void cb_free_stroke( Stroke *stroke );
+void
+sketch_finish_stroke(Sketch* sk) {
+	struct stroke_change* s = g_new0(struct stroke_change, 1);
+	s->sk = g_object_ref(sk);
+	s->st = stroke_copy(sk->current);
+	
+	s_add_stroke(sk, sk->current);
+	
+	gundo_sequence_add_action(sk->actions, &action_type, s);
+	sk->current = NULL;
+}
 
-static void cb_undo_clicked( GtkWidget *widget, gpointer data );
-static void cb_redo_clicked( GtkWidget *widget, gpointer data );
-static void cb_clear_clicked( GtkWidget *widget, gpointer data );
+static void
+undo_stroke(struct stroke_change* c) {
+	/* shrink the stroke list by one */
+#warning "undo_stroke(): FIXME: remove the stroke by value"
+	g_ptr_array_set_size(c->sk->strokes, c->sk->strokes->len - 1);
 
-static gboolean cb_expose( GtkWidget *view, 
-                           GdkEventExpose *ev, 
-                           gpointer data );
-static gboolean cb_start_stroke( GtkWidget *widget,
-                                 GdkEventButton *ev,
-                                 gpointer data );
-static gboolean cb_end_stroke( GtkWidget *widget,
-                               GdkEventButton *ev,
-                               gpointer data );
-static gboolean cb_add_stroke_point( GtkWidget *widget,
-                                     GdkEventMotion *ev,
-                                     gpointer data );
+	g_signal_emit_by_name(c->sk, "stroke-removed", c->st);
+}
 
-static void cb_quit( GtkWidget *widget, gpointer data );
+static void
+redo_stroke(struct stroke_change* c) {
+	s_add_stroke(c->sk, stroke_copy(c->st));
+}
 
+static void
+free_stroke(struct stroke_change* c) {
+	g_object_unref(c->sk);
+	stroke_destroy(c->st);
+	g_free(c);
+}
 
-/*  Globals
- */
-
-static GtkWidget *window, *sketch; /* GUI components */
-static Stroke *current_stroke;     /* Stroke currently being draw, or 0 */
-static GPtrArray *visible_strokes; /* Strokes drawn in window and not undone */
-static GundoSequence *actions;     /* Undoable actions performed by the user */
-
-
-static GundoActionType stroke_action_type = {
-    (GundoActionCallback)cb_undo_stroke,
-    (GundoActionCallback)cb_redo_stroke,
-    (GundoActionCallback)cb_free_stroke
+GundoActionType action_type = {
+	(GundoActionCallback)undo_stroke,
+	(GundoActionCallback)redo_stroke,
+	(GundoActionCallback)free_stroke
 };
 
+// CHECKED // CHECKED // CHECKED // CHECKED // CHECKED // CHECKED // CHECKED //
 
-/*  Management of Stroke objects
- */
-
-static Stroke *stroke_new() {
-    Stroke *stroke = g_new( Stroke, 1 );
-    stroke->points = g_array_new( FALSE, FALSE, sizeof(GdkPoint) );
-    stroke->is_visible = TRUE;
-}
-
-static void stroke_destroy( Stroke *stroke ) {
-    g_array_free( stroke->points, TRUE );
-    g_free( stroke );
-}
-
-static void stroke_add_point( Stroke *stroke, gint16 x, gint16 y ) {
-    GdkPoint pt;
-    pt.x = x;
-    pt.y = y;
-    g_array_append_val( stroke->points, pt );
-}
-
-static void stroke_draw( GdkDrawable *d, GdkGC *gc, Stroke *stroke ) {
-    gdk_draw_lines( d, gc,
-                    (GdkPoint*)stroke->points->data, stroke->points->len );
-}
-
-
-/*  Functions that respond to user input to create strokes, and display
- *  the strokes drawn by the user when the window needs repainting.
- */
-
-static void draw_strokes( GtkWidget *view ) {
-    int i;
-    for( i = 0; i < visible_strokes->len; i++ ) {
-        Stroke *stroke = (Stroke*)g_ptr_array_index( visible_strokes, i );
-        stroke_draw( view->window, view->style->black_gc, stroke );
-    }
-}
-
-static gboolean cb_expose( GtkWidget *view, 
-                           GdkEventExpose *ev, 
-                           gpointer data )
-{
-    draw_strokes(view);
-    return TRUE;
-}
-
-static gboolean cb_start_stroke( GtkWidget *widget,
-                                 GdkEventButton *ev,
-                                 gpointer data )
-{
-    current_stroke = stroke_new();
-    stroke_add_point( current_stroke, ev->x, ev->y );
-}
-
-static gboolean cb_end_stroke( GtkWidget *widget,
-                               GdkEventButton *ev,
-                               gpointer data )
-{
-    g_ptr_array_add( visible_strokes, current_stroke );
-    gundo_sequence_add_action( actions, &stroke_action_type, current_stroke );
-    current_stroke = 0;
-}
-
-static gboolean cb_add_stroke_point( GtkWidget *widget,
-                                     GdkEventMotion *ev,
-                                     gpointer data )
-{
-    stroke_add_point( current_stroke, ev->x, ev->y );
-    stroke_draw( widget->window, widget->style->black_gc, current_stroke );
-}
-
-
-/*  Callbacks from the undo sequence to undo/redo user actions
- */
-
-static void cb_undo_stroke( Stroke *stroke ) {
-    stroke->is_visible = FALSE;
-    g_ptr_array_set_size( visible_strokes, visible_strokes->len-1 );
-    gdk_window_clear( sketch->window );
-    draw_strokes( sketch );
-}
-
-static void cb_redo_stroke( Stroke *stroke ) {
-    stroke->is_visible = TRUE;
-    g_ptr_array_add( visible_strokes, stroke );
-    stroke_draw( sketch->window, sketch->style->black_gc, stroke );
-}
-
-static void cb_free_stroke( Stroke *stroke ) {
-    if( !(stroke->is_visible) ) stroke_destroy( stroke );
-}
-
-
-/*  Callbacks from the undo/redo GUI buttons.
- */
-
-static void cb_undo_clicked( GtkWidget *widget, gpointer data ) {
-    gundo_sequence_undo( actions );
-}
-
-static void cb_redo_clicked( GtkWidget *widget, gpointer data ) {
-    gundo_sequence_redo( actions );
-}
-
-static void cb_clear_clicked( GtkWidget *widget, gpointer data ) {
-    int i;
-    
-    gundo_sequence_clear( actions );
-    
-    for( i = 0; i < visible_strokes->len; i++ ) {
-        stroke_destroy( (Stroke*)g_ptr_array_index( visible_strokes, i ) );
-    }
-    
-    g_ptr_array_set_size( visible_strokes, 0 );
-
-    gdk_window_clear( sketch->window );
-}
-
-
-/*  Initialisation
- */
-
-void init_sketch() {
-    GtkWidget *hbox;
-    GtkWidget *vbox;
-    GtkWidget *button;
-    
-    visible_strokes = g_ptr_array_new();
-    actions = gundo_sequence_new();
-    
-    window = gtk_window_new( GTK_WINDOW_TOPLEVEL );
-    gtk_window_set_title( GTK_WINDOW(window), "Undo Demo - Sketch" );
-    gtk_window_set_policy( GTK_WINDOW(window), TRUE, TRUE, TRUE );
-    
-    hbox = gtk_hbox_new( FALSE, 2 );
-    button = gtk_button_new_with_label( "Quit" );
-    gtk_box_pack_start( GTK_BOX(hbox), button, FALSE, FALSE, 0 );
-    gtk_signal_connect( GTK_OBJECT(button), "clicked",
-                        GTK_SIGNAL_FUNC(cb_quit), NULL );
-    button = gtk_button_new_with_label( "Undo" );
-    gundo_make_undo_sensitive( button, actions );
-    gtk_box_pack_start( GTK_BOX(hbox), button, FALSE, FALSE, 0 );
-    gtk_signal_connect( GTK_OBJECT(button), "clicked",
-                        GTK_SIGNAL_FUNC(cb_undo_clicked), NULL );
-    button = gtk_button_new_with_label( "Redo" );
-    gundo_make_redo_sensitive( button, actions );
-    gtk_box_pack_start( GTK_BOX(hbox), button, FALSE, FALSE, 0 );
-    gtk_signal_connect( GTK_OBJECT(button), "clicked",
-                        GTK_SIGNAL_FUNC(cb_redo_clicked), NULL );
-    button = gtk_button_new_with_label( "Clear" );
-    gundo_make_undo_sensitive( button, actions );
-    gtk_box_pack_start( GTK_BOX(hbox), button, FALSE, FALSE, 0 );
-    gtk_signal_connect( GTK_OBJECT(button), "clicked",
-                        GTK_SIGNAL_FUNC(cb_clear_clicked), NULL );
-    
-    sketch = gtk_drawing_area_new();
-    gtk_drawing_area_size( GTK_DRAWING_AREA(sketch), 256, 256 );
-    gtk_widget_set_events( sketch, 
-                           gtk_widget_get_events(sketch) 
-                               |GDK_EXPOSURE_MASK|GDK_BUTTON_MOTION_MASK
-                               |GDK_BUTTON_PRESS_MASK
-                               |GDK_BUTTON_RELEASE_MASK );
-    
-    vbox = gtk_vbox_new( FALSE, 2 );
-    gtk_box_pack_start( GTK_BOX(vbox), hbox, TRUE, FALSE, 0 );
-    gtk_box_pack_start( GTK_BOX(vbox), sketch, TRUE, FALSE, 0 );
-    
-    gtk_container_add( GTK_CONTAINER(window), vbox );
-    
-    gtk_signal_connect( GTK_OBJECT(sketch), "expose_event",
-                        GTK_SIGNAL_FUNC(cb_expose), NULL );
-    gtk_signal_connect( GTK_OBJECT(sketch), "button-press-event",
-                        GTK_SIGNAL_FUNC(cb_start_stroke), NULL );
-    gtk_signal_connect( GTK_OBJECT(sketch), "button-release-event",
-                        GTK_SIGNAL_FUNC(cb_end_stroke), NULL );
-    gtk_signal_connect( GTK_OBJECT(sketch), "motion-notify-event",
-                        GTK_SIGNAL_FUNC(cb_add_stroke_point), NULL );
-    
-    gtk_signal_connect( GTK_OBJECT(window), "delete_event", 
-                        GTK_SIGNAL_FUNC(cb_quit), NULL );
-    
-    gtk_widget_show_all( window );
-}
-
+/*  Globals */
 void quit_sketch() {
-    int i;
+/*    int i;
     
     gtk_widget_destroy( window );
     if( current_stroke ) stroke_destroy( current_stroke );
@@ -255,20 +142,45 @@ void quit_sketch() {
     }
     g_ptr_array_free( visible_strokes, TRUE );
     
-    gtk_object_destroy( GTK_OBJECT(actions) );
+    gtk_object_destroy( GTK_OBJECT(actions) );*/
 }
 
+static void
+s_stroke_added(Sketch* sk, Stroke* st) {}
 
-static void cb_quit( GtkWidget *widget, gpointer data ) {
-    gtk_main_quit();
+static void
+s_stroke_removed(Sketch* sk, Stroke* st) {}
+
+static void
+sketch_class_init(SketchClass* klass) {
+	g_signal_new("stroke-added",
+		     SKETCH_TYPE,
+		     G_SIGNAL_RUN_LAST,
+		     G_STRUCT_OFFSET(SketchClass, stroke_added),
+		     NULL, NULL,
+		     g_cclosure_marshal_VOID__BOXED,
+		     G_TYPE_NONE,
+		     1,
+		     SKETCH_TYPE_STROKE);
+	g_signal_new("stroke-removed",
+		     SKETCH_TYPE,
+		     G_SIGNAL_RUN_LAST,
+		     G_STRUCT_OFFSET(SketchClass, stroke_added),
+		     NULL, NULL,
+		     g_cclosure_marshal_VOID__BOXED,
+		     G_TYPE_NONE,
+		     1,
+		     SKETCH_TYPE_STROKE);
+
+	klass->stroke_added   = s_stroke_added;
+	klass->stroke_removed = s_stroke_removed;
 }
 
-
-
-int main( int argc, char **argv ) {
-    gtk_init( &argc, &argv );
-    init_sketch();
-    gtk_main();
-    quit_sketch();
-    return 0;
+static void
+sketch_init(Sketch* self) {
+	self->strokes = g_ptr_array_new();
+	self->actions = gundo_sequence_new();
 }
+
+G_DEFINE_TYPE(Sketch, sketch, GTK_TYPE_OBJECT)
+
