@@ -158,7 +158,7 @@ sketch_class_init(SketchClass* klass) {
 	g_signal_new("stroke-removed",
 		     SKETCH_TYPE,
 		     G_SIGNAL_RUN_LAST,
-		     G_STRUCT_OFFSET(SketchClass, stroke_added),
+		     G_STRUCT_OFFSET(SketchClass, stroke_removed),
 		     NULL, NULL,
 		     g_cclosure_marshal_VOID__BOXED,
 		     G_TYPE_NONE,
