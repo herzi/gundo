@@ -27,6 +27,9 @@ ltmain.sh
 Makefile
 Makefile.in
 missing
+mkinstalldirs
+*.la
 *.lo
 *.o
 stamp-h1
+*~

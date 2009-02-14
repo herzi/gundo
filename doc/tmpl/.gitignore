@@ -1,5 +1,2 @@
-gundo-sequence.sgml.bak
-gundo.sgml.bak
-gundo-tool-undo.sgml.bak
-gundo-ui.sgml.bak
-gundo-unused.sgml
+*.sgml.bak
+*.sgml
