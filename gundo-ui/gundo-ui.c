@@ -27,7 +27,6 @@ typedef struct Connection Connection;
 struct Connection {
     GundoHistory *history;
     guint undo_sensitive_signal;
-    guint undo_destroy_signal;
     GtkWidget *widget;
     guint widget_destroy_signal;
 };
@@ -44,19 +43,28 @@ cb_set_sensitivity(GundoHistory* history, GParamSpec* pspec, GtkWidget* widget) 
 	gtk_widget_set_sensitive( widget, sensitive );
 }
 
-static void cb_widget_destroyed(GtkWidget *widget, Connection *cx) {
-#ifdef RE_INTRODUCE_DESTROY_ON_SEQ
-    g_signal_handler_disconnect(G_OBJECT(cx->seq), cx->undo_destroy_signal );
-    g_signal_handler_disconnect(G_OBJECT(cx->seq), cx->undo_sensitive_signal );
-#endif
-    
+static void
+cb_undo_sequence_finalized (gpointer  user_data,
+                            GObject * history)
+{
+  Connection* cx = user_data;
+
+    g_signal_handler_disconnect( GTK_OBJECT(cx->widget), cx->widget_destroy_signal );
+
     g_free(cx);
 }
 
-static void cb_undo_sequence_destroyed( GundoSequence *seq, Connection *cx ) {
-    g_signal_handler_disconnect( GTK_OBJECT(cx->widget), cx->widget_destroy_signal );
-    
-    g_free(cx);
+static void
+cb_widget_destroyed (GtkWidget *widget,
+                     Connection *cx)
+{
+  g_object_weak_unref (G_OBJECT (cx->history),
+                       cb_undo_sequence_finalized,
+                       cx);
+  g_signal_handler_disconnect (cx->history,
+                               cx->undo_sensitive_signal);
+
+  g_free(cx);
 }
 
 static void
@@ -71,14 +79,9 @@ make_sensitive(GtkWidget* widget, GundoHistory* history, char* signal_name) {
                             signal_name,
                             G_CALLBACK(cb_set_sensitivity),
                             widget );
-#warning "FIXME: re-introduce this as a weak reference"
-#ifdef RE_INTRODUCE_DESTROY_ON_SEQ
-    cx->undo_destroy_signal =
-        g_signal_connect( G_OBJECT(history),
-                            "destroy",
-                            G_CALLBACK(cb_undo_sequence_destroyed),
-                            cx );
-#endif
+    g_object_weak_ref (G_OBJECT (history),
+                       cb_undo_sequence_finalized,
+                       cx);
     cx->widget_destroy_signal =
         g_signal_connect( G_OBJECT(widget),
                             "destroy",

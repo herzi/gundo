@@ -124,7 +124,7 @@ gundo_tool_undo_class_init(GundoToolUndoClass* self_class) {
 	go_class->get_property = gtu_get_property;
 	go_class->set_property = gtu_set_property;
 	_gundo_history_view_install_properties(go_class, PROP_HISTORY);
-#warning "gundo_tool_undo_class_init(): FIXME: listen to the toolbar_reconfigured signal"
+        // FIXME: listen to the toolbar_reconfigured signal
 }
 
 static void
@@ -175,7 +175,7 @@ gtu_toggle_list(GundoToolUndo* self, GtkToggleButton* arrow) {
 		screen = gtk_widget_get_screen(self->popup_window);
 		max_x = gdk_screen_get_width(screen);
 		max_y = gdk_screen_get_height(screen);
-#warning "gtu_toggle_list(): FIXME: get the size of the window"
+                // FIXME: get the size of the window"
 
 		//gtk_widget_get_extends(self->popup_window, NULL, NULL, &pop_w, &pop_h);
 		pop_w = w;
@@ -189,7 +189,7 @@ gtu_toggle_list(GundoToolUndo* self, GtkToggleButton* arrow) {
 		if(y+h <= max_y) {
 			y += h;
 		} else {
-#warning "gtu_toggle_list(): FIXME: put the popup over the tool item"
+                        // FIXME: put the popup over the tool item"
 			y -= pop_h;
 		}
 

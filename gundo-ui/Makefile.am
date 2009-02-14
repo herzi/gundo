@@ -4,6 +4,7 @@ lib_LTLIBRARIES=libgundo-ui.la
 
 libgundo_ui_la_CPPFLAGS=\
 	$(GUNDO_UI_CFLAGS) \
+	$(WARN_CFLAGS) \
 	$(DEBUG_CFLAGS) \
 	-I$(top_srcdir)/gundo \
 	$(NULL)
