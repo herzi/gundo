@@ -18,6 +18,7 @@ libgundo_ui_la_LIBADD=\
 libgundo_ui_la_SOURCES=\
 	gtk-helpers.c \
 	gtk-helpers.h \
+	gundo-popup-model.c \
 	gundo-popup-model.h \
 	gundo-tool-undo.c \
 	gundo-tool-undo.h \

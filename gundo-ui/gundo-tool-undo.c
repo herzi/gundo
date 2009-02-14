@@ -74,6 +74,12 @@ gundo_tool_undo_set_history(GundoToolUndo* self, GundoHistory* history) {
 		gtk_widget_set_sensitive(GTK_WIDGET(self), FALSE);
 	}
 
+        if (self->popup_tree)
+          {
+            gtk_tree_view_set_model (GTK_TREE_VIEW (self->popup_tree),
+                                     NULL);
+          }
+
 	g_object_notify(G_OBJECT(self), "history");
 }
 
@@ -164,7 +170,13 @@ gtu_toggle_list(GundoToolUndo* self, GtkToggleButton* arrow) {
 		gtk_container_add(GTK_CONTAINER(frame), scrolled);
 		gtk_widget_show_all(frame);
 	}
-	
+
+        if (!gtk_tree_view_get_model (GTK_TREE_VIEW (self->popup_tree)))
+          {
+            gtk_tree_view_set_model (GTK_TREE_VIEW (self->popup_tree),
+                                     gundo_popup_model_new (self->history));
+          }
+
 	if(gtk_toggle_button_get_active(arrow)) {
 		gint       x, y, w, h;
 		gint       max_x, max_y;
