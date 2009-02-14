@@ -23,8 +23,10 @@
 
 #include "gundo-popup-model.h"
 
+static void implement_gtk_tree_model (GtkTreeModelIface* iface);
+
 G_DEFINE_TYPE_WITH_CODE (GUndoPopupModel, gundo_popup_model, G_TYPE_OBJECT,
-                         G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL, NULL));
+                         G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL, implement_gtk_tree_model));
 
 static void
 gundo_popup_model_init (GUndoPopupModel* self)
@@ -39,5 +41,17 @@ gundo_popup_model_new (GundoHistory* history)
 {
   return g_object_new (GUNDO_TYPE_POPUP_MODEL,
                        NULL);
+}
+
+static gint
+model_get_n_columns (GtkTreeModel* model)
+{
+  return POPUP_N_COLUMNS;
+}
+
+static void
+implement_gtk_tree_model (GtkTreeModelIface* iface)
+{
+  iface->get_n_columns = model_get_n_columns;
 }
 
