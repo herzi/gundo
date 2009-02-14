@@ -22,6 +22,8 @@ libgundo_ui_la_SOURCES=\
 	gundo-popup-model.h \
 	gundo-redo-tool.c \
 	gundo-redo-tool.h \
+	gundo-tool.c \
+	gundo-tool.h \
 	gundo-tree-model-undo.c \
 	gundo-tree-model-undo.h \
 	gundo-ui.c \
