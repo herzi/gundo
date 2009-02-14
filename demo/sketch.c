@@ -83,11 +83,6 @@ s_add_stroke(Sketch* sk, Stroke* st) {
 	g_signal_emit_by_name(sk, "stroke-added", st);
 }
 
-static void
-s_remove_stroke(Sketch* sk, Stroke* st) {
-	
-}
-
 void
 sketch_finish_stroke(Sketch* sk) {
 	struct stroke_change* s = g_new0(struct stroke_change, 1);
@@ -103,8 +98,7 @@ sketch_finish_stroke(Sketch* sk) {
 static void
 undo_stroke(struct stroke_change* c) {
 	/* shrink the stroke list by one */
-#warning "undo_stroke(): FIXME: remove the stroke by value"
-	g_ptr_array_set_size(c->sk->strokes, c->sk->strokes->len - 1);
+        g_ptr_array_set_size(c->sk->strokes, c->sk->strokes->len - 1);
 
 	g_signal_emit_by_name(c->sk, "stroke-removed", c->st);
 }
