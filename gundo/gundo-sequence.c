@@ -394,7 +394,10 @@ gs_can_undo(GundoHistory *history) {
 static guint
 sequence_get_n_changes (GundoHistory* history)
 {
-  return GUNDO_SEQUENCE (history)->actions->len;
+  if (GUNDO_SEQUENCE (history)->next_redo)
+    return GUNDO_SEQUENCE (history)->actions->len;
+  else
+    return GUNDO_SEQUENCE (history)->next_redo;
 }
 
 static void
