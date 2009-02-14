@@ -3,7 +3,7 @@
  * AUTHORS
  *	Sven Herzberg		<herzi@gnome-de.org>
  *
- * Copyright (C) 2005		Sven Herzberg
+ * Copyright (C) 2005, 2009  Sven Herzberg
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License as
@@ -26,6 +26,7 @@
 #include "gobject-helpers.h"
 
 enum {
+  SIGNAL_CHANGED,
   SIGNAL_REDO,
   SIGNAL_UNDO,
   N_SIGNALS
@@ -68,6 +69,14 @@ gundo_history_can_undo (GundoHistory* self)
   g_return_val_if_fail (GUNDO_HISTORY_GET_IFACE (self)->can_undo, FALSE);
 
   return GUNDO_HISTORY_GET_IFACE (self)->can_undo (self);
+}
+
+void
+gundo_history_changed (GundoHistory* self)
+{
+  g_return_if_fail (GUNDO_IS_HISTORY (self));
+
+  g_signal_emit (self, signals[SIGNAL_CHANGED], 0);
 }
 
 /**
@@ -143,6 +152,12 @@ gundo_history_class_init (gpointer iface)
 								 "Is it possible to redo any action",
 								 FALSE,
 								 G_PARAM_READABLE));
+
+        signals[SIGNAL_CHANGED] = g_signal_new ("changed", G_TYPE_FROM_INTERFACE (iface),
+                                                G_SIGNAL_ACTION, 0,
+                                                NULL, NULL,
+                                                g_cclosure_marshal_VOID__VOID,
+                                                G_TYPE_NONE, 0);
 
         signals[SIGNAL_REDO] = g_signal_new ("redo", G_TYPE_FROM_INTERFACE (iface),
                                              G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,
