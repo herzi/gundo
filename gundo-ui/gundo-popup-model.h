@@ -28,12 +28,33 @@
 
 G_BEGIN_DECLS
 
+typedef struct _GUndoPopupModel        GUndoPopupModel;
+typedef struct _GUndoPopupModelPrivate GUndoPopupModelPrivate;
+typedef struct _GUndoPopupModelClass   GUndoPopupModelClass;
+
+#define GUNDO_TYPE_POPUP_MODEL         (gundo_popup_model_get_type ())
+#define GUNDO_POPUP_MODEL(i)           (G_TYPE_CHECK_INSTANCE_CAST ((i), GUNDO_TYPE_POPUP_MODEL, GUndoPopupModel))
+#define GUNDO_POPUP_MODEL_CLASS(c)     (G_TYPE_CHECK_CLASS_CAST ((c), GUNDO_TYPE_POPUP_MODEL, GUndoPopupModelClass))
+#define GUNDO_IS_POPUP_MODEL(i)        (G_TYPE_CHECK_INSTANCE_TYPE ((i), GUNDO_TYPE_POPUP_MODEL))
+#define GUNDO_IS_POPUP_MODEL_CLASS(c)  (G_TYPE_CHECK_CLASS_TYPE ((c), GUNDO_TYPE_POPUP_MODEL))
+#define GUNDO_POPUP_MODEL_GET_CLASS(i) (G_TYPE_INSTANCE_GET_CLASS ((i), GUNDO_TYPE_POPUP_MODEL, GUndoPopupModelClass))
+
 enum {
 	POPUP_COLUMN_TEXT,
 	POPUP_N_COLUMNS
 };
 
-GtkTreeModel* gundo_popup_model_new (GundoHistory* history);
+GType         gundo_popup_model_get_type (void);
+GtkTreeModel* gundo_popup_model_new      (GundoHistory* history);
+
+struct _GUndoPopupModel {
+  GObject                 base_instance;
+  GUndoPopupModelPrivate* _private;
+};
+
+struct _GUndoPopupModelClass {
+  GObjectClass            base_class;
+};
 
 G_END_DECLS
 

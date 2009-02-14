@@ -23,9 +23,20 @@
 
 #include "gundo-popup-model.h"
 
+G_DEFINE_TYPE (GUndoPopupModel, gundo_popup_model, G_TYPE_OBJECT);
+
+static void
+gundo_popup_model_init (GUndoPopupModel* self)
+{}
+
+static void
+gundo_popup_model_class_init (GUndoPopupModelClass* self_class)
+{}
+
 GtkTreeModel*
 gundo_popup_model_new (GundoHistory* history)
 {
-  return NULL;
+  return g_object_new (GUNDO_TYPE_POPUP_MODEL,
+                       NULL);
 }
 

@@ -173,8 +173,10 @@ gtu_toggle_list(GundoToolUndo* self, GtkToggleButton* arrow) {
 
         if (!gtk_tree_view_get_model (GTK_TREE_VIEW (self->popup_tree)))
           {
+            GtkTreeModel* model = gundo_popup_model_new (self->history);
             gtk_tree_view_set_model (GTK_TREE_VIEW (self->popup_tree),
-                                     gundo_popup_model_new (self->history));
+                                     model);
+            g_object_unref (model);
           }
 
 	if(gtk_toggle_button_get_active(arrow)) {
