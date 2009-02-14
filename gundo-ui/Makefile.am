@@ -25,5 +25,7 @@ libgundo_ui_la_SOURCES=\
 	gundo-tree-model-undo.h \
 	gundo-ui.c \
 	gundo-ui.h \
+	gundo-undo-model.c \
+	gundo-undo-model.h \
 	$(NULL)
 
