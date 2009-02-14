@@ -141,6 +141,16 @@ model_get_column_type (GtkTreeModel* model,
 }
 
 static gboolean
+model_iter_from_index (GtkTreeModel* model,
+                       GtkTreeIter * iter,
+                       guint         index)
+{
+  iter->user_data = GINT_TO_POINTER (index);
+
+  return GPOINTER_TO_INT (iter->user_data) < gundo_history_get_n_changes (PRIV (model)->history);
+}
+
+static gboolean
 model_get_iter (GtkTreeModel* model,
                 GtkTreeIter * iter,
                 GtkTreePath * path)
@@ -151,14 +161,24 @@ model_get_iter (GtkTreeModel* model,
 
   indices = gtk_tree_path_get_indices (path);
 
-  if (indices[0] < 0 || indices[0] >= gundo_history_get_n_changes (PRIV (model)->history))
-    {
-      return FALSE;
-    }
+  return model_iter_from_index (model, iter, indices[0]);
+}
 
-  iter->user_data = GINT_TO_POINTER (indices[0]);
+static gboolean
+model_iter_next (GtkTreeModel* model,
+                 GtkTreeIter * iter)
+{
+  return model_iter_from_index (model, iter, GPOINTER_TO_INT (iter->user_data) + 1);
+}
 
-  return TRUE;
+static gboolean
+model_iter_has_child (GtkTreeModel* model,
+                      GtkTreeIter * iter)
+{
+  if (iter)
+    return FALSE;
+
+  return gundo_history_can_undo (PRIV (model)->history);
 }
 
 static void
@@ -168,5 +188,8 @@ implement_gtk_tree_model (GtkTreeModelIface* iface)
   iface->get_column_type = model_get_column_type;
 
   iface->get_iter        = model_get_iter;
+
+  iface->iter_next       = model_iter_next;
+  iface->iter_has_child  = model_iter_has_child;
 }
 
