@@ -1,0 +1,33 @@
+2005-10-03  Sven Herzberg  <herzi@gnome-de.org>
+
+	* Makefile.am:
+	* NEWS:
+	* README:
+	* autogen.sh:
+	* configure.in:
+	* demo/Makefile.am:
+	* demo/main.c:
+	* demo/sketch-window.c:
+	* demo/sketch-window.h:
+	* demo/sketch.c:
+	* demo/sketch.h:
+	* demo/stroke.c:
+	* demo/stroke.h:
+	* doc/Makefile.am:
+	* doc/gundo-docs.sgml:
+	* doc/gundo-sections.txt:
+	* doc/tmpl/gundo-sequence.sgml:
+	* doc/tmpl/gundo-tool-undo.sgml:
+	* doc/tmpl/gundo-ui.sgml:
+	* doc/tmpl/gundo.sgml:
+	* gundo/Makefile.am:
+	* gundo/gundo-sequence.h:
+	* gundo/gundo-tool-undo.c:
+	* gundo/gundo-tool-undo.h:
+	* gundo/gundo-ui.c:
+	* gundo/gundo-ui.h:
+	* gundo/gundo.c:
+	* gundo/gundo.h:
+	* test/Makefile.am:
+	* test/tundo.c: initial check in of my current work tree
+

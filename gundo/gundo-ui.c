@@ -78,11 +78,31 @@ static void make_sensitive( GtkWidget *widget,
                             cx );
 }
 
+/**
+ * gundo_make_undo_sensitive:
+ * @widget: The widget to make undo-sensitive
+ * @seq: The undo sequence that the widget should be sensitive to
+ *
+ * Makes a widget sensitive to the current undo state of a GundoSequence.
+ * A widget that is undo-sensitive will only be sensitive
+ * when it is possible to call \Ref{gundo_sequence_undo} on its associated
+ * GundoSequence (that is, when \Ref{gundo_sequence_can_undo} returns TRUE).
+ */
 void gundo_make_undo_sensitive( GtkWidget *widget, GundoSequence *seq ) {
     make_sensitive( widget, seq, "can_undo" );
     gtk_widget_set_sensitive( widget, gundo_sequence_can_undo(seq) );
 }
 
+/**
+ * gundo_make_redo_sensitive:
+ * @widget: The #GtkWidget to make redo-sensitive.
+ * @seq: The undo sequence that the widget should be sensitive to.
+ *
+ * Makes a widget sensitive to the current redo state of a GundoSequence.  
+ * A widget that is redo-sensitive will only be sensitive when it is 
+ * possible to call \Ref{gundo_sequence_redo} on its associated GundoSequence 
+ * (that is, when \Ref{gundo_sequence_can_redo} returns TRUE).
+ */
 void gundo_make_redo_sensitive( GtkWidget *widget, GundoSequence *seq ) {
     make_sensitive( widget, seq, "can_redo" );
     gtk_widget_set_sensitive( widget, gundo_sequence_can_redo(seq) );
