@@ -23,7 +23,8 @@
 
 #include "gundo-popup-model.h"
 
-G_DEFINE_TYPE (GUndoPopupModel, gundo_popup_model, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_CODE (GUndoPopupModel, gundo_popup_model, G_TYPE_OBJECT,
+                         G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL, NULL));
 
 static void
 gundo_popup_model_init (GUndoPopupModel* self)
