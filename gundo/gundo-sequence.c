@@ -324,15 +324,10 @@ void gundo_sequence_abort_group( GundoSequence *seq ) {
     }
 }
 
-
-/** Redoes the last action that was undone.
-    <p>
-    <em>Pre</em>: no group is being constructed && undo_sequence_can_redo(seq).
-    
-    @param seq
-        The undo sequence.
- */
-void gundo_sequence_redo( GundoSequence *seq ) {
+static void
+sequence_redo (GundoHistory* history)
+{
+        GundoSequence* seq = GUNDO_SEQUENCE (history);
 	UndoAction *action;
 	gboolean could_undo;
 
@@ -364,9 +359,12 @@ static void group_undo( GundoSequence *self ) {
 }
 
 
-static void group_redo( GundoSequence *seq ) {
-	while(gundo_history_can_redo(GUNDO_HISTORY(seq))) {
-		gundo_sequence_redo(seq);
+static void
+group_redo(GundoSequence *self)
+{
+	GundoHistory* history = GUNDO_HISTORY(self);
+	while(gundo_history_can_redo (history)) {
+		gundo_history_redo (history);
 	}
 }
 
@@ -435,6 +433,7 @@ gs_history_iface_init (GundoHistoryIface* iface)
   iface->get_n_changes = sequence_get_n_changes;
 
   iface->undo          = gs_undo;
+  iface->redo          = sequence_redo;
 }
 
 

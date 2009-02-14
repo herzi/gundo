@@ -1,22 +1,22 @@
 /* This file is part of gundo, a multilevel undo/redo facility for GTK+
- * 
+ *
  * AUTHORS
  *	Nat Pryce
  *	Sven Herzberg		<herzi@gnome-de.org>
  *
  * Copyright (C) 1999		Nat Pryce
- * Copyright (C) 2005		Sven Herzberg
- * 
+ * Copyright (C) 2005,2009  Sven Herzberg
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation; either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
@@ -85,13 +85,13 @@ static void test_undo() {
     
     do_inc(seq);
     check_value( 1, "added undo action" );
-    gundo_history_undo(history);
+    gundo_history_undo (history);
     check_value( 0, "undid increment" );
-    gundo_sequence_redo( seq );
+    gundo_history_redo (history);
     check_value( 1, "redid increment" );
-    gundo_history_undo(history);
+    gundo_history_undo (history);
     check_value( 0, "undid increment again" );
-    gundo_sequence_redo( seq );
+    gundo_history_redo (history);
     check_value( 1, "redid increment again" );
     
     g_object_unref(G_OBJECT(seq));
@@ -119,9 +119,9 @@ static void test_groups() {
     check_value( 1, "undid the group" );
     gundo_history_undo(history);
     check_value( 0, "undid the initial single action" );
-    gundo_sequence_redo( seq );
+    gundo_history_redo(history);
     check_value( 1, "redid the initial single action" );
-    gundo_sequence_redo( seq );
+    gundo_history_redo(history);
     check_value( 5, "redid the group of actions" );
     
     g_object_unref(G_OBJECT(seq));

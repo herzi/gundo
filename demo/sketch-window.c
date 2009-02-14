@@ -108,7 +108,7 @@ clear_clicked(SketchWindow* self) {
 static gboolean
 redo_clicked(SketchWindow* win) {
 	Sketch* s = sketch_window_get_sketch(win);
-	gundo_sequence_redo(s->actions);
+	gundo_history_redo (GUNDO_HISTORY (s->actions));
 	return TRUE;
 }
 

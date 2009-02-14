@@ -26,6 +26,7 @@
 #include "gobject-helpers.h"
 
 enum {
+  SIGNAL_REDO,
   SIGNAL_UNDO,
   N_SIGNALS
 };
@@ -87,6 +88,23 @@ gundo_history_get_n_changes (GundoHistory* self)
 }
 
 /**
+ * gundo_history_redo:
+ * @self: a #GundoHistory
+ *
+ * Redoes the last action that was undone.
+ *
+ * <em>Prerequisitions</em>: no group is being constructed && g_undo_history_can_redo().
+ */
+void
+gundo_history_redo (GundoHistory* self)
+{
+  g_return_if_fail (GUNDO_IS_HISTORY (self));
+  g_return_if_fail (gundo_history_can_redo (self));
+
+  g_signal_emit (self, signals[SIGNAL_REDO], 0);
+}
+
+/**
  * gundo_history_undo:
  * @self: a #GundoHistory
  *
@@ -98,6 +116,7 @@ void
 gundo_history_undo (GundoHistory* self)
 {
   g_return_if_fail (GUNDO_IS_HISTORY (self));
+  g_return_if_fail (gundo_history_can_undo (self));
 
   g_signal_emit (self, signals[SIGNAL_UNDO], 0);
 }
@@ -124,6 +143,13 @@ gundo_history_class_init (gpointer iface)
 								 "Is it possible to redo any action",
 								 FALSE,
 								 G_PARAM_READABLE));
+
+        signals[SIGNAL_REDO] = g_signal_new ("redo", G_TYPE_FROM_INTERFACE (iface),
+                                             G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,
+                                             G_STRUCT_OFFSET (GundoHistoryIface, redo),
+                                             NULL, NULL,
+                                             g_cclosure_marshal_VOID__VOID,
+                                             G_TYPE_NONE, 0);
 
         signals[SIGNAL_UNDO] = g_signal_new ("undo", G_TYPE_FROM_INTERFACE (iface),
                                              G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,

@@ -5,6 +5,7 @@ TESTS=$(check_PROGRAMS)
 
 tundo_CPPFLAGS=\
 	$(GUNDO_CFLAGS) \
+	$(WARN_CFLAGS) \
 	$(DEBUG_CFLAGS) \
 	-I$(top_srcdir)/gundo \
 	$(NULL)

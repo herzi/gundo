@@ -50,7 +50,6 @@ void           gundo_sequence_add_action (GundoSequence *seq,
 void           gundo_sequence_start_group(GundoSequence *seq );
 void           gundo_sequence_end_group  (GundoSequence *seq );
 void           gundo_sequence_abort_group(GundoSequence *seq );
-void           gundo_sequence_redo       (GundoSequence *seq );
 
 struct _GundoSequence
 {
