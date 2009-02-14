@@ -1,4 +1,5 @@
 AC_INIT(gundo,0.3.1,mailto:herzi@gnome-de.org)
+AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 
 AM_PROG_CC_C_O
