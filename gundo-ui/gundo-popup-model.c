@@ -119,10 +119,13 @@ model_set_property (GObject     * object,
 
         PRIV (object)->history = g_value_dup_object (value);
 
+        g_signal_connect_after (PRIV (object)->history, "changed",
+                                G_CALLBACK (redo_callback), object);
         g_signal_connect_after (PRIV (object)->history, "redo",
                                 G_CALLBACK (redo_callback), object);
         g_signal_connect_after (PRIV (object)->history, "undo",
                                 G_CALLBACK (undo_callback), object);
+
         g_object_notify (object, "history");
         break;
       default:
