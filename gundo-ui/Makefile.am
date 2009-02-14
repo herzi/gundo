@@ -20,6 +20,8 @@ libgundo_ui_la_SOURCES=\
 	gtk-helpers.h \
 	gundo-popup-model.c \
 	gundo-popup-model.h \
+	gundo-redo-tool.c \
+	gundo-redo-tool.h \
 	gundo-tree-model-undo.c \
 	gundo-tree-model-undo.h \
 	gundo-ui.c \
