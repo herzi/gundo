@@ -164,6 +164,25 @@ model_get_iter (GtkTreeModel* model,
   return model_iter_from_index (model, iter, indices[0]);
 }
 
+static void
+model_get_value (GtkTreeModel* model,
+                 GtkTreeIter * iter,
+                 gint          column,
+                 GValue      * value)
+{
+  g_value_init (value, model_get_column_type (model, column));
+
+  switch (column)
+    {
+      case POPUP_COLUMN_TEXT:
+        g_value_take_string (value, g_strdup_printf ("%d. Action", GPOINTER_TO_INT (iter->user_data) + 1));
+        break;
+      default:
+        g_assert_not_reached ();
+        break;
+    }
+}
+
 static gboolean
 model_iter_next (GtkTreeModel* model,
                  GtkTreeIter * iter)
@@ -200,7 +219,7 @@ implement_gtk_tree_model (GtkTreeModelIface* iface)
   iface->get_column_type = model_get_column_type;
 
   iface->get_iter        = model_get_iter;
-
+  iface->get_value       = model_get_value;
   iface->iter_next       = model_iter_next;
   iface->iter_has_child  = model_iter_has_child;
   iface->iter_nth_child  = model_iter_nth_child;
