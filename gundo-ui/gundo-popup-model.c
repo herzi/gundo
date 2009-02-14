@@ -23,6 +23,17 @@
 
 #include "gundo-popup-model.h"
 
+/* GtkTreeIter format:
+ * ===================
+ * stamp:      unused
+ * user_data:  GINT_TO_POINTER (<position>)
+ * user_data2: unused
+ * user_data3: unused
+ *
+ * "position" is the index counted from the current state:
+ *   the next change gets 0, the one before 1, the last one n_changes() - 1
+ */
+
 struct _GUndoPopupModelPrivate {
   GundoHistory* history;
 };
@@ -129,10 +140,33 @@ model_get_column_type (GtkTreeModel* model,
   return types[column];
 }
 
+static gboolean
+model_get_iter (GtkTreeModel* model,
+                GtkTreeIter * iter,
+                GtkTreePath * path)
+{
+  gint* indices;
+
+  g_return_val_if_fail (gtk_tree_path_get_depth (path) == 1, FALSE);
+
+  indices = gtk_tree_path_get_indices (path);
+
+  if (indices[0] < 0 || indices[0] >= gundo_history_get_n_changes (PRIV (model)->history))
+    {
+      return FALSE;
+    }
+
+  iter->user_data = GINT_TO_POINTER (indices[0]);
+
+  return TRUE;
+}
+
 static void
 implement_gtk_tree_model (GtkTreeModelIface* iface)
 {
   iface->get_n_columns   = model_get_n_columns;
   iface->get_column_type = model_get_column_type;
+
+  iface->get_iter        = model_get_iter;
 }
 
