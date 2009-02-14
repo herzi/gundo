@@ -89,7 +89,6 @@ static void free_actions( int actc, UndoAction *actv );
 static GundoActionType gundo_action_group = {
     (GundoActionCallback)group_undo,
     (GundoActionCallback)group_redo,
-#warning "FIXME: is this correct?"
     (GundoActionCallback)g_object_unref
 };
 
@@ -175,8 +174,11 @@ gundo_sequence_class_init(GundoSequenceClass *self_class) {
  * 
  * Returns a new GundoSequence object.
  */
-GundoSequence *gundo_sequence_new() {
-    return GUNDO_SEQUENCE( gtk_type_new( gundo_sequence_get_type() ) );
+GundoSequence*
+gundo_sequence_new (void)
+{
+  return g_object_new (GUNDO_TYPE_SEQUENCE,
+                       NULL);
 }
 
 

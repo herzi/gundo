@@ -31,5 +31,5 @@ if test -z "$gnome_autogen" ; then
   exit 1
 fi
 
-GNOME_DATADIR="$gnome_datadir" USE_GNOME2_MACROS=1 . $gnome_autogen --disable-update-mimedb --enable-maintainer-mode --enable-gtk-doc --enable-debug $@
+GNOME_DATADIR="$gnome_datadir" USE_GNOME2_MACROS=1 . $gnome_autogen --disable-update-mimedb --enable-maintainer-mode --enable-gtk-doc --enable-debug --enable-compile-warnings=error $@
 

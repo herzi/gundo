@@ -15,6 +15,7 @@ gundodir=$(includedir)/gundo-0.2
 
 libgundo_la_CPPFLAGS=\
 	$(GUNDO_CFLAGS) \
+	$(WARN_CFLAGS) \
 	$(DEBUG_CFLAGS) \
 	$(NULL)
 libgundo_la_SOURCES=\
