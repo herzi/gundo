@@ -57,6 +57,25 @@ gundo_popup_model_init (GUndoPopupModel* self)
 }
 
 static void
+undo_callback (GundoHistory   * history,
+               GUndoPopupModel* self)
+{
+  GtkTreePath* path = gtk_tree_path_new_from_string ("1");
+  gtk_tree_model_row_deleted (GTK_TREE_MODEL (self),
+                              path);
+  gtk_tree_path_free (path);
+}
+
+static void
+model_finalize (GObject* object)
+{
+  g_signal_handlers_disconnect_by_func (PRIV (object)->history, undo_callback, object);
+  g_object_unref (PRIV (object)->history);
+
+  G_OBJECT_CLASS (gundo_popup_model_parent_class)->finalize (object);
+}
+
+static void
 model_get_property (GObject   * object,
                     guint       prop_id,
                     GValue    * value,
@@ -85,6 +104,9 @@ model_set_property (GObject     * object,
         g_return_if_fail (!PRIV (object)->history);
 
         PRIV (object)->history = g_value_dup_object (value);
+
+        g_signal_connect_after (PRIV (object)->history, "undo",
+                                G_CALLBACK (undo_callback), object);
         g_object_notify (object, "history");
         break;
       default:
@@ -98,6 +120,7 @@ gundo_popup_model_class_init (GUndoPopupModelClass* self_class)
 {
   GObjectClass* object_class = G_OBJECT_CLASS (self_class);
 
+  object_class->finalize     = model_finalize;
   object_class->get_property = model_get_property;
   object_class->set_property = model_set_property;
 
