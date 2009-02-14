@@ -168,6 +168,9 @@ gtu_toggle_list(GundoToolUndo* self, GtkToggleButton* arrow) {
                 gtk_tree_view_append_column (GTK_TREE_VIEW (self->popup_tree),
                                              column);
 		scrolled = gtk_scrolled_window_new(NULL, NULL);
+                gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
+                                                GTK_POLICY_NEVER,
+                                                GTK_POLICY_ALWAYS);
 		gtk_container_add(GTK_CONTAINER(scrolled), self->popup_tree);
 		gtk_container_add(GTK_CONTAINER(frame), scrolled);
 		gtk_widget_show_all(frame);
