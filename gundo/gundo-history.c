@@ -25,6 +25,13 @@
 
 #include "gobject-helpers.h"
 
+enum {
+  SIGNAL_UNDO,
+  N_SIGNALS
+};
+
+static guint signals[N_SIGNALS] = {0};
+
 G_DEFINE_IFACE_FULL(GundoHistory, gundo_history, G_TYPE_INTERFACE);
 
 /**
@@ -91,9 +98,8 @@ void
 gundo_history_undo (GundoHistory* self)
 {
   g_return_if_fail (GUNDO_IS_HISTORY (self));
-  g_return_if_fail (GUNDO_HISTORY_GET_IFACE (self)->undo);
 
-  GUNDO_HISTORY_GET_IFACE (self)->undo (self);
+  g_signal_emit (self, signals[SIGNAL_UNDO], 0);
 }
 
 /* GInterface stuff */
@@ -104,18 +110,26 @@ gundo_history_install_properties(GObjectClass* go_class, guint id_undo, guint id
 }
 
 static void
-gundo_history_class_init(gpointer iface) {
+gundo_history_class_init (gpointer iface)
+{
 	g_object_interface_install_property(iface,
 					    g_param_spec_boolean("can-undo",
-						    		 "can undo",
+								 "can undo",
 								 "Is it possible to undo any action",
 								 FALSE,
 								 G_PARAM_READABLE));
 	g_object_interface_install_property(iface,
 					    g_param_spec_boolean("can-redo",
-						    		 "can redo",
+								 "can redo",
 								 "Is it possible to redo any action",
 								 FALSE,
 								 G_PARAM_READABLE));
+
+        signals[SIGNAL_UNDO] = g_signal_new ("undo", G_TYPE_FROM_INTERFACE (iface),
+                                             G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,
+                                             G_STRUCT_OFFSET (GundoHistoryIface, undo),
+                                             NULL, NULL,
+                                             g_cclosure_marshal_VOID__VOID,
+                                             G_TYPE_NONE, 0);
 }
 
