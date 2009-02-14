@@ -49,9 +49,24 @@ model_get_n_columns (GtkTreeModel* model)
   return POPUP_N_COLUMNS;
 }
 
+static GType
+model_get_column_type (GtkTreeModel* model,
+                       gint          column)
+{
+  static GType types[POPUP_N_COLUMNS] = {
+    G_TYPE_STRING
+  };
+
+  g_return_val_if_fail (column >= 0, G_TYPE_INVALID);
+  g_return_val_if_fail (column < model_get_n_columns (model), G_TYPE_INVALID);
+
+  return types[column];
+}
+
 static void
 implement_gtk_tree_model (GtkTreeModelIface* iface)
 {
-  iface->get_n_columns = model_get_n_columns;
+  iface->get_n_columns   = model_get_n_columns;
+  iface->get_column_type = model_get_column_type;
 }
 
