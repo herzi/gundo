@@ -20,13 +20,13 @@ libgundo_ui_la_SOURCES=\
 	gtk-helpers.h \
 	gundo-popup-model.c \
 	gundo-popup-model.h \
-	gundo-tool-undo.c \
-	gundo-tool-undo.h \
 	gundo-tree-model-undo.c \
 	gundo-tree-model-undo.h \
 	gundo-ui.c \
 	gundo-ui.h \
 	gundo-undo-model.c \
 	gundo-undo-model.h \
+	gundo-undo-tool.c \
+	gundo-undo-tool.h \
 	$(NULL)
 

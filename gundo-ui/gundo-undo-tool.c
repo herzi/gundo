@@ -25,7 +25,7 @@
 #include <config.h>
 #endif
 
-#include <gundo-ui/gundo-tool-undo.h>
+#include "gundo-undo-tool.h"
 
 #include <glib/gi18n-lib.h>
 #include <gtk/gtkarrow.h>
