@@ -24,14 +24,16 @@
 #include "gundo-tool.h"
 
 struct _GUndoToolPrivate {
-        GundoHistory * history;
+  GundoHistory * history;
+  gchar        * stock_id;
 };
 
 #define PRIV(i) (((GUndoTool*)(i))->_private)
 
 enum {
-        PROP_0,
-        PROP_HISTORY
+  PROP_0,
+  PROP_HISTORY,
+  PROP_STOCK_ID
 };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GUndoTool, gundo_tool, GTK_TYPE_TOOL_ITEM,
@@ -53,6 +55,8 @@ tool_finalize (GObject* object)
       PRIV (object)->history = NULL;
     }
 
+  g_free (PRIV (object)->stock_id);
+
   if (G_OBJECT_CLASS (gundo_tool_parent_class)->finalize)
     {
       G_OBJECT_CLASS (gundo_tool_parent_class)->finalize (object);
@@ -69,6 +73,9 @@ tool_get_property (GObject   * object,
     {
       case PROP_HISTORY:
         g_value_set_object (value, gundo_tool_get_history (GUNDO_TOOL (object)));
+        break;
+      case PROP_STOCK_ID:
+        g_value_set_string (value, gundo_tool_get_stock_id (GUNDO_TOOL (object)));
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -87,6 +94,11 @@ tool_set_property (GObject     * object,
       case PROP_HISTORY:
         gundo_tool_set_history (GUNDO_TOOL (object), g_value_get_object (value));
         break;
+      case PROP_STOCK_ID:
+        g_free (PRIV (object)->stock_id);
+        PRIV (object)->stock_id = g_value_dup_string (value);
+        g_object_notify (object, "stock-id");
+        break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
         break;
@@ -102,6 +114,10 @@ gundo_tool_class_init (GUndoToolClass* self_class)
   object_class->get_property = tool_get_property;
   object_class->set_property = tool_set_property;
 
+  g_object_class_install_property (object_class, PROP_STOCK_ID,
+                                   g_param_spec_string ("stock-id", "stock-id", "stock-id",
+                                                        NULL, G_PARAM_READWRITE));
+
   _gundo_history_view_install_properties(object_class, PROP_HISTORY);
 
   g_type_class_add_private (self_class, sizeof (GUndoToolPrivate));
@@ -113,6 +129,14 @@ gundo_tool_get_history (GUndoTool* self)
   g_return_val_if_fail (GUNDO_IS_TOOL (self), NULL);
 
   return PRIV (self)->history;
+}
+
+gchar const*
+gundo_tool_get_stock_id (GUndoTool* self)
+{
+  g_return_val_if_fail (GUNDO_IS_TOOL (self), NULL);
+
+  return PRIV (self)->stock_id;
 }
 
 void
