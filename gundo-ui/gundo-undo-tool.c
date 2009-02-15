@@ -39,15 +39,14 @@
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtktreeview.h>
 
-#include <gundo-ui/gundo-ui.h>
+#include "gundo-ui.h"
 
 #include "gtk-helpers.h"
-#include "gundo-popup-model.h"
 
-static void gtu_history_view_init(GundoHistoryViewIface* iface);
+static void gtu_history_view_init (GundoHistoryViewIface* iface);
 
-G_DEFINE_TYPE_WITH_CODE(GundoToolUndo, gundo_tool_undo, GUNDO_TYPE_TOOL,
-			G_IMPLEMENT_INTERFACE(GUNDO_TYPE_HISTORY_VIEW, gtu_history_view_init));
+G_DEFINE_TYPE_WITH_CODE (GundoToolUndo, gundo_tool_undo, GUNDO_TYPE_TOOL,
+                         G_IMPLEMENT_INTERFACE (GUNDO_TYPE_HISTORY_VIEW, gtu_history_view_init));
 
 GtkToolItem*
 gundo_tool_undo_new (void)
@@ -128,7 +127,7 @@ gtu_toggle_list (GundoToolUndo* self,
 
         if (!gtk_tree_view_get_model (GTK_TREE_VIEW (self->popup_tree)))
           {
-            GtkTreeModel* model = gundo_popup_model_new (gundo_tool_get_history (GUNDO_TOOL (self)));
+            GtkTreeModel* model = gundo_undo_model_new (gundo_tool_get_history (GUNDO_TOOL (self)));
             gtk_tree_view_set_model (GTK_TREE_VIEW (self->popup_tree),
                                      model);
             g_object_unref (model);
