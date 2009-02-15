@@ -1,4 +1,4 @@
-/* This file is part of ...
+/* This file is part of gundo
  *
  * AUTHORS
  *     Sven Herzberg  <herzi@lanedo.com>
@@ -22,4 +22,21 @@
  */
 
 #include "gundo-redo-tool.h"
+
+G_DEFINE_TYPE (GUndoRedoTool, gundo_redo_tool, GUNDO_TYPE_TOOL);
+
+static void
+gundo_redo_tool_init (GUndoRedoTool* self)
+{}
+
+static void
+gundo_redo_tool_class_init (GUndoRedoToolClass* self_class)
+{}
+
+GtkToolItem*
+gundo_redo_tool_new (void)
+{
+  return g_object_new (GUNDO_TYPE_REDO_TOOL,
+                       NULL);
+}
 
