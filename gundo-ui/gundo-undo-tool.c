@@ -51,7 +51,7 @@ enum {
 
 static void gtu_history_view_init(GundoHistoryViewIface* iface);
 
-G_DEFINE_TYPE_WITH_CODE(GundoToolUndo, gundo_tool_undo, GTK_TYPE_TOOL_ITEM,
+G_DEFINE_TYPE_WITH_CODE(GundoToolUndo, gundo_tool_undo, GUNDO_TYPE_TOOL,
 			G_IMPLEMENT_INTERFACE(GUNDO_TYPE_HISTORY_VIEW, gtu_history_view_init));
 
 GtkToolItem*

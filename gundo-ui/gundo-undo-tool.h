@@ -3,7 +3,7 @@
  * AUTHORS
  *	Sven Herzberg		<herzi@gnome-de.org>
  *
- * Copyright (C) 2005		Sven Herzberg
+ * Copyright (C) 2005,2009  Sven Herzberg
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License as
@@ -24,11 +24,11 @@
 #ifndef GUNDO_TOOL_UNDO_H
 #define GUNDO_TOOL_UNDO_H
 
-#include <gtk/gtktoolitem.h>
+#include <gundo-tool.h>
 #include <gundo-history.h>
 
-typedef struct _GundoToolUndo GundoToolUndo;
-typedef GtkToolItemClass GundoToolUndoClass;
+typedef struct _GundoToolUndo      GundoToolUndo;
+typedef struct _GundoToolUndoClass GundoToolUndoClass;
 
 #define GUNDO_TYPE_TOOL_UNDO         (gundo_tool_undo_get_type())
 #define GUNDO_TOOL_UNDO(o)           (G_TYPE_CHECK_INSTANCE_CAST((o), GUNDO_TYPE_TOOL_UNDO, GundoToolUndo))
@@ -44,13 +44,17 @@ void         gundo_tool_undo_set_history(GundoToolUndo* self,
 				         GundoHistory * history);
 
 struct _GundoToolUndo {
-	GtkToolItem    tool_item;
+  GUndoTool    base_instance;
 	GtkWidget    * hbox;
 	GtkWidget    * icon_button;
 	GtkWidget    * arrow_button;
 	GtkWidget    * popup_window;
 	GtkWidget    * popup_tree;
 	GundoHistory * history;
+};
+
+struct _GundoToolUndoClass {
+  GUndoToolClass base_class;
 };
 
 #endif /* !GUNDO_TOOL_UNDO_H */
