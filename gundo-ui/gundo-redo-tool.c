@@ -30,13 +30,24 @@ gundo_redo_tool_init (GUndoRedoTool* self)
 {}
 
 static void
+redo_clicked (GUndoTool* tool)
+{
+  gundo_history_redo (gundo_tool_get_history (tool));
+}
+
+static void
 gundo_redo_tool_class_init (GUndoRedoToolClass* self_class)
-{}
+{
+  GUndoToolClass* tool_class = GUNDO_TOOL_CLASS (self_class);
+
+  tool_class->clicked = redo_clicked;
+}
 
 GtkToolItem*
 gundo_redo_tool_new (void)
 {
   return g_object_new (GUNDO_TYPE_REDO_TOOL,
+                       "stock-id", GTK_STOCK_REDO,
                        NULL);
 }
 
