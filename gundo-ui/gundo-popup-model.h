@@ -41,11 +41,12 @@ typedef struct _GUndoPopupModelClass   GUndoPopupModelClass;
 #define GUNDO_POPUP_MODEL_GET_CLASS(i) (G_TYPE_INSTANCE_GET_CLASS ((i), GUNDO_TYPE_POPUP_MODEL, GUndoPopupModelClass))
 
 enum {
-	POPUP_COLUMN_TEXT,
-	POPUP_N_COLUMNS
+  POPUP_COLUMN_TEXT,
+  POPUP_N_COLUMNS
 };
 
-GType         gundo_popup_model_get_type (void);
+GType         gundo_popup_model_get_type    (void);
+GundoHistory* gundo_popup_model_get_history (GUndoPopupModel* self);
 
 struct _GUndoPopupModel {
   GObject                 base_instance;
