@@ -3,7 +3,7 @@
  * AUTHORS
  *	Sven Herzberg		<herzi@gnome-de.org>
  *
- * Copyright (C) 2005		Sven Herzberg
+ * Copyright (C) 2005,2009  Sven Herzberg
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License as
@@ -24,7 +24,8 @@
 #ifndef GUNDO_POPUP_MODEL_H
 #define GUNDO_POPUP_MODEL_H
 
-#include <gundo-ui.h>
+#include <gtk/gtk.h>
+#include <gundo.h>
 
 G_BEGIN_DECLS
 

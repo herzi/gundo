@@ -25,11 +25,32 @@
 #define GUNDO_UNDO_MODEL_H
 
 #include <gtk/gtk.h>
-#include <gundo-history.h>
+#include <gundo-popup-model.h>
 
 G_BEGIN_DECLS
 
-GtkTreeModel* gundo_undo_model_new (GundoHistory* history);
+typedef struct _GUndoUndoModel        GUndoUndoModel;
+typedef struct _GUndoUndoModelPrivate GUndoUndoModelPrivate;
+typedef struct _GUndoUndoModelClass   GUndoUndoModelClass;
+
+#define GUNDO_TYPE_UNDO_MODEL         (gundo_undo_model_get_type ())
+#define GUNDO_UNDO_MODEL(i)           (G_TYPE_CHECK_INSTANCE_CAST ((i), GUNDO_TYPE_UNDO_MODEL, GUndoUndoModel))
+#define GUNDO_UNDO_MODEL_CLASS(c)     (G_TYPE_CHECK_CLASS_CAST ((c), GUNDO_TYPE_UNDO_MODEL, GUndoUndoModelClass))
+#define GUNDO_IS_UNDO_MODEL(i)        (G_TYPE_CHECK_INSTANCE_TYPE ((i), GUNDO_TYPE_UNDO_MODEL))
+#define GUNDO_IS_UNDO_MODEL_CLASS(c)  (G_TYPE_CHECK_CLASS_TYPE ((c), GUNDO_TYPE_UNDO_MODEL))
+#define GUNDO_UNDO_MODEL_GET_CLASS(i) (G_TYPE_INSTANCE_GET_CLASS ((i), GUNDO_TYPE_UNDO_MODEL, GUndoUndoModelClass))
+
+GType         gundo_undo_model_get_type (void);
+GtkTreeModel* gundo_undo_model_new      (GundoHistory* history);
+
+struct _GUndoUndoModel {
+  GUndoPopupModel        base_instance;
+  GUndoUndoModelPrivate* _private;
+};
+
+struct _GUndoUndoModelClass {
+  GUndoPopupModelClass   base_class;
+};
 
 G_END_DECLS
 

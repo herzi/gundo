@@ -23,9 +23,23 @@
 
 #include "gundo-undo-model.h"
 
+G_DEFINE_TYPE (GUndoUndoModel, gundo_undo_model, GUNDO_TYPE_POPUP_MODEL);
+
+static void
+gundo_undo_model_init (GUndoUndoModel* self)
+{}
+
+static void
+gundo_undo_model_class_init (GUndoUndoModelClass* self_class)
+{}
+
 GtkTreeModel*
 gundo_undo_model_new (GundoHistory* history)
 {
-  return NULL;
+  g_return_val_if_fail (GUNDO_IS_HISTORY (history), NULL);
+
+  return g_object_new (GUNDO_TYPE_UNDO_MODEL,
+                       "history", history,
+                       NULL);
 }
 
