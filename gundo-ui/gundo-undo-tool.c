@@ -70,11 +70,6 @@ undo_notify (GObject   * object,
                                    NULL);
         }
     }
-  if (!strcmp ("stock-id", g_param_spec_get_name (pspec)))
-    {
-      gtk_button_set_label (GTK_BUTTON (GUNDO_TOOL_UNDO (object)->icon_button),
-                            gundo_tool_get_stock_id (GUNDO_TOOL (object)));
-    }
 
   if (G_OBJECT_CLASS (gundo_tool_undo_parent_class)->notify)
     {
@@ -100,17 +95,9 @@ gtu_icon_clicked (GundoToolUndo* self,
 }
 
 static void
-gtu_icon_raise(GtkWidget* arrow, GtkButton* icon) {
-	gtk_button_set_relief(icon, GTK_RELIEF_NORMAL);
-}
-
-static void
-gtu_icon_sink(GtkWidget* arrow, GtkButton* icon) {
-	gtk_button_set_relief(icon, GTK_RELIEF_NONE);
-}
-
-static void
-gtu_toggle_list(GundoToolUndo* self, GtkToggleButton* arrow) {
+gtu_toggle_list (GundoToolUndo* self,
+                 gboolean       show_menu)
+{
 	if(!self->popup_window) {
 		GtkWidget* frame;
 		GtkWidget* scrolled;
@@ -145,13 +132,14 @@ gtu_toggle_list(GundoToolUndo* self, GtkToggleButton* arrow) {
             g_object_unref (model);
           }
 
-	if(gtk_toggle_button_get_active(arrow)) {
+        if (show_menu)
+          {
 		gint       x, y, w, h;
 		gint       max_x, max_y;
 		gint       pop_w, pop_h;
 		GdkScreen* screen;
-		
-		gtk_widget_get_extends(self->hbox, &x, &y, &w, &h);
+
+            gtk_widget_get_extends (GTK_WIDGET (self), &x, &y, &w, &h);
 		screen = gtk_widget_get_screen(self->popup_window);
 		max_x = gdk_screen_get_width(screen);
 		max_y = gdk_screen_get_height(screen);
@@ -175,35 +163,20 @@ gtu_toggle_list(GundoToolUndo* self, GtkToggleButton* arrow) {
 
 		gtk_widget_show(self->popup_window);
 		gtk_window_move(GTK_WINDOW(self->popup_window), x, y);
-	} else {
+          }
+        else
+          {
 		gtk_widget_hide(self->popup_window);
-	}
+          }
 }
 
 static void
 gundo_tool_undo_init (GundoToolUndo* self)
 {
-        self->hbox = gtk_hbox_new(FALSE, 0);
-
-        self->icon_button = gtk_button_new_from_stock(NULL);
-        gtu_icon_sink(NULL, GTK_BUTTON(self->icon_button));
-	g_signal_connect_swapped(self->icon_button, "clicked",
-				 G_CALLBACK(gtu_icon_clicked), self);
-	gtk_box_pack_start(GTK_BOX(self->hbox), self->icon_button, FALSE, FALSE, 0);
-
-	self->arrow_button = gtk_toggle_button_new();
-	gtk_button_set_relief(GTK_BUTTON(self->arrow_button), GTK_RELIEF_NONE);
-	g_signal_connect_after(self->arrow_button, "enter",
-			       G_CALLBACK(gtu_icon_raise), self->icon_button);
-	g_signal_connect_after(self->arrow_button, "leave",
-			       G_CALLBACK(gtu_icon_sink), self->icon_button);
-	g_signal_connect_swapped(self->arrow_button, "toggled",
-				 G_CALLBACK(gtu_toggle_list), self);
-	gtk_container_add(GTK_CONTAINER(self->arrow_button), gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_IN));
-	gtk_box_pack_start(GTK_BOX(self->hbox), self->arrow_button, FALSE, FALSE, 0);
-
-	gtk_widget_show_all(self->hbox);
-	gtk_container_add(GTK_CONTAINER(self), self->hbox);
+  g_signal_connect (self, "clicked",
+                    G_CALLBACK (gtu_icon_clicked), NULL);
+  g_signal_connect (self, "show-menu",
+                    G_CALLBACK (gtu_toggle_list), NULL);
 }
 
 /* GundoHistoryView interface */

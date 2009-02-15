@@ -25,7 +25,13 @@
 
 struct _GUndoToolPrivate {
   GundoHistory * history;
+
+  /* FIXME: drop this... */
   gchar        * stock_id;
+
+  GtkWidget    * hbox;
+  GtkWidget    * icon_button;
+  GtkWidget    * arrow_button;
 };
 
 #define PRIV(i) (((GUndoTool*)(i))->_private)
@@ -48,9 +54,64 @@ G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GUndoTool, gundo_tool, GTK_TYPE_TOOL_ITEM,
                                   G_IMPLEMENT_INTERFACE (GUNDO_TYPE_HISTORY_VIEW, NULL));
 
 static void
+icon_clicked (GtkButton* icon,
+              gpointer   user_data)
+{
+  g_signal_emit (GUNDO_TOOL (user_data), signals[SIGNAL_CLICKED], 0);
+}
+
+static void
+icon_raise (GtkWidget* arrow,
+            GtkButton* icon)
+{
+  gtk_button_set_relief(icon, GTK_RELIEF_NORMAL);
+}
+
+static void
+icon_sink (GtkWidget* arrow,
+           GtkButton* icon)
+{
+  gtk_button_set_relief(icon, GTK_RELIEF_NONE);
+}
+
+static void
+arrow_toggled (GtkToggleButton* arrow_button,
+               gpointer         user_data)
+{
+  g_signal_emit (GUNDO_TOOL (user_data),
+                 signals[SIGNAL_SHOW_MENU], 0,
+                 gtk_toggle_button_get_active (arrow_button));
+}
+
+static void
 gundo_tool_init (GUndoTool* self)
 {
   PRIV (self) = G_TYPE_INSTANCE_GET_PRIVATE (self, GUNDO_TYPE_TOOL, GUndoToolPrivate);
+
+  PRIV (self)->hbox = gtk_hbox_new (FALSE, 0);
+
+  PRIV (self)->icon_button = gtk_button_new_from_stock (NULL);
+  icon_sink (NULL, GTK_BUTTON (PRIV (self)->icon_button));
+  g_signal_connect (PRIV (self)->icon_button, "clicked",
+                    G_CALLBACK (icon_clicked), self);
+  gtk_box_pack_start (GTK_BOX (PRIV (self)->hbox), PRIV (self)->icon_button,
+                      FALSE, FALSE, 0);
+
+  PRIV (self)->arrow_button = gtk_toggle_button_new ();
+  gtk_button_set_relief (GTK_BUTTON (PRIV (self)->arrow_button), GTK_RELIEF_NONE);
+  g_signal_connect_after   (PRIV (self)->arrow_button, "enter",
+                            G_CALLBACK (icon_raise), PRIV (self)->icon_button);
+  g_signal_connect_after   (PRIV (self)->arrow_button, "leave",
+                            G_CALLBACK (icon_sink), PRIV (self)->icon_button);
+  g_signal_connect (PRIV (self)->arrow_button, "toggled",
+                    G_CALLBACK (arrow_toggled), self);
+  gtk_container_add (GTK_CONTAINER (PRIV (self)->arrow_button),
+                     gtk_arrow_new (GTK_ARROW_DOWN, GTK_SHADOW_IN));
+  gtk_box_pack_start (GTK_BOX (PRIV (self)->hbox), PRIV (self)->arrow_button,
+                      FALSE, FALSE, 0);
+
+  gtk_widget_show_all (PRIV (self)->hbox);
+  gtk_container_add (GTK_CONTAINER (self), PRIV (self)->hbox);
 }
 
 static void
@@ -105,6 +166,8 @@ tool_set_property (GObject     * object,
       case PROP_STOCK_ID:
         g_free (PRIV (object)->stock_id);
         PRIV (object)->stock_id = g_value_dup_string (value);
+        gtk_button_set_label (GTK_BUTTON (PRIV (object)->icon_button),
+                              PRIV (object)->stock_id);
         g_object_notify (object, "stock-id");
         break;
       default:
