@@ -1,4 +1,4 @@
-/* This file is part of ...
+/* This file is part of gundo
  *
  * AUTHORS
  *     Sven Herzberg  <herzi@lanedo.com>
@@ -24,5 +24,32 @@
 #ifndef GUNDO_TOOL_H
 #define GUNDO_TOOL_H
 
+#include <gtk/gtk.h>
+
+G_BEGIN_DECLS
+
+typedef struct _GUndoTool        GUndoTool;
+typedef struct _GUndoToolPrivate GUndoToolPrivate;
+typedef struct _GUndoToolClass   GUndoToolClass;
+
+#define GUNDO_TYPE_TOOL         (gundo_tool_get_type ())
+#define GUNDO_TOOL(i)           (G_TYPE_CHECK_INSTANCE_CAST ((i), GUNDO_TYPE_TOOL, GUndoTool))
+#define GUNDO_TOOL_CLASS(c)     (G_TYPE_CHECK_CLASS_CAST ((c), GUNDO_TYPE_TOOL, GUndoToolClass))
+#define GUNDO_IS_TOOL(i)        (G_TYPE_CHECK_INSTANCE_TYPE ((i), GUNDO_TYPE_TOOL))
+#define GUNDO_IS_TOOL_CLASS(c)  (G_TYPE_CHECK_CLASS_TYPE ((c), GUNDO_TYPE_TOOL))
+#define GUNDO_TOOL_GET_CLASS(i) (G_TYPE_INSTANCE_GET_CLASS ((i), GUNDO_TYPE_TOOL, GUndoToolClass))
+
+GType gundo_tool_get_type (void);
+
+struct _GUndoTool {
+  GtkToolItem       base_instance;
+  GUndoToolPrivate* _private;
+};
+
+struct _GUndoToolClass {
+  GtkToolItemClass  base_class;
+};
+
+G_END_DECLS
 
 #endif /* !GUNDO_TOOL_H */

@@ -1,4 +1,4 @@
-/* This file is part of ...
+/* This file is part of gundo
  *
  * AUTHORS
  *     Sven Herzberg  <herzi@lanedo.com>
@@ -22,4 +22,14 @@
  */
 
 #include "gundo-tool.h"
+
+G_DEFINE_ABSTRACT_TYPE (GUndoTool, gundo_tool, GTK_TYPE_TOOL_ITEM);
+
+static void
+gundo_tool_init (GUndoTool* self)
+{}
+
+static void
+gundo_tool_class_init (GUndoToolClass* self_class)
+{}
 
