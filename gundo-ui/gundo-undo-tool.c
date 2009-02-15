@@ -27,7 +27,7 @@
 
 #include "gundo-undo-tool.h"
 
-#include <glib/gi18n-lib.h>
+#include <string.h>
 #include <gtk/gtkarrow.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkcellrenderertext.h>
@@ -40,8 +40,6 @@
 #include <gtk/gtktreeview.h>
 
 #include "gundo-ui.h"
-
-#include "gtk-helpers.h"
 
 static void gtu_history_view_init (GundoHistoryViewIface* iface);
 
@@ -63,13 +61,8 @@ undo_notify (GObject   * object,
   if (!strcmp ("history", g_param_spec_get_name (pspec)))
     {
       GundoToolUndo* self = GUNDO_TOOL_UNDO (object);
-      GtkTreeModel * model;
-
-      g_return_if_fail (self->popup_tree);
-
-      model = gundo_undo_model_new (gundo_tool_get_history (GUNDO_TOOL (self)));
-      gtk_tree_view_set_model (GTK_TREE_VIEW (self->popup_tree),
-                               model);
+      GtkTreeModel * model = gundo_undo_model_new (gundo_tool_get_history (GUNDO_TOOL (self)));
+      gundo_tool_set_model (GUNDO_TOOL (object), model);
       g_object_unref (model);
     }
 
@@ -99,78 +92,8 @@ gundo_tool_undo_class_init (GundoToolUndoClass* self_class)
 }
 
 static void
-gtu_toggle_list (GundoToolUndo* self,
-                 gboolean       show_menu)
-{
-  gtk_window_set_screen (GTK_WINDOW (self->popup_window),
-                         gtk_widget_get_screen (GTK_WIDGET (self)));
-
-        if (show_menu)
-          {
-		gint       x, y, w, h;
-		gint       max_x, max_y;
-		gint       pop_w, pop_h;
-		GdkScreen* screen;
-
-            gtk_widget_get_extends (GTK_WIDGET (self), &x, &y, &w, &h);
-		screen = gtk_widget_get_screen(self->popup_window);
-		max_x = gdk_screen_get_width(screen);
-		max_y = gdk_screen_get_height(screen);
-                // FIXME: get the size of the window"
-
-		//gtk_widget_get_extends(self->popup_window, NULL, NULL, &pop_w, &pop_h);
-		pop_w = w;
-		pop_h = h;
-
-		if(x+pop_w <= max_x) {
-			// leave x as it is
-		} else {
-			//x = max_x - pop_w;
-		}
-		if(y+h <= max_y) {
-			y += h;
-		} else {
-                        // FIXME: put the popup over the tool item"
-			y -= pop_h;
-		}
-
-		gtk_widget_show(self->popup_window);
-		gtk_window_move(GTK_WINDOW(self->popup_window), x, y);
-          }
-        else
-          {
-		gtk_widget_hide(self->popup_window);
-          }
-}
-
-static void
 gundo_tool_undo_init (GundoToolUndo* self)
 {
-  GtkWidget* frame;
-  GtkWidget* scrolled;
-  GtkTreeViewColumn* column;
-
-  self->popup_window = gtk_window_new(GTK_WINDOW_POPUP);
-  frame = gtk_frame_new(NULL);
-  gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_OUT);
-  gtk_container_add(GTK_CONTAINER(self->popup_window), frame);
-  self->popup_tree = gtk_tree_view_new();
-  column = gtk_tree_view_column_new_with_attributes(_("Undo Actions"),
-                  gtk_cell_renderer_text_new(),
-                  "text", POPUP_COLUMN_TEXT,
-                  NULL);
-  gtk_tree_view_append_column (GTK_TREE_VIEW (self->popup_tree),
-                               column);
-  scrolled = gtk_scrolled_window_new(NULL, NULL);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
-                                  GTK_POLICY_NEVER,
-                                  GTK_POLICY_ALWAYS);
-  gtk_container_add(GTK_CONTAINER(scrolled), self->popup_tree);
-  gtk_container_add(GTK_CONTAINER(frame), scrolled);
-  gtk_widget_show_all(frame);
-
-  g_signal_connect (self, "show-menu",
-                    G_CALLBACK (gtu_toggle_list), NULL);
 }
 
 /* GundoHistoryView interface */

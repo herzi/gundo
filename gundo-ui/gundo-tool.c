@@ -21,7 +21,15 @@
  * USA
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "gtk-helpers.h"
+#include "gundo-popup-model.h"
 #include "gundo-tool.h"
+
+#include <glib/gi18n-lib.h>
 
 struct _GUndoToolPrivate {
   GundoHistory * history;
@@ -32,6 +40,9 @@ struct _GUndoToolPrivate {
   GtkWidget    * hbox;
   GtkWidget    * icon_button;
   GtkWidget    * arrow_button;
+
+  GtkWidget    * popup_window;
+  GtkWidget    * popup_tree;
 };
 
 #define PRIV(i) (((GUndoTool*)(i))->_private)
@@ -79,14 +90,56 @@ static void
 arrow_toggled (GtkToggleButton* arrow_button,
                gpointer         user_data)
 {
-  g_signal_emit (GUNDO_TOOL (user_data),
-                 signals[SIGNAL_SHOW_MENU], 0,
-                 gtk_toggle_button_get_active (arrow_button));
+  GUndoTool* self = user_data;
+
+  gtk_window_set_screen (GTK_WINDOW (PRIV (self)->popup_window),
+                         gtk_widget_get_screen (GTK_WIDGET (self)));
+
+  if (gtk_toggle_button_get_active (arrow_button))
+    {
+		gint       x, y, w, h;
+		gint       max_x, max_y;
+		gint       pop_w, pop_h;
+		GdkScreen* screen;
+
+      gtk_widget_get_extends (GTK_WIDGET (self), &x, &y, &w, &h);
+      screen = gtk_widget_get_screen (PRIV (self)->popup_window);
+      max_x = gdk_screen_get_width(screen);
+		max_y = gdk_screen_get_height(screen);
+                // FIXME: get the size of the window"
+
+		//gtk_widget_get_extends(self->popup_window, NULL, NULL, &pop_w, &pop_h);
+		pop_w = w;
+		pop_h = h;
+
+		if(x+pop_w <= max_x) {
+			// leave x as it is
+		} else {
+			//x = max_x - pop_w;
+		}
+		if(y+h <= max_y) {
+			y += h;
+		} else {
+                        // FIXME: put the popup over the tool item"
+			y -= pop_h;
+		}
+
+      gtk_widget_show (PRIV (self)->popup_window);
+      gtk_window_move (GTK_WINDOW (PRIV (self)->popup_window), x, y);
+    }
+  else
+    {
+      gtk_widget_hide (PRIV (self)->popup_window);
+    }
 }
 
 static void
 gundo_tool_init (GUndoTool* self)
 {
+  GtkWidget* frame;
+  GtkWidget* scrolled;
+  GtkTreeViewColumn* column;
+
   PRIV (self) = G_TYPE_INSTANCE_GET_PRIVATE (self, GUNDO_TYPE_TOOL, GUndoToolPrivate);
 
   PRIV (self)->hbox = gtk_hbox_new (FALSE, 0);
@@ -113,6 +166,25 @@ gundo_tool_init (GUndoTool* self)
 
   gtk_widget_show_all (PRIV (self)->hbox);
   gtk_container_add (GTK_CONTAINER (self), PRIV (self)->hbox);
+
+  PRIV (self)->popup_window = gtk_window_new (GTK_WINDOW_POPUP);
+  frame = gtk_frame_new(NULL);
+  gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_OUT);
+  gtk_container_add (GTK_CONTAINER (PRIV (self)->popup_window), frame);
+  PRIV (self)->popup_tree = gtk_tree_view_new();
+  column = gtk_tree_view_column_new_with_attributes(_("Undo Actions"),
+                  gtk_cell_renderer_text_new(),
+                  "text", POPUP_COLUMN_TEXT,
+                  NULL);
+  gtk_tree_view_append_column (GTK_TREE_VIEW (PRIV (self)->popup_tree),
+                               column);
+  scrolled = gtk_scrolled_window_new(NULL, NULL);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
+                                  GTK_POLICY_NEVER,
+                                  GTK_POLICY_ALWAYS);
+  gtk_container_add (GTK_CONTAINER (scrolled), PRIV (self)->popup_tree);
+  gtk_container_add(GTK_CONTAINER(frame), scrolled);
+  gtk_widget_show_all(frame);
 }
 
 static void
@@ -201,12 +273,6 @@ gundo_tool_class_init (GUndoToolClass* self_class)
                                             NULL, NULL,
                                             g_cclosure_marshal_VOID__VOID,
                                             G_TYPE_NONE, 0);
-  signals[SIGNAL_SHOW_MENU] = g_signal_new ("show-menu", G_OBJECT_CLASS_TYPE (self_class),
-                                            0, 0,
-                                            NULL, NULL,
-                                            g_cclosure_marshal_VOID__BOOLEAN,
-                                            G_TYPE_NONE, 1,
-                                            G_TYPE_BOOLEAN);
 
   _gundo_history_view_install_properties(object_class, PROP_HISTORY);
 
@@ -259,7 +325,8 @@ gundo_tool_set_model (GUndoTool   * self,
   g_return_if_fail (GUNDO_IS_TOOL (self));
   g_return_if_fail (!model || GTK_IS_TREE_MODEL (model));
 
-  /* noop for now */
+  gtk_tree_view_set_model (GTK_TREE_VIEW (PRIV (self)->popup_tree),
+                           model);
 
   g_object_notify (G_OBJECT (self), "model");
 }

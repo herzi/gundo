@@ -43,8 +43,6 @@ GtkToolItem* gundo_tool_undo_new        (void);
 
 struct _GundoToolUndo {
   GUndoTool    base_instance;
-	GtkWidget    * popup_window;
-	GtkWidget    * popup_tree;
 };
 
 struct _GundoToolUndoClass {
