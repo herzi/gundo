@@ -63,11 +63,14 @@ undo_notify (GObject   * object,
   if (!strcmp ("history", g_param_spec_get_name (pspec)))
     {
       GundoToolUndo* self = GUNDO_TOOL_UNDO (object);
-      if (self->popup_tree)
-        {
-          gtk_tree_view_set_model (GTK_TREE_VIEW (self->popup_tree),
-                                   NULL);
-        }
+      GtkTreeModel * model;
+
+      g_return_if_fail (self->popup_tree);
+
+      model = gundo_undo_model_new (gundo_tool_get_history (GUNDO_TOOL (self)));
+      gtk_tree_view_set_model (GTK_TREE_VIEW (self->popup_tree),
+                               model);
+      g_object_unref (model);
     }
 
   if (G_OBJECT_CLASS (gundo_tool_undo_parent_class)->notify)
@@ -99,39 +102,8 @@ static void
 gtu_toggle_list (GundoToolUndo* self,
                  gboolean       show_menu)
 {
-	if(!self->popup_window) {
-		GtkWidget* frame;
-		GtkWidget* scrolled;
-		GtkTreeViewColumn* column;
-		self->popup_window = gtk_window_new(GTK_WINDOW_POPUP);
-		gtk_window_set_screen(GTK_WINDOW(self->popup_window),
-				      gtk_widget_get_screen(GTK_WIDGET(self)));
-		frame = gtk_frame_new(NULL);
-		gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_OUT);
-		gtk_container_add(GTK_CONTAINER(self->popup_window), frame);
-		self->popup_tree = gtk_tree_view_new();
-		column = gtk_tree_view_column_new_with_attributes(_("Undo Actions"),
-				gtk_cell_renderer_text_new(),
-				"text", POPUP_COLUMN_TEXT,
-				NULL);
-                gtk_tree_view_append_column (GTK_TREE_VIEW (self->popup_tree),
-                                             column);
-		scrolled = gtk_scrolled_window_new(NULL, NULL);
-                gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
-                                                GTK_POLICY_NEVER,
-                                                GTK_POLICY_ALWAYS);
-		gtk_container_add(GTK_CONTAINER(scrolled), self->popup_tree);
-		gtk_container_add(GTK_CONTAINER(frame), scrolled);
-		gtk_widget_show_all(frame);
-	}
-
-        if (!gtk_tree_view_get_model (GTK_TREE_VIEW (self->popup_tree)))
-          {
-            GtkTreeModel* model = gundo_undo_model_new (gundo_tool_get_history (GUNDO_TOOL (self)));
-            gtk_tree_view_set_model (GTK_TREE_VIEW (self->popup_tree),
-                                     model);
-            g_object_unref (model);
-          }
+  gtk_window_set_screen (GTK_WINDOW (self->popup_window),
+                         gtk_widget_get_screen (GTK_WIDGET (self)));
 
         if (show_menu)
           {
@@ -174,6 +146,29 @@ gtu_toggle_list (GundoToolUndo* self,
 static void
 gundo_tool_undo_init (GundoToolUndo* self)
 {
+  GtkWidget* frame;
+  GtkWidget* scrolled;
+  GtkTreeViewColumn* column;
+
+  self->popup_window = gtk_window_new(GTK_WINDOW_POPUP);
+  frame = gtk_frame_new(NULL);
+  gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_OUT);
+  gtk_container_add(GTK_CONTAINER(self->popup_window), frame);
+  self->popup_tree = gtk_tree_view_new();
+  column = gtk_tree_view_column_new_with_attributes(_("Undo Actions"),
+                  gtk_cell_renderer_text_new(),
+                  "text", POPUP_COLUMN_TEXT,
+                  NULL);
+  gtk_tree_view_append_column (GTK_TREE_VIEW (self->popup_tree),
+                               column);
+  scrolled = gtk_scrolled_window_new(NULL, NULL);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
+                                  GTK_POLICY_NEVER,
+                                  GTK_POLICY_ALWAYS);
+  gtk_container_add(GTK_CONTAINER(scrolled), self->popup_tree);
+  gtk_container_add(GTK_CONTAINER(frame), scrolled);
+  gtk_widget_show_all(frame);
+
   g_signal_connect (self, "show-menu",
                     G_CALLBACK (gtu_toggle_list), NULL);
 }
