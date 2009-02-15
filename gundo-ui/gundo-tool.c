@@ -36,6 +36,14 @@ enum {
   PROP_STOCK_ID
 };
 
+enum {
+  SIGNAL_CLICKED,
+  SIGNAL_SHOW_MENU,
+  N_SIGNALS
+};
+
+static guint signals[N_SIGNALS] = {0};
+
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GUndoTool, gundo_tool, GTK_TYPE_TOOL_ITEM,
                                   G_IMPLEMENT_INTERFACE (GUNDO_TYPE_HISTORY_VIEW, NULL));
 
@@ -117,6 +125,18 @@ gundo_tool_class_init (GUndoToolClass* self_class)
   g_object_class_install_property (object_class, PROP_STOCK_ID,
                                    g_param_spec_string ("stock-id", "stock-id", "stock-id",
                                                         NULL, G_PARAM_READWRITE));
+
+  signals[SIGNAL_CLICKED]   = g_signal_new ("clicked", G_OBJECT_CLASS_TYPE (self_class),
+                                            0, 0,
+                                            NULL, NULL,
+                                            g_cclosure_marshal_VOID__VOID,
+                                            G_TYPE_NONE, 0);
+  signals[SIGNAL_SHOW_MENU] = g_signal_new ("show-menu", G_OBJECT_CLASS_TYPE (self_class),
+                                            0, 0,
+                                            NULL, NULL,
+                                            g_cclosure_marshal_VOID__BOOLEAN,
+                                            G_TYPE_NONE, 1,
+                                            G_TYPE_BOOLEAN);
 
   _gundo_history_view_install_properties(object_class, PROP_HISTORY);
 
