@@ -158,6 +158,8 @@ sketch_window_init(SketchWindow* self) {
 		/* toolbar */
 		{
 			GtkWidget* toolbar = gtk_toolbar_new();
+                        /* FIXME: properly implement toolbar styles and drop that */
+                        gtk_toolbar_set_show_arrow (GTK_TOOLBAR (toolbar), FALSE);
 			gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_ICONS);
 			/* quit */
 			{
