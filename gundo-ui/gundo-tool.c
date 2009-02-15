@@ -39,6 +39,7 @@ struct _GUndoToolPrivate {
 enum {
   PROP_0,
   PROP_HISTORY,
+  PROP_MODEL,
   PROP_STOCK_ID
 };
 
@@ -163,6 +164,9 @@ tool_set_property (GObject     * object,
       case PROP_HISTORY:
         gundo_tool_set_history (GUNDO_TOOL (object), g_value_get_object (value));
         break;
+      case PROP_MODEL:
+        gundo_tool_set_model (GUNDO_TOOL (object), g_value_get_object (value));
+        break;
       case PROP_STOCK_ID:
         g_free (PRIV (object)->stock_id);
         PRIV (object)->stock_id = g_value_dup_string (value);
@@ -185,6 +189,9 @@ gundo_tool_class_init (GUndoToolClass* self_class)
   object_class->get_property = tool_get_property;
   object_class->set_property = tool_set_property;
 
+  g_object_class_install_property (object_class, PROP_MODEL,
+                                   g_param_spec_object ("model", "model", "model",
+                                                        GTK_TYPE_TREE_MODEL, G_PARAM_WRITABLE));
   g_object_class_install_property (object_class, PROP_STOCK_ID,
                                    g_param_spec_string ("stock-id", "stock-id", "stock-id",
                                                         NULL, G_PARAM_READWRITE));
@@ -245,4 +252,15 @@ gundo_tool_set_history (GUndoTool   * self,
   g_object_notify(G_OBJECT(self), "history");
 }
 
+void
+gundo_tool_set_model (GUndoTool   * self,
+                      GtkTreeModel* model)
+{
+  g_return_if_fail (GUNDO_IS_TOOL (self));
+  g_return_if_fail (!model || GTK_IS_TREE_MODEL (model));
+
+  /* noop for now */
+
+  g_object_notify (G_OBJECT (self), "model");
+}
 

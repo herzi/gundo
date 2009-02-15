@@ -45,6 +45,8 @@ GundoHistory* gundo_tool_get_history  (GUndoTool   * self);
 gchar const*  gundo_tool_get_stock_id (GUndoTool   * self);
 void          gundo_tool_set_history  (GUndoTool   * self,
                                        GundoHistory* history);
+void          gundo_tool_set_model    (GUndoTool   * self,
+                                       GtkTreeModel* model);
 
 struct _GUndoTool {
   GtkToolItem       base_instance;
