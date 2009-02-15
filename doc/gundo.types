@@ -1,8 +1,9 @@
 #include <gundo.h>
 
+// class before interface: http://bugs.gnome.org/571820
+gundo_sequence_get_type
 gundo_history_get_type
 gundo_history_view_get_type
-gundo_sequence_get_type
 
 #include <gundo-ui.h>
 
