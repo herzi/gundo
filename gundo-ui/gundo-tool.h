@@ -25,6 +25,7 @@
 #define GUNDO_TOOL_H
 
 #include <gtk/gtk.h>
+#include <gundo.h>
 
 G_BEGIN_DECLS
 
@@ -39,7 +40,10 @@ typedef struct _GUndoToolClass   GUndoToolClass;
 #define GUNDO_IS_TOOL_CLASS(c)  (G_TYPE_CHECK_CLASS_TYPE ((c), GUNDO_TYPE_TOOL))
 #define GUNDO_TOOL_GET_CLASS(i) (G_TYPE_INSTANCE_GET_CLASS ((i), GUNDO_TYPE_TOOL, GUndoToolClass))
 
-GType gundo_tool_get_type (void);
+GType         gundo_tool_get_type    (void);
+GundoHistory* gundo_tool_get_history (GUndoTool   * self);
+void          gundo_tool_set_history (GUndoTool   * self,
+                                      GundoHistory* history);
 
 struct _GUndoTool {
   GtkToolItem       base_instance;

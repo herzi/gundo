@@ -44,11 +44,6 @@
 #include "gtk-helpers.h"
 #include "gundo-popup-model.h"
 
-enum {
-	PROP_0,
-	PROP_HISTORY
-};
-
 static void gtu_history_view_init(GundoHistoryViewIface* iface);
 
 G_DEFINE_TYPE_WITH_CODE(GundoToolUndo, gundo_tool_undo, GUNDO_TYPE_TOOL,
@@ -59,83 +54,41 @@ gundo_tool_undo_new(void) {
 	return g_object_new(GUNDO_TYPE_TOOL_UNDO, NULL);
 }
 
-void
-gundo_tool_undo_set_history(GundoToolUndo* self, GundoHistory* history) {
-	if(self->history) {
-		gundo_history_view_unregister(GUNDO_HISTORY_VIEW(self), self->history);
-		g_object_unref(self->history);
-		self->history = NULL;
-	}
+static void
+undo_notify (GObject   * object,
+             GParamSpec* pspec)
+{
+  if (!strcmp ("history", g_param_spec_get_name (pspec)))
+    {
+      GundoToolUndo* self = GUNDO_TOOL_UNDO (object);
+      if (self->popup_tree)
+        {
+          gtk_tree_view_set_model (GTK_TREE_VIEW (self->popup_tree),
+                                   NULL);
+        }
+    }
 
-	if(history) {
-		self->history = g_object_ref(history);
-		gundo_history_view_register(GUNDO_HISTORY_VIEW(self), self->history);
-	} else {
-		gtk_widget_set_sensitive(GTK_WIDGET(self), FALSE);
-	}
-
-        if (self->popup_tree)
-          {
-            gtk_tree_view_set_model (GTK_TREE_VIEW (self->popup_tree),
-                                     NULL);
-          }
-
-	g_object_notify(G_OBJECT(self), "history");
+  if (G_OBJECT_CLASS (gundo_tool_undo_parent_class)->notify)
+    {
+      G_OBJECT_CLASS (gundo_tool_undo_parent_class)->notify (object, pspec);
+    }
 }
 
 static void
-gtu_finalize(GObject* object) {
-	GundoToolUndo* self = GUNDO_TOOL_UNDO(object);
-	
-	if(self->history) {
-		gundo_history_view_unregister(GUNDO_HISTORY_VIEW(self), self->history);
-		g_object_unref(self->history);
-		self->history = NULL;
-	}
+gundo_tool_undo_class_init (GundoToolUndoClass* self_class)
+{
+  GObjectClass* go_class = G_OBJECT_CLASS(self_class);
 
-	if(G_OBJECT_CLASS(gundo_tool_undo_parent_class)->finalize) {
-		G_OBJECT_CLASS(gundo_tool_undo_parent_class)->finalize(object);
-	}
+  go_class->notify = undo_notify;
+
+  // FIXME: listen to the toolbar_reconfigured signal
 }
 
 static void
-gtu_get_property(GObject* object, guint prop_id, GValue* value, GParamSpec* pspec) {
-	switch(prop_id) {
-	case PROP_HISTORY:
-		g_value_set_object(value, GUNDO_TOOL_UNDO(object)->history);
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
-		break;
-	}
-}
-
-static void
-gtu_set_property(GObject* object, guint prop_id, GValue const* value, GParamSpec* pspec) {
-	switch(prop_id) {
-	case PROP_HISTORY:
-		gundo_tool_undo_set_history(GUNDO_TOOL_UNDO(object), g_value_get_object(value));
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
-		break;
-	}
-}
-
-static void
-gundo_tool_undo_class_init(GundoToolUndoClass* self_class) {
-	GObjectClass* go_class = G_OBJECT_CLASS(self_class);
-
-	go_class->finalize     = gtu_finalize;
-	go_class->get_property = gtu_get_property;
-	go_class->set_property = gtu_set_property;
-	_gundo_history_view_install_properties(go_class, PROP_HISTORY);
-        // FIXME: listen to the toolbar_reconfigured signal
-}
-
-static void
-gtu_icon_clicked(GundoToolUndo* self, GtkWidget* icon) {
-	gundo_history_undo(self->history);
+gtu_icon_clicked (GundoToolUndo* self,
+                  GtkWidget    * icon)
+{
+  gundo_history_undo (gundo_tool_get_history (GUNDO_TOOL (self)));
 }
 
 static void
@@ -178,7 +131,7 @@ gtu_toggle_list(GundoToolUndo* self, GtkToggleButton* arrow) {
 
         if (!gtk_tree_view_get_model (GTK_TREE_VIEW (self->popup_tree)))
           {
-            GtkTreeModel* model = gundo_popup_model_new (self->history);
+            GtkTreeModel* model = gundo_popup_model_new (gundo_tool_get_history (GUNDO_TOOL (self)));
             gtk_tree_view_set_model (GTK_TREE_VIEW (self->popup_tree),
                                      model);
             g_object_unref (model);
@@ -246,13 +199,25 @@ gundo_tool_undo_init(GundoToolUndo* self) {
 
 /* GundoHistoryView interface */
 
+static gpointer parent_view = NULL;
+
 static void
-gtu_notify_can_undo(GundoHistoryView* view, gboolean can_undo) {
-	gtk_widget_set_sensitive(GTK_WIDGET(view), can_undo);
+gtu_notify_can_undo (GundoHistoryView* view,
+                     gboolean          can_undo)
+{
+  gtk_widget_set_sensitive(GTK_WIDGET(view), can_undo);
+
+  if (parent_view && ((GundoHistoryViewIface*)parent_view)->notify_can_undo)
+    {
+      ((GundoHistoryViewIface*)parent_view)->notify_can_undo (view, can_undo);
+    }
 }
 
 static void
-gtu_history_view_init(GundoHistoryViewIface* iface) {
-	iface->notify_can_undo = gtu_notify_can_undo;
+gtu_history_view_init (GundoHistoryViewIface* iface)
+{
+  parent_view = g_type_interface_peek_parent (iface);
+
+  iface->notify_can_undo = gtu_notify_can_undo;
 }
 

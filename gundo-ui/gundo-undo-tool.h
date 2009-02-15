@@ -40,8 +40,6 @@ typedef struct _GundoToolUndoClass GundoToolUndoClass;
 GType        gundo_tool_undo_get_type   (void);
 
 GtkToolItem* gundo_tool_undo_new        (void);
-void         gundo_tool_undo_set_history(GundoToolUndo* self,
-				         GundoHistory * history);
 
 struct _GundoToolUndo {
   GUndoTool    base_instance;
@@ -50,7 +48,6 @@ struct _GundoToolUndo {
 	GtkWidget    * arrow_button;
 	GtkWidget    * popup_window;
 	GtkWidget    * popup_tree;
-	GundoHistory * history;
 };
 
 struct _GundoToolUndoClass {

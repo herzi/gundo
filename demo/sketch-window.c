@@ -89,7 +89,7 @@ sketch_window_set_sketch(SketchWindow* win, Sketch* sketch) {
 	win->s = g_object_ref(sketch);
 	gtk_object_sink(GTK_OBJECT(sketch));
 
-	gundo_tool_undo_set_history(GUNDO_TOOL_UNDO(win->undo), GUNDO_HISTORY(sketch_get_actions(sketch)));
+        gundo_tool_set_history (GUNDO_TOOL (win->undo), GUNDO_HISTORY (sketch_get_actions(sketch)));
 	gundo_make_redo_sensitive(GTK_WIDGET(win->redo),  GUNDO_HISTORY(sketch_get_actions(sketch)));
 	gundo_make_undo_sensitive(GTK_WIDGET(win->clear), GUNDO_HISTORY(sketch_get_actions(sketch)));
 
