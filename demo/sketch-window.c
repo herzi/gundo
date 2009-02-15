@@ -89,7 +89,10 @@ sketch_window_set_sketch(SketchWindow* win, Sketch* sketch) {
 	win->s = g_object_ref(sketch);
 	gtk_object_sink(GTK_OBJECT(sketch));
 
-        gundo_tool_set_history (GUNDO_TOOL (win->undo), GUNDO_HISTORY (sketch_get_actions(sketch)));
+        gundo_tool_set_history (GUNDO_TOOL (win->redo), GUNDO_HISTORY (sketch_get_actions (sketch)));
+        gundo_tool_set_history (GUNDO_TOOL (win->undo), GUNDO_HISTORY (sketch_get_actions (sketch)));
+
+        /* FIXME: in a perfect world, these won't be necessary */
 	gundo_make_redo_sensitive(GTK_WIDGET(win->redo),  GUNDO_HISTORY(sketch_get_actions(sketch)));
 	gundo_make_undo_sensitive(GTK_WIDGET(win->clear), GUNDO_HISTORY(sketch_get_actions(sketch)));
 
@@ -102,13 +105,6 @@ sketch_window_set_sketch(SketchWindow* win, Sketch* sketch) {
 static gboolean
 clear_clicked(SketchWindow* self) {
 	sketch_clear(sketch_window_get_sketch(self));
-	return TRUE;
-}
-
-static gboolean
-redo_clicked(SketchWindow* win) {
-	Sketch* s = sketch_window_get_sketch(win);
-	gundo_history_redo (GUNDO_HISTORY (s->actions));
 	return TRUE;
 }
 
@@ -181,9 +177,7 @@ sketch_window_init(SketchWindow* self) {
 			
 			/* redo */
 			{
-				self->redo = gtk_tool_button_new_from_stock(GTK_STOCK_REDO);
-				g_signal_connect_swapped(self->redo, "clicked",
-							 G_CALLBACK(redo_clicked), self);
+				self->redo = gundo_redo_tool_new ();
 				gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(self->redo), -1);
 			}
 			
