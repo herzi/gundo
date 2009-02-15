@@ -46,7 +46,6 @@ enum {
 };
 
 GType         gundo_popup_model_get_type (void);
-GtkTreeModel* gundo_popup_model_new      (GundoHistory* history);
 
 struct _GUndoPopupModel {
   GObject                 base_instance;

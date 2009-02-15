@@ -47,8 +47,8 @@ enum {
 
 static void implement_gtk_tree_model (GtkTreeModelIface* iface);
 
-G_DEFINE_TYPE_WITH_CODE (GUndoPopupModel, gundo_popup_model, G_TYPE_OBJECT,
-                         G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL, implement_gtk_tree_model));
+G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GUndoPopupModel, gundo_popup_model, G_TYPE_OBJECT,
+                                  G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL, implement_gtk_tree_model));
 
 static void
 gundo_popup_model_init (GUndoPopupModel* self)
@@ -152,16 +152,6 @@ gundo_popup_model_class_init (GUndoPopupModelClass* self_class)
                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
   g_type_class_add_private (self_class, sizeof (GUndoPopupModelPrivate));
-}
-
-GtkTreeModel*
-gundo_popup_model_new (GundoHistory* history)
-{
-  g_return_val_if_fail (history, NULL);
-
-  return g_object_new (GUNDO_TYPE_POPUP_MODEL,
-                       "history", history,
-                       NULL);
 }
 
 static GtkTreeModelFlags
