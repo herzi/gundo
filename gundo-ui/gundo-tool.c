@@ -190,7 +190,7 @@ gundo_tool_class_init (GUndoToolClass* self_class)
                                                         NULL, G_PARAM_READWRITE));
 
   signals[SIGNAL_CLICKED]   = g_signal_new ("clicked", G_OBJECT_CLASS_TYPE (self_class),
-                                            0, 0,
+                                            G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GUndoToolClass, clicked),
                                             NULL, NULL,
                                             g_cclosure_marshal_VOID__VOID,
                                             G_TYPE_NONE, 0);

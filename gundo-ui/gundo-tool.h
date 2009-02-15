@@ -53,6 +53,9 @@ struct _GUndoTool {
 
 struct _GUndoToolClass {
   GtkToolItemClass  base_class;
+
+  /* signals */
+  void (*clicked) (GUndoTool* self);
 };
 
 G_END_DECLS
