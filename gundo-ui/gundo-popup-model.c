@@ -119,6 +119,8 @@ model_set_property (GObject     * object,
 
         PRIV (object)->history = g_value_dup_object (value);
 
+        g_return_if_fail (PRIV (object)->history);
+
         g_signal_connect_after (PRIV (object)->history, "changed",
                                 G_CALLBACK (redo_callback), object);
         g_signal_connect_after (PRIV (object)->history, "redo",
