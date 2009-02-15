@@ -78,20 +78,22 @@ undo_notify (GObject   * object,
 }
 
 static void
+undo_clicked (GUndoTool* tool)
+{
+  gundo_history_undo (gundo_tool_get_history (tool));
+}
+
+static void
 gundo_tool_undo_class_init (GundoToolUndoClass* self_class)
 {
-  GObjectClass* object_class = G_OBJECT_CLASS(self_class);
+  GObjectClass  * object_class = G_OBJECT_CLASS (self_class);
+  GUndoToolClass* tool_class   = GUNDO_TOOL_CLASS (self_class);
 
   object_class->notify = undo_notify;
 
   // FIXME: listen to the toolbar_reconfigured signal
-}
 
-static void
-gtu_icon_clicked (GundoToolUndo* self,
-                  GtkWidget    * icon)
-{
-  gundo_history_undo (gundo_tool_get_history (GUNDO_TOOL (self)));
+  tool_class->clicked  = undo_clicked;
 }
 
 static void
@@ -173,8 +175,6 @@ gtu_toggle_list (GundoToolUndo* self,
 static void
 gundo_tool_undo_init (GundoToolUndo* self)
 {
-  g_signal_connect (self, "clicked",
-                    G_CALLBACK (gtu_icon_clicked), NULL);
   g_signal_connect (self, "show-menu",
                     G_CALLBACK (gtu_toggle_list), NULL);
 }
