@@ -50,8 +50,11 @@ G_DEFINE_TYPE_WITH_CODE(GundoToolUndo, gundo_tool_undo, GUNDO_TYPE_TOOL,
 			G_IMPLEMENT_INTERFACE(GUNDO_TYPE_HISTORY_VIEW, gtu_history_view_init));
 
 GtkToolItem*
-gundo_tool_undo_new(void) {
-	return g_object_new(GUNDO_TYPE_TOOL_UNDO, NULL);
+gundo_tool_undo_new (void)
+{
+  return g_object_new(GUNDO_TYPE_TOOL_UNDO,
+                      "stock-id", GTK_STOCK_UNDO,
+                      NULL);
 }
 
 static void
@@ -67,6 +70,11 @@ undo_notify (GObject   * object,
                                    NULL);
         }
     }
+  if (!strcmp ("stock-id", g_param_spec_get_name (pspec)))
+    {
+      gtk_button_set_label (GTK_BUTTON (GUNDO_TOOL_UNDO (object)->icon_button),
+                            gundo_tool_get_stock_id (GUNDO_TOOL (object)));
+    }
 
   if (G_OBJECT_CLASS (gundo_tool_undo_parent_class)->notify)
     {
@@ -77,9 +85,9 @@ undo_notify (GObject   * object,
 static void
 gundo_tool_undo_class_init (GundoToolUndoClass* self_class)
 {
-  GObjectClass* go_class = G_OBJECT_CLASS(self_class);
+  GObjectClass* object_class = G_OBJECT_CLASS(self_class);
 
-  go_class->notify = undo_notify;
+  object_class->notify = undo_notify;
 
   // FIXME: listen to the toolbar_reconfigured signal
 }
@@ -173,11 +181,12 @@ gtu_toggle_list(GundoToolUndo* self, GtkToggleButton* arrow) {
 }
 
 static void
-gundo_tool_undo_init(GundoToolUndo* self) {
-	self->hbox = gtk_hbox_new(FALSE, 0);
+gundo_tool_undo_init (GundoToolUndo* self)
+{
+        self->hbox = gtk_hbox_new(FALSE, 0);
 
-	self->icon_button = gtk_button_new_from_stock(GTK_STOCK_UNDO);
-	gtu_icon_sink(NULL, GTK_BUTTON(self->icon_button));
+        self->icon_button = gtk_button_new_from_stock(NULL);
+        gtu_icon_sink(NULL, GTK_BUTTON(self->icon_button));
 	g_signal_connect_swapped(self->icon_button, "clicked",
 				 G_CALLBACK(gtu_icon_clicked), self);
 	gtk_box_pack_start(GTK_BOX(self->hbox), self->icon_button, FALSE, FALSE, 0);
