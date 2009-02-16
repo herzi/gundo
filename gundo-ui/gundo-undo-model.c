@@ -90,7 +90,7 @@ model_iter_from_index (GtkTreeModel* model,
 {
   iter->user_data = GINT_TO_POINTER (index);
 
-  return GPOINTER_TO_INT (iter->user_data) < gundo_history_get_n_changes (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (model)));
+  return GPOINTER_TO_INT (iter->user_data) < gundo_history_get_n_undos (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (model)));
 }
 
 static gboolean

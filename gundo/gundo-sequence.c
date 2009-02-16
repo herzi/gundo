@@ -433,7 +433,7 @@ gs_history_iface_init (GundoHistoryIface* iface)
   iface->can_redo      = gs_can_redo;
   iface->can_undo      = gs_can_undo;
 
-  iface->get_n_changes = sequence_get_n_changes;
+  iface->get_n_undos   = sequence_get_n_changes;
 
   iface->undo          = gs_undo;
   iface->redo          = sequence_redo;

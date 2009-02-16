@@ -88,12 +88,12 @@ gundo_history_changed (GundoHistory* self)
  * Returns: the number of undoable changes.
  */
 guint
-gundo_history_get_n_changes (GundoHistory* self)
+gundo_history_get_n_undos (GundoHistory* self)
 {
   g_return_val_if_fail (GUNDO_IS_HISTORY (self), 0);
-  g_return_val_if_fail (GUNDO_HISTORY_GET_IFACE (self)->get_n_changes, 0);
+  g_return_val_if_fail (GUNDO_HISTORY_GET_IFACE (self)->get_n_undos, 0);
 
-  return GUNDO_HISTORY_GET_IFACE (self)->get_n_changes (self);
+  return GUNDO_HISTORY_GET_IFACE (self)->get_n_undos (self);
 }
 
 /**
