@@ -23,9 +23,10 @@
 
 #include <gundo.h>
 
+#include <gundo-redo-model.h>
 #include <gundo-redo-tool.h>
-#include <gundo-undo-tool.h>
 #include <gundo-undo-model.h>
+#include <gundo-undo-tool.h>
 
 G_BEGIN_DECLS
 
