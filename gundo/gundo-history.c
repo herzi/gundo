@@ -79,8 +79,17 @@ gundo_history_changed (GundoHistory* self)
   g_signal_emit (self, signals[SIGNAL_CHANGED], 0);
 }
 
+guint
+gundo_history_get_n_redos (GundoHistory* self)
+{
+  g_return_val_if_fail (GUNDO_IS_HISTORY (self), 0);
+  g_return_val_if_fail (GUNDO_HISTORY_GET_IFACE (self)->get_n_redos, 0);
+
+  return GUNDO_HISTORY_GET_IFACE (self)->get_n_redos (self);
+}
+
 /**
- * gundo_history_get_n_changes:
+ * gundo_history_get_n_undos:
  * @self: a #GundoHistory
  *
  * Query the number of undoable changes.

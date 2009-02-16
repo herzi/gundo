@@ -392,6 +392,12 @@ gs_can_undo(GundoHistory *history) {
 }
 
 static guint
+sequence_get_n_redos (GundoHistory* history)
+{
+  return GUNDO_SEQUENCE (history)->actions->len - GUNDO_SEQUENCE (history)->next_redo;
+}
+
+static guint
 sequence_get_n_changes (GundoHistory* history)
 {
   if (GUNDO_SEQUENCE (history)->next_redo)
@@ -433,6 +439,7 @@ gs_history_iface_init (GundoHistoryIface* iface)
   iface->can_redo      = gs_can_redo;
   iface->can_undo      = gs_can_undo;
 
+  iface->get_n_redos   = sequence_get_n_redos;
   iface->get_n_undos   = sequence_get_n_changes;
 
   iface->undo          = gs_undo;
