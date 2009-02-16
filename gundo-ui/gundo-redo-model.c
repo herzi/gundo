@@ -66,10 +66,38 @@ model_get_column_type (GtkTreeModel* model,
   return types[column];
 }
 
+static gboolean
+model_iter_from_index (GtkTreeModel* model,
+                       GtkTreeIter * iter,
+                       gint          index)
+{
+  if (index < 0)
+    return FALSE;
+
+  if (index >= gundo_history_get_n_redos (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (model))))
+    return FALSE;
+
+  iter->user_data = GINT_TO_POINTER (index);
+
+  return TRUE;
+}
+
+static gboolean
+model_get_iter (GtkTreeModel* model,
+                GtkTreeIter * iter,
+                GtkTreePath * path)
+{
+  g_return_val_if_fail (gtk_tree_path_get_depth (path) == 1, FALSE);
+
+  return model_iter_from_index (model, iter, gtk_tree_path_get_indices (path)[0]);
+}
+
 static void
 implement_gtk_tree_model (GtkTreeModelIface* iface)
 {
   iface->get_n_columns   = model_get_n_columns;
   iface->get_column_type = model_get_column_type;
+
+  iface->get_iter        = model_get_iter;
 }
 
