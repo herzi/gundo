@@ -23,7 +23,10 @@
 
 #include "gundo-redo-model.h"
 
-G_DEFINE_TYPE (GUndoRedoModel, gundo_redo_model, GUNDO_TYPE_POPUP_MODEL);
+static void implement_gtk_tree_model (GtkTreeModelIface* iface);
+
+G_DEFINE_TYPE_WITH_CODE (GUndoRedoModel, gundo_redo_model, GUNDO_TYPE_POPUP_MODEL,
+                         G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL, implement_gtk_tree_model));
 
 static void
 gundo_redo_model_init (GUndoRedoModel* self)
@@ -41,5 +44,17 @@ gundo_redo_model_new (GundoHistory* history)
   return g_object_new (GUNDO_TYPE_REDO_MODEL,
                        "history", history,
                        NULL);
+}
+
+static gint
+model_get_n_columns (GtkTreeModel* model)
+{
+  return POPUP_N_COLUMNS;
+}
+
+static void
+implement_gtk_tree_model (GtkTreeModelIface* iface)
+{
+  iface->get_n_columns = model_get_n_columns;
 }
 
