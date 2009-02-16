@@ -25,11 +25,32 @@
 #define GUNDO_REDO_MODEL_H
 
 #include <gtk/gtk.h>
-#include <gundo.h>
+#include <gundo-popup-model.h>
 
 G_BEGIN_DECLS
 
-GtkTreeModel* gundo_redo_model_new (GundoHistory* history);
+typedef struct _GUndoRedoModel        GUndoRedoModel;
+typedef struct _GUndoRedoModelPrivate GUndoRedoModelPrivate;
+typedef struct _GUndoRedoModelClass   GUndoRedoModelClass;
+
+#define GUNDO_TYPE_REDO_MODEL         (gundo_redo_model_get_type ())
+#define GUNDO_REDO_MODEL(i)           (G_TYPE_CHECK_INSTANCE_CAST ((i), GUNDO_TYPE_REDO_MODEL, GUndoRedoModel))
+#define GUNDO_REDO_MODEL_CLASS(c)     (G_TYPE_CHECK_CLASS_CAST ((c), GUNDO_TYPE_REDO_MODEL, GUndoRedoModelClass))
+#define GUNDO_IS_REDO_MODEL(i)        (G_TYPE_CHECK_INSTANCE_TYPE ((i), GUNDO_TYPE_REDO_MODEL))
+#define GUNDO_IS_REDO_MODEL_CLASS(c)  (G_TYPE_CHECK_CLASS_TYPE ((c), GUNDO_TYPE_REDO_MODEL))
+#define GUNDO_REDO_MODEL_GET_CLASS(i) (G_TYPE_INSTANCE_GET_CLASS ((i), GUNDO_TYPE_REDO_MODEL, GUndoRedoModelClass))
+
+GType         gundo_redo_model_get_type (void);
+GtkTreeModel* gundo_redo_model_new      (GundoHistory* history);
+
+struct _GUndoRedoModel {
+  GUndoPopupModel        base_instance;
+  GUndoRedoModelPrivate* _private;
+};
+
+struct _GUndoRedoModelClass {
+  GUndoPopupModelClass   base_class;
+};
 
 G_END_DECLS
 

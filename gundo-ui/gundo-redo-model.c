@@ -23,11 +23,23 @@
 
 #include "gundo-redo-model.h"
 
+G_DEFINE_TYPE (GUndoRedoModel, gundo_redo_model, GUNDO_TYPE_POPUP_MODEL);
+
+static void
+gundo_redo_model_init (GUndoRedoModel* self)
+{}
+
+static void
+gundo_redo_model_class_init (GUndoRedoModelClass* self_class)
+{}
+
 GtkTreeModel*
 gundo_redo_model_new (GundoHistory* history)
 {
   g_return_val_if_fail (GUNDO_IS_HISTORY (history), NULL);
 
-  return NULL;
+  return g_object_new (GUNDO_TYPE_REDO_MODEL,
+                       "history", history,
+                       NULL);
 }
 
