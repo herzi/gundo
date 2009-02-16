@@ -23,11 +23,32 @@
 
 #include "gundo-redo-tool.h"
 
+#include <string.h>
+
+#include "gundo-redo-model.h"
+
 G_DEFINE_TYPE (GUndoRedoTool, gundo_redo_tool, GUNDO_TYPE_TOOL);
 
 static void
 gundo_redo_tool_init (GUndoRedoTool* self)
 {}
+
+static void
+redo_notify (GObject   * object,
+             GParamSpec* pspec)
+{
+  if (!strcmp ("history", g_param_spec_get_name (pspec)))
+    {
+      GtkTreeModel* model = gundo_redo_model_new (gundo_tool_get_history (GUNDO_TOOL (object)));
+      gundo_tool_set_model (GUNDO_TOOL (object), model);
+      g_object_unref (model);
+    }
+
+  if (G_OBJECT_CLASS (gundo_redo_tool_parent_class)->notify)
+    {
+      G_OBJECT_CLASS (gundo_redo_tool_parent_class)->notify (object, pspec);
+    }
+}
 
 static void
 redo_clicked (GUndoTool* tool)
@@ -38,9 +59,12 @@ redo_clicked (GUndoTool* tool)
 static void
 gundo_redo_tool_class_init (GUndoRedoToolClass* self_class)
 {
+  GObjectClass  * object_class = G_OBJECT_CLASS (self_class);
   GUndoToolClass* tool_class = GUNDO_TOOL_CLASS (self_class);
 
-  tool_class->clicked = redo_clicked;
+  object_class->notify = redo_notify;
+
+  tool_class->clicked  = redo_clicked;
 }
 
 GtkToolItem*
