@@ -111,6 +111,25 @@ model_get_iter (GtkTreeModel* model,
   return model_iter_from_index (model, iter, gtk_tree_path_get_indices (path)[0]);
 }
 
+static gboolean
+model_iter_next (GtkTreeModel* model,
+                 GtkTreeIter * iter)
+{
+  return model_iter_from_index (model, iter, GPOINTER_TO_INT (iter->user_data) + 1);
+}
+
+static gboolean
+model_iter_nth_child (GtkTreeModel* model,
+                      GtkTreeIter * iter,
+                      GtkTreeIter * parent,
+                      gint          index)
+{
+  if (parent)
+    return FALSE;
+
+  return model_iter_from_index (model, iter, index);
+}
+
 static void
 implement_gtk_tree_model (GtkTreeModelIface* iface)
 {
@@ -120,5 +139,7 @@ implement_gtk_tree_model (GtkTreeModelIface* iface)
   iface->get_value       = model_get_value;
 
   iface->get_iter        = model_get_iter;
+  iface->iter_next       = model_iter_next;
+  iface->iter_nth_child  = model_iter_nth_child;
 }
 
