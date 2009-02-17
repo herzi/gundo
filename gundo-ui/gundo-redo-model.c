@@ -35,6 +35,15 @@ gundo_redo_model_init (GUndoRedoModel* self)
 {}
 
 static void
+history_redo (GundoHistory  * history,
+              GUndoRedoModel* self)
+{
+  GtkTreePath* path = gtk_tree_path_new_from_string ("0");
+  gtk_tree_model_row_deleted (GTK_TREE_MODEL (self), path);
+  gtk_tree_path_free (path);
+}
+
+static void
 history_undo (GundoHistory  * history,
               GUndoRedoModel* self)
 {
@@ -57,6 +66,7 @@ history_undo (GundoHistory  * history,
 static void
 model_finalize (GObject* object)
 {
+  g_signal_handlers_disconnect_by_func (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (object)), history_redo, object);
   g_signal_handlers_disconnect_by_func (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (object)), history_undo, object);
 
   G_OBJECT_CLASS (gundo_redo_model_parent_class)->finalize (object);
@@ -68,6 +78,8 @@ model_notify (GObject   * object,
 {
   if (!strcmp ("history", g_param_spec_get_name (pspec)))
     {
+      g_signal_connect_after (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (object)), "redo",
+                              G_CALLBACK (history_redo), object);
       g_signal_connect_after (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (object)), "undo",
                               G_CALLBACK (history_undo), object);
     }
