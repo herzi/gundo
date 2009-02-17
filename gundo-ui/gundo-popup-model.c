@@ -43,33 +43,8 @@ gundo_popup_model_init (GUndoPopupModel* self)
 }
 
 static void
-redo_callback (GundoHistory   * history,
-               GUndoPopupModel* self)
-{
-  GtkTreePath* path = gtk_tree_path_new_from_string ("0");
-  GtkTreeIter  iter;
-  gtk_tree_model_get_iter     (GTK_TREE_MODEL (self),
-                               &iter, path);
-  gtk_tree_model_row_inserted (GTK_TREE_MODEL (self),
-                               path, &iter);
-  gtk_tree_path_free (path);
-}
-
-static void
-undo_callback (GundoHistory   * history,
-               GUndoPopupModel* self)
-{
-  GtkTreePath* path = gtk_tree_path_new_from_string ("0");
-  gtk_tree_model_row_deleted (GTK_TREE_MODEL (self),
-                              path);
-  gtk_tree_path_free (path);
-}
-
-static void
 model_finalize (GObject* object)
 {
-  g_signal_handlers_disconnect_by_func (PRIV (object)->history, redo_callback, object);
-  g_signal_handlers_disconnect_by_func (PRIV (object)->history, undo_callback, object);
   g_object_unref (PRIV (object)->history);
 
   G_OBJECT_CLASS (gundo_popup_model_parent_class)->finalize (object);
@@ -106,13 +81,6 @@ model_set_property (GObject     * object,
         PRIV (object)->history = g_value_dup_object (value);
 
         g_return_if_fail (PRIV (object)->history);
-
-        g_signal_connect_after (PRIV (object)->history, "changed",
-                                G_CALLBACK (redo_callback), object);
-        g_signal_connect_after (PRIV (object)->history, "redo",
-                                G_CALLBACK (redo_callback), object);
-        g_signal_connect_after (PRIV (object)->history, "undo",
-                                G_CALLBACK (undo_callback), object);
 
         g_object_notify (object, "history");
         break;

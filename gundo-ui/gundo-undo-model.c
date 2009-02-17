@@ -23,6 +23,8 @@
 
 #include "gundo-undo-model.h"
 
+#include <string.h>
+
 /* GtkTreeIter format:
  * ===================
  * stamp:      unused
@@ -44,8 +46,65 @@ gundo_undo_model_init (GUndoUndoModel* self)
 {}
 
 static void
+redo_callback (GundoHistory   * history,
+               GUndoPopupModel* self)
+{
+  GtkTreePath* path = gtk_tree_path_new_from_string ("0");
+  GtkTreeIter  iter;
+  gtk_tree_model_get_iter     (GTK_TREE_MODEL (self),
+                               &iter, path);
+  gtk_tree_model_row_inserted (GTK_TREE_MODEL (self),
+                               path, &iter);
+  gtk_tree_path_free (path);
+}
+
+static void
+undo_callback (GundoHistory   * history,
+               GUndoPopupModel* self)
+{
+  GtkTreePath* path = gtk_tree_path_new_from_string ("0");
+  gtk_tree_model_row_deleted (GTK_TREE_MODEL (self),
+                              path);
+  gtk_tree_path_free (path);
+}
+
+static void
+model_finalize (GObject* object)
+{
+  g_signal_handlers_disconnect_by_func (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (object)), redo_callback, object);
+  g_signal_handlers_disconnect_by_func (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (object)), undo_callback, object);
+
+  G_OBJECT_CLASS (gundo_undo_model_parent_class)->finalize (object);
+}
+
+static void
+model_notify (GObject   * object,
+              GParamSpec* pspec)
+{
+  if (!strcmp ("history", g_param_spec_get_name (pspec)))
+    {
+      g_signal_connect_after (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (object)), "changed",
+                              G_CALLBACK (redo_callback), object);
+      g_signal_connect_after (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (object)), "redo",
+                              G_CALLBACK (redo_callback), object);
+      g_signal_connect_after (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (object)), "undo",
+                              G_CALLBACK (undo_callback), object);
+    }
+
+  if (G_OBJECT_CLASS (gundo_undo_model_parent_class)->notify)
+    {
+      G_OBJECT_CLASS (gundo_undo_model_parent_class)->notify (object, pspec);
+    }
+}
+
+static void
 gundo_undo_model_class_init (GUndoUndoModelClass* self_class)
-{}
+{
+  GObjectClass* object_class = G_OBJECT_CLASS (self_class);
+
+  object_class->finalize = model_finalize;
+  object_class->notify   = model_notify;
+}
 
 GtkTreeModel*
 gundo_undo_model_new (GundoHistory* history)
