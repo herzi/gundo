@@ -40,6 +40,22 @@ static void
 gundo_redo_model_init (GUndoRedoModel* self)
 {
   PRIV (self) = G_TYPE_INSTANCE_GET_PRIVATE (self, GUNDO_TYPE_REDO_MODEL, GUndoRedoModelPrivate);
+
+  PRIV (self)->emit_n_removes = 0;
+}
+
+static void
+history_changed_before (GundoHistory  * history,
+                        GUndoRedoModel* self)
+{
+  GtkTreePath* path = gtk_tree_path_new_from_string ("0");
+  for (PRIV (self)->emit_n_removes = gundo_history_get_n_redos (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (self)));
+       PRIV (self)->emit_n_removes;
+       PRIV (self)->emit_n_removes--)
+    {
+      gtk_tree_model_row_deleted (GTK_TREE_MODEL (self), path);
+    }
+  gtk_tree_path_free (path);
 }
 
 static void
@@ -74,6 +90,7 @@ history_undo (GundoHistory  * history,
 static void
 model_finalize (GObject* object)
 {
+  g_signal_handlers_disconnect_by_func (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (object)), history_changed_before, object);
   g_signal_handlers_disconnect_by_func (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (object)), history_redo, object);
   g_signal_handlers_disconnect_by_func (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (object)), history_undo, object);
 
@@ -86,6 +103,8 @@ model_notify (GObject   * object,
 {
   if (!strcmp ("history", g_param_spec_get_name (pspec)))
     {
+      g_signal_connect (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (object)), "changed",
+                        G_CALLBACK (history_changed_before), object);
       g_signal_connect_after (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (object)), "redo",
                               G_CALLBACK (history_redo), object);
       g_signal_connect_after (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (object)), "undo",
@@ -172,7 +191,7 @@ model_iter_from_index (GtkTreeModel* model,
   if (index < 0)
     return FALSE;
 
-  if (index >= gundo_history_get_n_redos (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (model))))
+  if (index >= gundo_history_get_n_redos (gundo_popup_model_get_history (GUNDO_POPUP_MODEL (model))) - PRIV (model)->emit_n_removes)
     return FALSE;
 
   iter->user_data = GINT_TO_POINTER (index);
