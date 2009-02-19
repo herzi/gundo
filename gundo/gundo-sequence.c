@@ -216,6 +216,20 @@ gundo_sequence_clear(GundoSequence *seq) {
 	}
 }
 
+static void
+sequence_changed (GundoHistory* history)
+{
+  GundoSequence* seq = GUNDO_SEQUENCE (history);
+
+  if (seq->next_redo < seq->actions->len)
+    {
+      free_actions (seq->actions->len - seq->next_redo,
+                    (UndoAction*)seq->actions->data + seq->next_redo);
+
+      g_array_set_size (seq->actions, seq->next_redo);
+    }
+}
+
 
 /**
  * gundo_sequence_add_action:
@@ -238,12 +252,7 @@ gundo_sequence_add_action(GundoSequence* seq, GundoActionType const* type, gpoin
 		gboolean could_undo = gundo_history_can_undo(GUNDO_HISTORY(seq));
 		gboolean could_redo = gundo_history_can_redo(GUNDO_HISTORY(seq));
 
-		if( seq->next_redo < seq->actions->len ) {
-			free_actions( seq->actions->len - seq->next_redo,
-				      (UndoAction*)seq->actions->data + seq->next_redo );
-		    
-			g_array_set_size( seq->actions, seq->next_redo );
-		}
+                gundo_history_changed (GUNDO_HISTORY (seq));
 
 		action.type = type;
 		action.data = data;
@@ -259,8 +268,6 @@ gundo_sequence_add_action(GundoSequence* seq, GundoActionType const* type, gpoin
 			// now we definitely can't redo
 			g_object_notify(G_OBJECT(seq), "can-redo");
 		}
-
-                gundo_history_changed (GUNDO_HISTORY (seq));
         }
 }
 
@@ -436,6 +443,8 @@ gs_undo(GundoHistory* history) {
 static void
 gs_history_iface_init (GundoHistoryIface* iface)
 {
+  iface->changed       = sequence_changed;
+
   iface->can_redo      = gs_can_redo;
   iface->can_undo      = gs_can_undo;
 
