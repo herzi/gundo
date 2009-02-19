@@ -25,6 +25,12 @@
 
 #include <string.h>
 
+struct _GUndoRedoModelPrivate {
+  gint emit_n_removes;
+};
+
+#define PRIV(i) (((GUndoRedoModel*)(i))->_private)
+
 static void implement_gtk_tree_model (GtkTreeModelIface* iface);
 
 G_DEFINE_TYPE_WITH_CODE (GUndoRedoModel, gundo_redo_model, GUNDO_TYPE_POPUP_MODEL,
@@ -32,7 +38,9 @@ G_DEFINE_TYPE_WITH_CODE (GUndoRedoModel, gundo_redo_model, GUNDO_TYPE_POPUP_MODE
 
 static void
 gundo_redo_model_init (GUndoRedoModel* self)
-{}
+{
+  PRIV (self) = G_TYPE_INSTANCE_GET_PRIVATE (self, GUNDO_TYPE_REDO_MODEL, GUndoRedoModelPrivate);
+}
 
 static void
 history_redo (GundoHistory  * history,
@@ -97,6 +105,8 @@ gundo_redo_model_class_init (GUndoRedoModelClass* self_class)
 
   object_class->finalize = model_finalize;
   object_class->notify   = model_notify;
+
+  g_type_class_add_private (self_class, sizeof (GUndoRedoModelPrivate));
 }
 
 GtkTreeModel*
