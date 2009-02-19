@@ -109,6 +109,12 @@ gundo_redo_model_new (GundoHistory* history)
                        NULL);
 }
 
+static GtkTreeModelFlags
+model_get_flags (GtkTreeModel* model)
+{
+  return GTK_TREE_MODEL_LIST_ONLY;
+}
+
 static gint
 model_get_n_columns (GtkTreeModel* model)
 {
@@ -196,6 +202,7 @@ model_iter_nth_child (GtkTreeModel* model,
 static void
 implement_gtk_tree_model (GtkTreeModelIface* iface)
 {
+  iface->get_flags       = model_get_flags;
   iface->get_n_columns   = model_get_n_columns;
   iface->get_column_type = model_get_column_type;
 
