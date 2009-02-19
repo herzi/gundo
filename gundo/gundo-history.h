@@ -53,6 +53,10 @@ void     gundo_history_install_properties(GObjectClass* go_class,
 struct _GundoHistoryIface {
 	GTypeInterface base_interface;
 
+        /* signals */
+        void     (*changed)       (GundoHistory* self);
+
+        /* vtable */
         gboolean (*can_redo)      (GundoHistory* self);
         gboolean (*can_undo)      (GundoHistory* self);
 

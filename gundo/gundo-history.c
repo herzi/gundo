@@ -163,7 +163,8 @@ gundo_history_class_init (gpointer iface)
 								 G_PARAM_READABLE));
 
         signals[SIGNAL_CHANGED] = g_signal_new ("changed", G_TYPE_FROM_INTERFACE (iface),
-                                                G_SIGNAL_ACTION, 0,
+                                                G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,
+                                                G_STRUCT_OFFSET (GundoHistoryIface, changed),
                                                 NULL, NULL,
                                                 g_cclosure_marshal_VOID__VOID,
                                                 G_TYPE_NONE, 0);
