@@ -93,8 +93,6 @@ sketch_window_set_sketch(SketchWindow* win, Sketch* sketch) {
         gundo_tool_set_history (GUNDO_TOOL (win->redo), GUNDO_HISTORY (sketch_get_actions (sketch)));
         gundo_tool_set_history (GUNDO_TOOL (win->undo), GUNDO_HISTORY (sketch_get_actions (sketch)));
 
-	gundo_make_undo_sensitive(GTK_WIDGET(win->clear), GUNDO_HISTORY(sketch_get_actions(sketch)));
-
 	g_signal_connect_swapped(sketch, "stroke-added",
 			         G_CALLBACK(sw_stroke_added), win);
 	g_signal_connect_swapped(sketch, "stroke-removed",
@@ -174,6 +172,16 @@ sketch_window_init(SketchWindow* self) {
 
 			gtk_toolbar_insert(GTK_TOOLBAR(toolbar), gtk_separator_tool_item_new(), -1);
 
+                        /* new */
+                        {
+                          self->clear = gtk_tool_button_new_from_stock (GTK_STOCK_NEW);
+                          g_signal_connect_swapped (self->clear, "clicked",
+                                                    G_CALLBACK (clear_clicked), self);
+                          gtk_toolbar_insert (GTK_TOOLBAR (toolbar), self->clear, -1);
+                        }
+
+                        gtk_toolbar_insert(GTK_TOOLBAR(toolbar), gtk_separator_tool_item_new(), -1);
+
 			/* undo */
 			{
 				self->undo = gundo_tool_undo_new();
@@ -186,13 +194,6 @@ sketch_window_init(SketchWindow* self) {
 				gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(self->redo), -1);
 			}
 			
-			/* clear */
-			{
-				self->clear = gtk_tool_button_new_from_stock(GTK_STOCK_CLEAR);
-				g_signal_connect_swapped(self->clear, "clicked",
-							 G_CALLBACK(clear_clicked), self);
-				gtk_toolbar_insert(GTK_TOOLBAR(toolbar), self->clear, -1);
-			}
 			gtk_box_pack_start(GTK_BOX(vbox), toolbar, FALSE, FALSE, 0);
 		}
 
