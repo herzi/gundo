@@ -244,7 +244,12 @@ sequence_changed (GundoHistory* history)
  * started group.
  */
 void
-gundo_sequence_add_action(GundoSequence* seq, GundoActionType const* type, gpointer data) {
+gundo_sequence_add_action(GundoSequence        * seq,
+                          GundoActionType const* type,
+                          gpointer               data)
+{
+        g_return_if_fail (seq);
+
 	if( seq->group ) {
 		gundo_sequence_add_action( seq->group, type, data );
 	} else {
