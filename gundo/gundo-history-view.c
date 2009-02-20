@@ -37,6 +37,16 @@ ghv_emit_notify_can_undo(GundoHistoryView* self, GParamSpec* ignored, GundoHisto
 	g_object_unref(self);
 }
 
+static void
+view_emit_notify_can_redo (GundoHistoryView* self,
+                           GParamSpec      * ignored,
+                           GundoHistory    * history)
+{
+  g_object_ref (self);
+  GUNDO_HISTORY_VIEW_GET_CLASS (self)->notify_can_redo (self, gundo_history_can_redo (history));
+  g_object_unref (self);
+}
+
 /**
  * gundo_history_view_register:
  * @self: a @GundoHistoryView
@@ -57,7 +67,9 @@ ghv_emit_notify_can_undo(GundoHistoryView* self, GParamSpec* ignored, GundoHisto
  * manually.
  */
 void
-gundo_history_view_register(GundoHistoryView* self, GundoHistory* history) {
+gundo_history_view_register (GundoHistoryView* self,
+                             GundoHistory    * history)
+{
 	g_object_ref(history);
 
 	if(GUNDO_HISTORY_VIEW_GET_CLASS(self)->notify_can_undo) {
@@ -65,14 +77,29 @@ gundo_history_view_register(GundoHistoryView* self, GundoHistory* history) {
 					 G_CALLBACK(ghv_emit_notify_can_undo), self);
 		ghv_emit_notify_can_undo(self, NULL, history);
 	}
+
+  if (GUNDO_HISTORY_VIEW_GET_CLASS (self)->notify_can_redo)
+    {
+      g_signal_connect_swapped (history, "notify::can-redo",
+                                G_CALLBACK (view_emit_notify_can_redo), self);
+      view_emit_notify_can_redo (self, NULL, history);
+    }
 }
 
 void
-gundo_history_view_unregister(GundoHistoryView* self, GundoHistory* history) {
+gundo_history_view_unregister (GundoHistoryView* self,
+                               GundoHistory    * history)
+{
 	if(GUNDO_HISTORY_VIEW_GET_CLASS(self)->notify_can_undo) {
 		g_signal_handlers_disconnect_by_func(history, ghv_emit_notify_can_undo, self);
 	}
-	g_object_unref(history);
+
+  if (GUNDO_HISTORY_VIEW_GET_CLASS (self)->notify_can_redo)
+    {
+      g_signal_handlers_disconnect_by_func (history, view_emit_notify_can_redo, self);
+    }
+
+  g_object_unref(history);
 }
 
 /* GInterface stuff */

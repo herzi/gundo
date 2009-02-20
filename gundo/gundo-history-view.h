@@ -50,6 +50,8 @@ struct _GundoHistoryViewIface {
 	GTypeInterface base_interface;
 
 	/* vtable */
+	void (*notify_can_redo) (GundoHistoryView* self,
+				 gboolean          can_redo);
 	void (*notify_can_undo) (GundoHistoryView* self,
 				 gboolean          can_undo);
 };
