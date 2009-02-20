@@ -83,6 +83,7 @@ sketch_window_set_sketch(SketchWindow* win, Sketch* sketch) {
 	
 	if(cur) {
 		g_signal_handlers_disconnect_by_func(sketch, G_CALLBACK(sw_stroke_added), win);
+		g_signal_handlers_disconnect_by_func(sketch, G_CALLBACK(sw_stroke_removed), win);
 		g_object_unref(cur);
 	}
 
@@ -92,20 +93,22 @@ sketch_window_set_sketch(SketchWindow* win, Sketch* sketch) {
         gundo_tool_set_history (GUNDO_TOOL (win->redo), GUNDO_HISTORY (sketch_get_actions (sketch)));
         gundo_tool_set_history (GUNDO_TOOL (win->undo), GUNDO_HISTORY (sketch_get_actions (sketch)));
 
-        /* FIXME: in a perfect world, these won't be necessary */
-	gundo_make_redo_sensitive(GTK_WIDGET(win->redo),  GUNDO_HISTORY(sketch_get_actions(sketch)));
 	gundo_make_undo_sensitive(GTK_WIDGET(win->clear), GUNDO_HISTORY(sketch_get_actions(sketch)));
 
 	g_signal_connect_swapped(sketch, "stroke-added",
 			         G_CALLBACK(sw_stroke_added), win);
 	g_signal_connect_swapped(sketch, "stroke-removed",
 			         G_CALLBACK(sw_stroke_removed), win);
+
+  gtk_widget_queue_draw (win->da);
 }
 
 static gboolean
-clear_clicked(SketchWindow* self) {
-	sketch_clear(sketch_window_get_sketch(self));
-	return TRUE;
+clear_clicked (SketchWindow* self)
+{
+  sketch_window_set_sketch (self, sketch_new ());
+
+  return TRUE;
 }
 
 static gboolean
