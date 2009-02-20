@@ -22,7 +22,6 @@ GType          sketch_get_type   (void);
 Sketch*        sketch_new        (void);
 void           sketch_free       (Sketch* sketch);
 
-void           sketch_clear      (Sketch* sketch);
 GundoSequence* sketch_get_actions(Sketch* sketch);
 Stroke*        sketch_get_last_stroke(Sketch* self);
 

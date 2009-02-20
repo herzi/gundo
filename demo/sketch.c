@@ -35,21 +35,6 @@ sketch_new(void) {
 	return g_object_new(SKETCH_TYPE, NULL);;
 }
 
-void
-sketch_clear(Sketch* s) {
-	guint i;
-
-	gundo_sequence_clear(s->actions);
-
-	for(i = 0; i < s->strokes->len; i++) {
-		Stroke* st = (Stroke*)g_ptr_array_index(s->strokes, i);
-		g_signal_emit_by_name(s, "stroke-removed", st);
-		stroke_destroy(st);
-	}
-
-	g_ptr_array_set_size(s->strokes, 0);
-}
-
 GundoSequence*
 sketch_get_actions(Sketch* s) {
 	g_return_val_if_fail(s, NULL);
