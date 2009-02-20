@@ -66,10 +66,7 @@ undo_notify (GObject   * object,
       g_object_unref (model);
     }
 
-  if (G_OBJECT_CLASS (gundo_tool_undo_parent_class)->notify)
-    {
-      G_OBJECT_CLASS (gundo_tool_undo_parent_class)->notify (object, pspec);
-    }
+  G_OBJECT_CLASS (gundo_tool_undo_parent_class)->notify (object, pspec);
 }
 
 static void
