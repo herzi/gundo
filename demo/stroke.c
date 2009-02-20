@@ -40,8 +40,12 @@ stroke_new(void) {
 
 Stroke*
 stroke_copy(Stroke* src) {
-	Stroke* copy = stroke_new();
-	
+	Stroke* copy;
+
+        g_return_val_if_fail (src, NULL);
+
+        copy = stroke_new();
+
 	g_array_append_vals(copy->points, src->points->data, src->points->len);
 	copy->is_visible = src->is_visible;
 
