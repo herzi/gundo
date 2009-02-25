@@ -182,40 +182,6 @@ gundo_sequence_new (void)
 }
 
 
-/**
- * gundo_sequence_clear:
- * @seq: A #GundoSequence
- *
- * Free all actions in the undo sequence.
- */
-void
-gundo_sequence_clear(GundoSequence *seq) {
-	gboolean could_undo, could_redo;
-
-	g_return_if_fail(seq->group == NULL);
-
-	could_undo = gundo_history_can_undo(GUNDO_HISTORY(seq));
-	could_redo = gundo_history_can_redo(GUNDO_HISTORY(seq));
-
-	free_actions( seq->actions->len, (UndoAction*)seq->actions->data );
-	g_array_set_size( seq->actions, 0 );
-
-	seq->next_redo = 0;
-	if(seq->group) {
-		g_object_unref(G_OBJECT(seq->group));
-		seq->group = NULL;
-	}
-
-	if(could_undo) {
-		// now we definitely can't undo
-		g_object_notify(G_OBJECT(seq), "can-undo");
-	}
-	if(could_redo) {
-		// now we definitely can't redo
-		g_object_notify(G_OBJECT(seq), "can-redo");
-	}
-}
-
 static void
 sequence_changed (GundoHistory* history)
 {
