@@ -108,21 +108,6 @@ GundoActionType action_type = {
 
 // CHECKED // CHECKED // CHECKED // CHECKED // CHECKED // CHECKED // CHECKED //
 
-/*  Globals */
-void quit_sketch() {
-/*    int i;
-    
-    gtk_widget_destroy( window );
-    if( current_stroke ) stroke_destroy( current_stroke );
-    
-    for( i = 0; i < visible_strokes->len; i++ ) {
-        stroke_destroy( (Stroke*)g_ptr_array_index( visible_strokes, i ) );
-    }
-    g_ptr_array_free( visible_strokes, TRUE );
-    
-    gtk_object_destroy( GTK_OBJECT(actions) );*/
-}
-
 static void
 s_stroke_added(Sketch* sk, Stroke* st) {}
 
@@ -130,7 +115,36 @@ static void
 s_stroke_removed(Sketch* sk, Stroke* st) {}
 
 static void
+sketch_dispose(GObject *object) {
+  Sketch* self = SKETCH(object);
+
+  if(self->actions) {  
+    g_object_unref(self->actions);
+    self->actions = NULL;
+  }
+}
+
+static void
+sketch_finalize(GObject *object) {
+  Sketch* self = SKETCH(object);
+  gint i;
+
+  if(self->current) stroke_destroy(self->current);
+  
+  for( i = 0; i < self->strokes->len; i++ ) {
+      stroke_destroy( (Stroke*)g_ptr_array_index( self->strokes, i ) );
+  }
+
+  g_ptr_array_free(self->strokes, TRUE);
+  g_object_unref(self->actions);
+}
+static void
 sketch_class_init(SketchClass* klass) {
+    GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
+    
+    gobject_class->dispose     = sketch_dispose;
+    gobject_class->finalize     = sketch_finalize;
+  
 	g_signal_new("stroke-added",
 		     SKETCH_TYPE,
 		     G_SIGNAL_RUN_LAST,

@@ -141,7 +141,20 @@ da_motion_notify_event(SketchWindow* win, GdkEventMotion* ev, GtkWidget* da) {
 }
 
 static void
+sketch_window_dispose(GObject *object) {
+  SketchWindow* self = SKETCH_WINDOW(object);
+  
+  if(self->s) {
+    g_object_unref(self->s);
+    self->s = NULL;
+  }
+}
+
+static void
 sketch_window_class_init(SketchWindowClass* k) {
+  GObjectClass *gobject_class = G_OBJECT_CLASS(k);
+    
+  gobject_class->dispose     = sketch_window_dispose;
 }
 
 static void

@@ -31,8 +31,6 @@ void           sketch_add_point   (Sketch* sketch,
 				   guint   y);
 void	       sketch_finish_stroke(Sketch* sketch);
 
-void quit_sketch(void);
-
 struct _Sketch {
 	GtkObject      object;
 	GPtrArray    * strokes;

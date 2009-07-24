@@ -33,7 +33,6 @@ main(int argc, char** argv) {
 	gtk_init(&argc, &argv);
 	gtk_widget_show_all(sketch_window_new());
 	gtk_main();
-	quit_sketch();
 	return 0;
 }
 
