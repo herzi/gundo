@@ -168,7 +168,7 @@ gundo_sequence_class_init(GundoSequenceClass *self_class) {
  *
  * Creates a new, empty GundoSequence.
  * 
- * The GundoSequence is destroyed by a call to gtk_object_destroy.  All
+ * The GundoSequence is destroyed after the last reference is released.  All
  * of the actions in a sequence are destroyed (by calling the free callback
  * of their GundoActionType) when the sequence is destroyed.
  * 

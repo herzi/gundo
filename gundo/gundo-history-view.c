@@ -20,7 +20,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-
+/**
+ * SECTION:gundohistory
+ * @short_description: interface for undo/redo history
+ *
+ * The interface is used by UI components to manipulate the history.
+ *
+ * FIXME: write more
+ */
 #include <gundo/gundo-history-view.h>
 
 #include <gundo/gundo.h>
@@ -59,7 +66,7 @@ view_emit_notify_can_redo (GundoHistoryView* self,
  * Side effects:
  *
  * To ensure that we always have a valid connection the history gets referenced
- * here. To remove that reference, call @gundo_history_view_unregister on the
+ * here. To remove that reference, call gundo_history_view_unregister() on the
  * same history again.
  *
  * To make sure the view components are set to the correct states, the
