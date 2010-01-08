@@ -69,7 +69,6 @@ AC_SUBST([DEBUG_CFLAGS])
 AC_OUTPUT([
   Makefile
   doc/Makefile
-  gundo/Makefile
   po/Makefile.in
 ])
 

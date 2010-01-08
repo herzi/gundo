@@ -9,7 +9,7 @@ tundo_CPPFLAGS=\
 	$(NULL)
 tundo_LDADD=\
 	$(GUNDO_LIBS) \
-	$(top_builddir)/gundo/libgundo.la \
+	libgundo.la \
 	$(NULL)
 tundo_SOURCES=\
 	test/tundo.c \

@@ -75,8 +75,8 @@ INCLUDES=\
 	$(GUNDO_UI_CFLAGS) \
 	$(NULL)
 GTKDOC_LIBS=\
-	$(top_builddir)/gundo/libgundo.la \
-	$(top_builddir)/gundo-ui/libgundo-ui.la \
+	$(top_builddir)/libgundo.la \
+	$(top_builddir)/libgundo-ui.la \
 	$(NULL)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.

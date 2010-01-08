@@ -1,6 +1,5 @@
 SUBDIRS=\
-	gundo \
-	.
+	. \
 	doc \
 	po \
 	$(NULL)
@@ -9,6 +8,7 @@ noinst_PROGRAMS=
 TESTS=
 
 include demo/Makefile.inc
+include gundo/Makefile.inc
 include gundo-ui/Makefile.inc
 include test/Makefile.inc
 

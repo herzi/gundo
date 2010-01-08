@@ -12,7 +12,7 @@ libgundo_ui_la_LDFLAGS=\
 	$(NULL)
 libgundo_ui_la_LIBADD=\
 	$(GUNDO_UI_LIBS) \
-	$(top_builddir)/gundo/libgundo.la \
+	libgundo.la \
 	$(NULL)
 libgundo_ui_la_SOURCES=\
 	gundo-ui/gtk-helpers.c \
