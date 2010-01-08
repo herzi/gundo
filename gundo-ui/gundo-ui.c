@@ -92,15 +92,17 @@ make_sensitive(GtkWidget* widget, GundoHistory* history, char* signal_name) {
 /**
  * gundo_make_undo_sensitive:
  * @widget: The widget to make undo-sensitive
- * @seq: The undo sequence that the widget should be sensitive to
+ * @history: The undo sequence that the widget should be sensitive to
  *
  * Makes a widget sensitive to the current undo state of a GundoSequence.
  * A widget that is undo-sensitive will only be sensitive
- * when it is possible to call \Ref{gundo_sequence_undo} on its associated
- * GundoSequence (that is, when \Ref{gundo_history_can_undo} returns TRUE).
+ * when it is possible to call gundo_sequence_undo() on its associated
+ * GundoSequence (that is, when gundo_history_can_undo() returns %TRUE).
  */
 void
-gundo_make_undo_sensitive(GtkWidget *widget, GundoHistory *history) {
+gundo_make_undo_sensitive (GtkWidget   * widget,
+                           GundoHistory* history)
+{
 	make_sensitive(widget, history, "notify::can-undo");
 	gtk_widget_set_sensitive(widget, gundo_history_can_undo(history));
 }
@@ -108,12 +110,12 @@ gundo_make_undo_sensitive(GtkWidget *widget, GundoHistory *history) {
 /**
  * gundo_make_redo_sensitive:
  * @widget: The #GtkWidget to make redo-sensitive.
- * @seq: The undo sequence that the widget should be sensitive to.
+ * @history: The undo sequence that the widget should be sensitive to.
  *
  * Makes a widget sensitive to the current redo state of a GundoSequence.  
  * A widget that is redo-sensitive will only be sensitive when it is 
- * possible to call \Ref{gundo_sequence_redo} on its associated GundoSequence 
- * (that is, when \Ref{gundo_history_can_redo} returns TRUE).
+ * possible to call gundo_sequence_redo() on its associated GundoSequence 
+ * (that is, when gundo_history_can_redo() returns %TRUE).
  */
 void
 gundo_make_redo_sensitive(GtkWidget *widget, GundoHistory *history) {

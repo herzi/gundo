@@ -47,7 +47,14 @@ CFILE_GLOB=$(top_srcdir)/gundo*/*.c
 
 # Header files to ignore when scanning.
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
-IGNORE_HFILES=config.h
+IGNORE_HFILES=\
+	config.h \
+	gobject-helpers.h \
+	gtk-helpers.h \
+	sketch.h \
+	sketch-window.h \
+	stroke.h \
+	$(NULL)
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png
@@ -94,3 +101,7 @@ DISTCLEANFILES=$(DOC_MODULE).types
 # Comment this out if you want your docs-status tested during 'make check'
 # TESTS = $(GTKDOC_CHECK)
 
+.NOTPARALLEL: # make sure GNU make doesn't use parallel jobs
+
+check-local:
+	;

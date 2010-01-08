@@ -7,5 +7,6 @@ gundo_history_view_get_type
 
 #include <gundo-ui.h>
 
+gundo_redo_tool_get_type
 gundo_tool_undo_get_type
 

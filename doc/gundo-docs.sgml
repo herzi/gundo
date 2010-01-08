@@ -16,7 +16,10 @@
 
   <chapter id="gundoui">
     <title>Gundo UI</title>
-    <xi:include href="xml/gundo-ui.xml"/>
+    <xi:include href="xml/gundoui.xml"/>
+    <xi:include href="xml/gundopopupmodel.xml"/>
+    <xi:include href="xml/gundotoolredo.xml"/>
+    <xi:include href="xml/gundotoolundo.xml"/>
   </chapter>
   
  <chapter id="objecttree">

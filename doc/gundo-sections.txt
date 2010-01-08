@@ -7,8 +7,13 @@ gundo_history_can_redo
 gundo_history_can_undo
 gundo_history_undo
 gundo_history_install_properties
+gundo_history_changed
+gundo_history_get_n_redos
+gundo_history_get_n_undos
+gundo_history_redo
 <SUBSECTION Standard>
 GUNDO_HISTORY
+GUNDO_HISTORY_GET_IFACE
 GUNDO_IS_HISTORY
 GUNDO_TYPE_HISTORY
 GUNDO_HISTORY_GET_CLASS
@@ -33,6 +38,40 @@ gundo_history_view_get_type
 </SECTION>
 
 <SECTION>
+<FILE>gundopopupmodel</FILE>
+<TITLE>GUndoPopupModel</TITLE>
+GUndoPopupModel
+GUndoPopupModelClass
+gundo_popup_model_get_history
+gundo_popup_model_get_type
+<SUBSECTION Standard>
+GUNDO_IS_POPUP_MODEL
+GUNDO_IS_POPUP_MODEL_CLASS
+GUNDO_POPUP_MODEL
+GUNDO_POPUP_MODEL_CLASS
+GUNDO_POPUP_MODEL_GET_CLASS
+GUNDO_TYPE_POPUP_MODEL
+<SUBSECTION Private>
+GUndoPopupModelPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gundoredomodel</FILE>
+<TITLE>GUndoRedoModel</TITLE>
+GUndoRedoModel
+GUndoRedoModelClass
+<SUBSECTION Standard>
+GUNDO_IS_REDO_MODEL
+GUNDO_IS_REDO_MODEL_CLASS
+GUNDO_REDO_MODEL
+GUNDO_REDO_MODEL_CLASS
+GUNDO_REDO_MODEL_GET_CLASS
+GUNDO_TYPE_REDO_MODEL
+<SECTION Private>
+GUndoRedoModelPrivate
+</SECTION>
+
+<SECTION>
 <FILE>gundosequence</FILE>
 <TITLE>GundoSequence</TITLE>
 GundoSequence
@@ -40,14 +79,11 @@ GundoSequenceClass
 GundoActionCallback
 GundoActionType
 gundo_sequence_new
-gundo_sequence_clear
 gundo_sequence_add_action
 
 gundo_sequence_start_group
 gundo_sequence_end_group
 gundo_sequence_abort_group
-
-gundo_sequence_redo
 <SUBSECTION Standard>
 GUNDO_SEQUENCE
 GUNDO_IS_SEQUENCE
@@ -59,6 +95,46 @@ GUNDO_SEQUENCE_GET_CLASS
 gundo_sequence_get_type
 </SECTION>
 
+<SECTION>
+<FILE>gundotool</FILE>
+<TITLE>GUndoTool</TITLE>
+GUndoTool
+GUndoToolClass
+gundo_tool_get_history
+gundo_tool_get_stock_id
+gundo_tool_get_type
+gundo_tool_set_history
+gundo_tool_set_model
+<SUBSECTION Standard>
+GUNDO_IS_TOOL
+GUNDO_IS_TOOL_CLASS
+GUNDO_TOOL
+GUNDO_TOOL_CLASS
+GUNDO_TOOL_GET_CLASS
+GUNDO_TYPE_TOOL
+<SUBSECTION Private>
+GUndoToolPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gundotoolredo</FILE>
+<TITLE>GUndoToolRedo</TITLE>
+GUndoRedoTool
+GUndoRedoToolClass
+gundo_redo_model_get_type
+gundo_redo_model_new
+gundo_redo_tool_get_type
+gundo_redo_tool_new
+<SUBSECTION Standard>
+GUNDO_REDO_TOOL
+GUNDO_REDO_TOOL_CLASS
+GUNDO_REDO_TOOL_GET_CLASS
+GUNDO_IS_REDO_TOOL
+GUNDO_IS_REDO_TOOL_CLASS
+GUNDO_TYPE_REDO_TOOL
+<SUBSECTION Private>
+GUndoRedoToolPrivate
+</SECTION>
 
 <SECTION>
 <FILE>gundotoolundo</FILE>
@@ -66,7 +142,6 @@ gundo_sequence_get_type
 GundoToolUndo
 GundoToolUndoClass
 gundo_tool_undo_new
-gundo_tool_undo_set_history
 <SUBSECTION Standard>
 GUNDO_TOOL_UNDO
 GUNDO_IS_TOOL_UNDO
@@ -76,6 +151,24 @@ GUNDO_IS_TOOL_UNDO_CLASS
 GUNDO_TOOL_UNDO_GET_CLASS
 <SUBSECTION Private>
 gundo_tool_undo_get_type
+</SECTION>
+
+<SECTION>
+<FILE>gundoundomodel</FILE>
+<TITLE>GUndoUndoModel</TITLE>
+GUndoUndoModel
+GUndoUndoModelClass
+gundo_undo_model_new
+<SUBSECTION Standard>
+GUNDO_IS_UNDO_MODEL
+GUNDO_IS_UNDO_MODEL_CLASS
+GUNDO_TYPE_UNDO_MODEL
+GUNDO_UNDO_MODEL
+GUNDO_UNDO_MODEL_CLASS
+GUNDO_UNDO_MODEL_GET_CLASS
+<SUBSECTION Private>
+GUndoUndoModelPrivate
+gundo_undo_model_get_type
 </SECTION>
 
 <SECTION>
