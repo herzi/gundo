@@ -1,7 +1,5 @@
-# Makefile for Eggs
-
-check_PROGRAMS=tundo
-TESTS=$(check_PROGRAMS)
+noinst_PROGRAMS+=tundo
+TESTS+=tundo
 
 tundo_CPPFLAGS=\
 	$(GUNDO_CFLAGS) \
@@ -14,6 +12,7 @@ tundo_LDADD=\
 	$(top_builddir)/gundo/libgundo.la \
 	$(NULL)
 tundo_SOURCES=\
-	tundo.c \
+	test/tundo.c \
 	$(NULL)
 
+# vim:set ft=automake:

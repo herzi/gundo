@@ -72,6 +72,5 @@ AC_OUTPUT([
   gundo/Makefile
   gundo-ui/Makefile
   po/Makefile.in
-  test/Makefile
 ])
 
