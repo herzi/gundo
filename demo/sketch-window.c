@@ -1,11 +1,8 @@
 /* This file is part of gundo, a multilevel undo/redo facility for GTK+
- * 
- * AUTHORS
- *	Nat Pryce
- *	Sven Herzberg		<herzi@gnome-de.org>
  *
- * Copyright (C) 1999		Nat Pryce
- * Copyright (C) 2005		Sven Herzberg
+ * Copyright (C) 1999  Nat Pryce
+ * Copyright (C) 2005  Sven Herzberg
+ * Copyright (C) 2009  Stefan Kost
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License as

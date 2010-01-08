@@ -2,6 +2,7 @@
     Gtk Undo: Multilevel undo/redo for Gtk
     Copyright (C) 1999  Nat Pryce
     Copyright (C) 2005  Sven Herzberg
+    Copyright (C) 2009  Stefan Kost
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -24,9 +25,8 @@
  * A #GundoSequence contains a list of undoable/redoable actions. Action can be
  * added with gundo_sequence_add_action().
  * The list can be cleared by using gundo_sequence_clear().
- *
- * FIXME: write more
  */
+/* FIXME: write more */
  
 #include <stdio.h>
 #include <glib.h>
