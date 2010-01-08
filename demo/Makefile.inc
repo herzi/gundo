@@ -8,9 +8,8 @@ sketch_CPPFLAGS=\
 	-I$(top_srcdir)/gundo-ui \
 	$(NULL)
 sketch_LDADD=\
-	$(GUNDO_UI_LIBS) \
-	$(top_builddir)/gundo/libgundo.la \
-	$(top_builddir)/gundo-ui/libgundo-ui.la \
+	libgundo-ui.la \
+	$(libgundo_ui_LIBADD) \
 	$(NULL)
 sketch_SOURCES=\
 	demo/main.c \

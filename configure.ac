@@ -70,7 +70,6 @@ AC_OUTPUT([
   Makefile
   doc/Makefile
   gundo/Makefile
-  gundo-ui/Makefile
   po/Makefile.in
 ])
 
