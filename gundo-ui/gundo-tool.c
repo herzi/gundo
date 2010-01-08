@@ -134,6 +134,22 @@ arrow_toggled (GtkToggleButton* arrow_button,
 }
 
 static void
+scrolled_window_size_request (GtkWidget     * widget,
+                              GtkRequisition* requisition)
+{
+  GdkRectangle  rect;
+  GtkTreeView * treeview = GTK_TREE_VIEW (gtk_bin_get_child (GTK_BIN (widget)));
+  GtkTreePath * path = gtk_tree_path_new_from_indices (0, -1);
+
+  gtk_tree_view_get_background_area (treeview, path, NULL, &rect);
+
+  gtk_tree_view_convert_bin_window_to_widget_coords (treeview, 0, 0, &rect.x, NULL);
+  requisition->height = MAX (requisition->height, rect.x + 6 * rect.height); /* default to six rows */
+
+  gtk_tree_path_free (path);
+}
+
+static void
 gundo_tool_init (GUndoTool* self)
 {
   GtkWidget* frame;
@@ -179,6 +195,8 @@ gundo_tool_init (GUndoTool* self)
   gtk_tree_view_append_column (GTK_TREE_VIEW (PRIV (self)->popup_tree),
                                column);
   scrolled = gtk_scrolled_window_new(NULL, NULL);
+  g_signal_connect (scrolled, "size-request",
+                    G_CALLBACK (scrolled_window_size_request), NULL);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
                                   GTK_POLICY_NEVER,
                                   GTK_POLICY_ALWAYS);
