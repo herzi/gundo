@@ -2,6 +2,7 @@ AC_INIT(gundo,0.3.1,mailto:herzi@gnome-de.org)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 
+m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 AM_PROG_CC_C_O
 
 CXX=no
@@ -67,7 +68,6 @@ AC_SUBST([DEBUG_CFLAGS])
 
 AC_OUTPUT([
   Makefile
-  demo/Makefile
   doc/Makefile
   gundo/Makefile
   gundo-ui/Makefile

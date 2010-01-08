@@ -1,6 +1,4 @@
-# Makefile for Eggs
-
-noinst_PROGRAMS=sketch
+noinst_PROGRAMS+=sketch
 
 sketch_CPPFLAGS=\
 	$(GUNDO_UI_CFLAGS) \
@@ -15,12 +13,13 @@ sketch_LDADD=\
 	$(top_builddir)/gundo-ui/libgundo-ui.la \
 	$(NULL)
 sketch_SOURCES=\
-	main.c \
-	sketch.c \
-	sketch.h \
-	sketch-window.c \
-	sketch-window.h \
-	stroke.h \
-	stroke.c \
+	demo/main.c \
+	demo/sketch.c \
+	demo/sketch.h \
+	demo/sketch-window.c \
+	demo/sketch-window.h \
+	demo/stroke.h \
+	demo/stroke.c \
 	$(NULL)
 
+# vim:set ft=automake:

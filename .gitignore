@@ -1,12 +1,7 @@
 *autom4te.cache
 aclocal.m4
 compile
-config.guess
-config.h
-config.h.in
-config.log
-config.status
-config.sub
+config.*
 configure
 depcomp
 .deps
@@ -15,12 +10,7 @@ diff
 gtk-doc.make
 INSTALL
 install-sh
-intltool-extract
-intltool-extract.in
-intltool-merge
-intltool-merge.in
-intltool-update
-intltool-update.in
+intltool-*
 .libs
 libtool
 ltmain.sh
@@ -31,5 +21,6 @@ mkinstalldirs
 *.la
 *.lo
 *.o
+sketch
 stamp-h1
 *~
