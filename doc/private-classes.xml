@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section xmlns:xi="http://www.w3.org/2003/XInclude">
+    <title>Private Classes</title>
+
+    <para>
+        Sliff.
+    </para>
+
+    <xi:include href="xml/gundotool.xml"/>
+    <xi:include href="xml/gundopopupmodel.xml"/>
+</section>
+<!-- vim:set et sw=4: -->

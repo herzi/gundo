@@ -64,6 +64,9 @@ HTML_IMAGES=\
 # Extra SGML files that are included by $(DOC_MAIN_SGML_FILE).
 # e.g. content_files=running.sgml building.sgml changes-2.0.sgml
 content_files=\
+	private-classes.xml \
+	tool-items.xml \
+	tree-models.xml \
 	$(NULL)
 
 # SGML files where gtk-doc abbrevations (#GtkWidget) are expanded
@@ -96,7 +99,7 @@ EXTRA_DIST +=
 # Files not to distribute
 # for --rebuild-types in $(SCAN_OPTIONS), e.g. $(DOC_MODULE).types
 # for --rebuild-sections in $(SCAN_OPTIONS) e.g. $(DOC_MODULE)-sections.txt
-DISTCLEANFILES=$(DOC_MODULE).types
+# DISTCLEANFILES=$(DOC_MODULE).types
 
 # Comment this out if you want your docs-status tested during 'make check'
 # TESTS = $(GTKDOC_CHECK)
@@ -106,20 +109,33 @@ DISTCLEANFILES=$(DOC_MODULE).types
 check-local:
 	@echo "TEST  gundo-docs.sgml (all sections)"
 	@grep FILE gundo-sections.txt | sed 's/<FILE>\(.*\)<\/FILE>/\1/' | while read file; do \
-		if ! grep -q "<xi:include.*"xml/$$file\.xml".*>" gundo-docs.sgml; then \
+		if ! xmllint --xinclude gundo-docs.sgml | grep -q "xml:base=\"xml/$$file\.xml\""; then \
 			echo "gundo-docs.sgml is missing an include for $$file"; \
 			exit 1; \
 		fi; \
 	done
 	@echo "TEST  gundo-docs.sgml (valid docbook)"
-	@if test 1 != `xmllint --xinclude gundo-docs.sgml | \
-		      sed 's@ xml:base="[^"]*\.\(x\|sg\)ml"@@' | \
-		      sed 's@xmlns:[[:alpha:]]*="[^"]*"@@' | \
-		      xmllint --postvalid --noout - 2>&1 | \
-		      grep -v "IDREF attribute linkend references an unknown ID \"\(Atk.*\|gboolean\|gchar\|GInitiallyUnowned\|GInterface\|GObject.*\|gpointer\|Gtk.*\|GType\|guint\|void\|\(NULL\|TRUE\)--CAPS\)\"" | \
-		      wc -l`; then \
+	@xmllint --xinclude gundo-docs.sgml | \
+		sed 's@ xml:base="[^"]*\.\(x\|sg\)ml"@@' | \
+		sed 's@xmlns:[[:alpha:]]*="[^"]*"@@' | \
+		xmllint --postvalid --noout - 2>&1 | \
+		grep -v "IDREF attribute linkend references an unknown ID \"\(Atk.*\|gboolean\|gchar\|GInitiallyUnowned\|GInterface\|GObject.*\|gpointer\|Gtk.*\|GType\(Interface\)\?\|guint\|void\|\(NULL\|TRUE\)--CAPS\)\"" > sliff
+	@if test 1 != `cat sliff | wc -l`; then \
 		echo "******" >&2; \
-		echo "*** Please fix the documentation" >&2; \
+		echo "*** Please fix the documentation:" >&2; \
+		echo "******" >&2; \
+		cat sliff; \
+		exit 1; \
+	fi
+	@rm -f sliff
+	@echo "TEST  gundo.types"
+	@if ! (grep INCLUDE gundo-sections.txt | sed 's@^<INCLUDE>\(.*\)</INCLUDE>$$@\1@' | sort -u | sed 's/.*/#include <\0>/'; echo; grep get_type$$ gundo-sections.txt | sort) | diff -burp gundo.types -; then \
+		echo "******" >&2; \
+		echo "*** The file gundo.types looks bad. Please adjust it according to the patch above" >&2; \
 		echo "******" >&2; \
 		exit 1; \
 	fi
+
+# FIXME: make sure _get_type() functions are listed in private sections
+# FIXME: make sure every section has its own INCLUDE tag
+

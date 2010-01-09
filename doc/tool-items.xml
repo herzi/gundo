@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section xmlns:xi="http://www.w3.org/2003/XInclude">
+    <title>Tool Items</title>
+
+    <para>
+        Sliff.
+    </para>
+
+    <xi:include href="xml/gundoredotool.xml"/>
+    <xi:include href="xml/gundoundotool.xml"/>
+</section>
+<!-- vim:set et sw=4: -->
