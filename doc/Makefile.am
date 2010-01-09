@@ -104,4 +104,10 @@ DISTCLEANFILES=$(DOC_MODULE).types
 .NOTPARALLEL: # make sure GNU make doesn't use parallel jobs
 
 check-local:
-	;
+	@echo "TEST  gundo-docs.sgml (all sections)"
+	@grep FILE gundo-sections.txt | sed 's/<FILE>\(.*\)<\/FILE>/\1/' | while read file; do \
+		if ! grep -q "<xi:include.*"xml/$$file\.xml".*>" gundo-docs.sgml; then \
+			echo "gundo-docs.sgml is missing an include for $$file"; \
+			exit 1; \
+		fi; \
+	done

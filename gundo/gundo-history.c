@@ -111,7 +111,7 @@ gundo_history_get_n_undos (GundoHistory* self)
  *
  * Redoes the last action that was undone.
  *
- * <em>Prerequisitions</em>: no group is being constructed && g_undo_history_can_redo().
+ * <emphasis>Prerequisitions</emphasis>: no group is being constructed && g_undo_history_can_redo().
  */
 void
 gundo_history_redo (GundoHistory* self)
@@ -128,7 +128,7 @@ gundo_history_redo (GundoHistory* self)
  *
  * Undoes the action at the end of the history.
  * 
- * <em>Prerequisites</em>: no group is being constructed && undo_sequence_can_undo(seq).
+ * <emphasis>Prerequisites</emphasis>: no group is being constructed && g_undo_sequence_can_undo().
  */
 void
 gundo_history_undo (GundoHistory* self)

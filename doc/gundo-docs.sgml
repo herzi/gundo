@@ -11,13 +11,15 @@
     <xi:include href="xml/gundohistory.xml"/>
     <xi:include href="xml/gundohistoryview.xml"/>
     <xi:include href="xml/gundosequence.xml"/>
-    <xi:include href="xml/gundotoolundo.xml"/>
   </chapter>
 
   <chapter id="gundoui">
     <title>Gundo UI</title>
     <xi:include href="xml/gundoui.xml"/>
     <xi:include href="xml/gundopopupmodel.xml"/>
+    <xi:include href="xml/gundoredomodel.xml"/>
+    <xi:include href="xml/gundoundomodel.xml"/>
+    <xi:include href="xml/gundotool.xml"/>
     <xi:include href="xml/gundotoolredo.xml"/>
     <xi:include href="xml/gundotoolundo.xml"/>
   </chapter>
