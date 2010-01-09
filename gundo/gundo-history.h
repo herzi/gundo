@@ -50,9 +50,12 @@ void     gundo_history_install_properties(GObjectClass* go_class,
 					  guint id_undo,
 					  guint id_redo);
 
-struct _GundoHistoryIface {
+struct _GundoHistoryIface
+  {
+    /*< private >*/
 	GTypeInterface base_interface;
 
+    /*< public >*/
         /* signals */
         void     (*changed)       (GundoHistory* self);
 

@@ -35,6 +35,12 @@
 
 #include "gobject-helpers.h"
 
+/**
+ * GundoHistoryViewIface
+ *
+ * The %GTypeInterface for an element listening to changes in a %GundoHistory.
+ */
+/* FIXME: write more */
 G_DEFINE_IFACE_FULL(GundoHistoryView, gundo_history_view, G_TYPE_INTERFACE);
 
 /* Signal handling stuff */

@@ -25,6 +25,13 @@
 
 #include "gobject-helpers.h"
 
+/**
+ * GundoHistoryIface
+ *
+ * The %GTypeInterface for an undo/redo history.
+ */
+/* FIXME: be more verbose */
+
 enum {
   SIGNAL_CHANGED,
   SIGNAL_REDO,

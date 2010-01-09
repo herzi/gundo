@@ -46,9 +46,12 @@ void gundo_history_view_unregister(GundoHistoryView* self,
 void _gundo_history_view_install_properties(GObjectClass *go_class,
 					    gint prop_id_history);
 
-struct _GundoHistoryViewIface {
+struct _GundoHistoryViewIface
+  {
+    /*< private >*/
 	GTypeInterface base_interface;
 
+    /*< public >*/
 	/* vtable */
 	void (*notify_can_redo) (GundoHistoryView* self,
 				 gboolean          can_redo);
