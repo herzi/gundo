@@ -126,6 +126,8 @@ arrow_toggled (GtkToggleButton* arrow_button,
 
       gtk_widget_show (PRIV (self)->popup_window);
       gtk_window_move (GTK_WINDOW (PRIV (self)->popup_window), x, y);
+
+      /* FIXME: add some proper grabs to the popup, so it behaves like it should */
     }
   else
     {
@@ -192,6 +194,7 @@ gundo_tool_init (GUndoTool* self)
                   gtk_cell_renderer_text_new(),
                   "text", POPUP_COLUMN_TEXT,
                   NULL);
+  /* FIXME: set some rubberbanding selection, close to the font selection in AbiWord */
   gtk_tree_view_append_column (GTK_TREE_VIEW (PRIV (self)->popup_tree),
                                column);
   scrolled = gtk_scrolled_window_new(NULL, NULL);
@@ -291,6 +294,9 @@ gundo_tool_class_init (GUndoToolClass* self_class)
                                             NULL, NULL,
                                             g_cclosure_marshal_VOID__VOID,
                                             G_TYPE_NONE, 0);
+
+  /* FIXME: tool_item_class->create_menu_proxy */
+  /* FIXME: tool_item_class->toolbar_reconfigured */
 
   _gundo_history_view_install_properties(object_class, PROP_HISTORY);
 
