@@ -21,6 +21,16 @@
  * USA
  */
 
+/* FIXME: rename to GUndoUIRedoStore */
+/* FIXME: make sure we properly support groups */
+
+/**
+ * GUndoRedoModel:
+ *
+ * An implementation of a #GtkTreeModel that displays redoable tasks from a
+ * #GundoHistory.
+ */
+
 #include "gundo-redo-model.h"
 
 #include <string.h>
@@ -128,6 +138,15 @@ gundo_redo_model_class_init (GUndoRedoModelClass* self_class)
   g_type_class_add_private (self_class, sizeof (GUndoRedoModelPrivate));
 }
 
+/**
+ * gundo_redo_model_new:
+ * @history: a #GundoHistory
+ *
+ * Create a redo model for @history. This model will be able to display the
+ * redoable actions of @history.
+ *
+ * Returns: a new instance of #GUndoRedoModel casted as a #GtkTreeModel.
+ */
 GtkTreeModel*
 gundo_redo_model_new (GundoHistory* history)
 {

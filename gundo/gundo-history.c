@@ -21,12 +21,25 @@
  * USA
  */
 
+/**
+ * GundoHistory:
+ *
+ * A #GObject instance that implements the #GundoHistoryIface interface.
+ */
+
 #include <gundo/gundo-history.h>
 
 #include "gobject-helpers.h"
 
 /**
- * GundoHistoryIface
+ * GundoHistoryIface:
+ * @changed: the signal slot for the <link linkend="GundoHistory-changed">changed</link> signal
+ * @can_redo: the function slot for gundo_history_can_redo()
+ * @can_undo: the function slot for gundo_history_can_undo()
+ * @get_n_redos: the function slot for gundo_history_get_n_redos()
+ * @get_n_undos: the function slot for gundo_history_get_n_undos()
+ * @redo: the function slot for gundo_history_redo()
+ * @undo: the function slot for gundo_history_undo()
  *
  * The %GTypeInterface for an undo/redo history.
  */
@@ -67,7 +80,7 @@ gundo_history_can_redo (GundoHistory* self)
  *
  * Queries whether the undo history contains any actions that can be undone.
  *
- * Returns TRUE if there are actions that can be undone, FALSE otherwise.
+ * Returns: %TRUE if there are actions that can be undone, %FALSE otherwise.
  */
 gboolean
 gundo_history_can_undo (GundoHistory* self)
@@ -78,6 +91,12 @@ gundo_history_can_undo (GundoHistory* self)
   return GUNDO_HISTORY_GET_IFACE (self)->can_undo (self);
 }
 
+/**
+ * gundo_history_changed:
+ * @self: a #GundoHistory
+ *
+ * Emit the #GundoHistory::changed signal to notify viewers about a change.
+ */
 void
 gundo_history_changed (GundoHistory* self)
 {
@@ -86,6 +105,14 @@ gundo_history_changed (GundoHistory* self)
   g_signal_emit (self, signals[SIGNAL_CHANGED], 0);
 }
 
+/**
+ * gundo_history_get_n_redos:
+ * @self: a #GundoHistory
+ *
+ * Find out how many redoable actions are available.
+ *
+ * Returns: the number of redoable actions in @self.
+ */
 guint
 gundo_history_get_n_redos (GundoHistory* self)
 {
@@ -147,6 +174,15 @@ gundo_history_undo (GundoHistory* self)
 }
 
 /* GInterface stuff */
+/**
+ * gundo_history_install_properties:
+ * @go_class: the #GObjectClass implementing #GundoHistory
+ * @id_undo: the property id of the #GundoHistory:can-undo property
+ * @id_redo: the property id of the #GundoHistory:can-redo property
+ *
+ * Install the properties of the #GundoHistory interface to @go_class.
+ */
+/* FIXME: rename go_class to object_class */
 void
 gundo_history_install_properties(GObjectClass* go_class, guint id_undo, guint id_redo) {
 	g_object_class_override_property(go_class, id_undo, "can-undo");
@@ -169,6 +205,14 @@ gundo_history_class_init (gpointer iface)
 								 FALSE,
 								 G_PARAM_READABLE));
 
+  /**
+   * GundoHistory::changed:
+   *
+   * This signal gets emitted when the history changes. Usually this signal is
+   * emitted when users perform undoable tasks, undo tasks or redo tasks.
+   * Classes implementing this interface can use gundo_history_changed() to emit
+   * the signal.
+   */
         signals[SIGNAL_CHANGED] = g_signal_new ("changed", G_TYPE_FROM_INTERFACE (iface),
                                                 G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,
                                                 G_STRUCT_OFFSET (GundoHistoryIface, changed),
@@ -176,6 +220,12 @@ gundo_history_class_init (gpointer iface)
                                                 g_cclosure_marshal_VOID__VOID,
                                                 G_TYPE_NONE, 0);
 
+  /**
+   * GundoHistory::redo:
+   *
+   * This action signal can be emitted (usually via gundo_history_redo()) to
+   * redo the latest undone action.
+   */
         signals[SIGNAL_REDO] = g_signal_new ("redo", G_TYPE_FROM_INTERFACE (iface),
                                              G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,
                                              G_STRUCT_OFFSET (GundoHistoryIface, redo),
@@ -183,6 +233,12 @@ gundo_history_class_init (gpointer iface)
                                              g_cclosure_marshal_VOID__VOID,
                                              G_TYPE_NONE, 0);
 
+  /**
+   * GundoHistory::undo:
+   *
+   * This action signal can be emitted (usually via gundo_history_undo()) to
+   * undo the latest performed action.
+   */
         signals[SIGNAL_UNDO] = g_signal_new ("undo", G_TYPE_FROM_INTERFACE (iface),
                                              G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,
                                              G_STRUCT_OFFSET (GundoHistoryIface, undo),
@@ -191,3 +247,4 @@ gundo_history_class_init (gpointer iface)
                                              G_TYPE_NONE, 0);
 }
 
+/* vim:set et: */

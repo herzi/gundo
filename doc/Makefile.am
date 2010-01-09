@@ -108,18 +108,18 @@ EXTRA_DIST +=
 
 check-local:
 	@echo "TEST  gundo-docs.sgml (all sections)"
-	@grep FILE gundo-sections.txt | sed 's/<FILE>\(.*\)<\/FILE>/\1/' | while read file; do \
-		if ! xmllint --xinclude gundo-docs.sgml | grep -q "xml:base=\"xml/$$file\.xml\""; then \
+	@grep FILE $(srcdir)/gundo-sections.txt | sed 's/<FILE>\(.*\)<\/FILE>/\1/' | while read file; do \
+		if ! xmllint --path ".:$(srcdir)" --xinclude $(srcdir)/gundo-docs.sgml | grep -q "xml:base=\"xml/$$file\.xml\""; then \
 			echo "gundo-docs.sgml is missing an include for $$file"; \
 			exit 1; \
 		fi; \
 	done
 	@echo "TEST  gundo-docs.sgml (valid docbook)"
-	@xmllint --xinclude gundo-docs.sgml | \
+	@xmllint --path ".:$(srcdir)" --xinclude $(srcdir)/gundo-docs.sgml | \
 		sed 's@ xml:base="[^"]*\.\(x\|sg\)ml"@@' | \
 		sed 's@xmlns:[[:alpha:]]*="[^"]*"@@' | \
 		xmllint --postvalid --noout - 2>&1 | \
-		grep -v "IDREF attribute linkend references an unknown ID \"\(Atk.*\|gboolean\|gchar\|GInitiallyUnowned\|GInterface\|GObject.*\|gpointer\|Gtk.*\|GType\(Interface\)\?\|guint\|void\|\(NULL\|TRUE\)--CAPS\)\"" > sliff
+		grep -v "IDREF attribute linkend references an unknown ID \"\(Atk.*\|gboolean\|gchar\|GInitiallyUnowned\|GInterface\|GObject.*\|gpointer\|Gtk.*\|GType\(Interface\)\?\|guint\|void\|\(FALSE\|GTK.*\|NULL\|TRUE\)--CAPS\)\"" > sliff
 	@if test 1 != `cat sliff | wc -l`; then \
 		echo "******" >&2; \
 		echo "*** Please fix the documentation:" >&2; \
@@ -129,7 +129,7 @@ check-local:
 	fi
 	@rm -f sliff
 	@echo "TEST  gundo.types"
-	@if ! (grep INCLUDE gundo-sections.txt | sed 's@^<INCLUDE>\(.*\)</INCLUDE>$$@\1@' | sort -u | sed 's/.*/#include <\0>/'; echo; grep get_type$$ gundo-sections.txt | sort) | diff -burp gundo.types -; then \
+	@if ! (grep INCLUDE $(srcdir)/gundo-sections.txt | sed 's@^<INCLUDE>\(.*\)</INCLUDE>$$@\1@' | sort -u | sed 's/.*/#include <\0>/'; echo; grep get_type$$ $(srcdir)/gundo-sections.txt | sort -r) | diff -burp $(srcdir)/gundo.types -; then \
 		echo "******" >&2; \
 		echo "*** The file gundo.types looks bad. Please adjust it according to the patch above" >&2; \
 		echo "******" >&2; \

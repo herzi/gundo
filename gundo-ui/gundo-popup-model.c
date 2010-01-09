@@ -23,6 +23,12 @@
 
 #include "gundo-popup-model.h"
 
+/**
+ * GUndoPopupModel:
+ *
+ * A shared base class for #GUndoRedoModel and #GUndoUndoModel.
+ */
+
 struct _GUndoPopupModelPrivate {
   GundoHistory* history;
 };
@@ -108,6 +114,14 @@ gundo_popup_model_class_init (GUndoPopupModelClass* self_class)
   g_type_class_add_private (self_class, sizeof (GUndoPopupModelPrivate));
 }
 
+/**
+ * gundo_popup_model_get_history:
+ * @self: a #GUndoPopupModel
+ *
+ * Get the #GundoHistory assigned to a #GUndoPopupModel.
+ *
+ * Returns: the #GundoHistory of @self, %NULL if there is none.
+ */
 GundoHistory*
 gundo_popup_model_get_history (GUndoPopupModel* self)
 {

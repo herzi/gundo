@@ -21,6 +21,13 @@
  * USA
  */
 
+/**
+ * GUndoUndoModel:
+ *
+ * An implementation of a #GtkTreeModel that displays the undoable actions of
+ * a #GundoHistory.
+ */
+
 #include "gundo-undo-model.h"
 
 #include <string.h>
@@ -106,6 +113,14 @@ gundo_undo_model_class_init (GUndoUndoModelClass* self_class)
   object_class->notify   = model_notify;
 }
 
+/**
+ * gundo_undo_model_new:
+ * @history: a #GundoHistory
+ *
+ * Create a new #GtkTreeModel to display the undoable actions.
+ *
+ * Returns: a new #GUndoUndoModel casted as a #GtkTreeModel.
+ */
 GtkTreeModel*
 gundo_undo_model_new (GundoHistory* history)
 {

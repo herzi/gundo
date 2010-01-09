@@ -1,12 +1,12 @@
 #include <gundo.h>
 #include <gundo-ui.h>
 
-gundo_history_get_type
-gundo_history_view_get_type
-gundo_popup_model_get_type
-gundo_redo_model_get_type
-gundo_redo_tool_get_type
-gundo_sequence_get_type
-gundo_tool_get_type
-gundo_tool_undo_get_type
 gundo_undo_model_get_type
+gundo_tool_undo_get_type
+gundo_tool_get_type
+gundo_sequence_get_type
+gundo_redo_tool_get_type
+gundo_redo_model_get_type
+gundo_popup_model_get_type
+gundo_history_view_get_type
+gundo_history_get_type

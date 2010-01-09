@@ -66,6 +66,12 @@
  * @see #GundoActionType
  */
 
+/**
+ * GundoSequence:
+ *
+ * A #GObject implementing the #GundoHistory interface.
+ */
+
 enum {
 	PROP_0,
 	PROP_CAN_UNDO,

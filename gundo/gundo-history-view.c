@@ -36,9 +36,18 @@
 #include "gobject-helpers.h"
 
 /**
- * GundoHistoryViewIface
+ * GundoHistoryView:
  *
- * The %GTypeInterface for an element listening to changes in a %GundoHistory.
+ * A #GObject instance implementing the #GundoHistoryViewIface interface.
+ */
+/**
+ * GundoHistoryViewIface:
+ * @notify_can_redo: the signal slot for a callback that will be called when
+ * the <link linkend="GundoHistory--can-redo">can-redo</link> state of the #GundoHistory changes
+ * @notify_can_undo: the signal slot for a callback that will be called when
+ * the <link linkend="GundoHistory--can-undo">can-undo</link> state of the #GundoHistory changes
+ *
+ * The #GTypeInterface for an element listening to changes in a #GundoHistory.
  */
 /* FIXME: write more */
 G_DEFINE_IFACE_FULL(GundoHistoryView, gundo_history_view, G_TYPE_INTERFACE);
@@ -100,6 +109,15 @@ gundo_history_view_register (GundoHistoryView* self,
     }
 }
 
+/**
+ * gundo_history_view_unregister:
+ * @self: a #GundoHistoryView
+ * @history: a #GundoHistory
+ *
+ * Unsubscribe from a #GundoHistory. Call this function to unsubscribe a
+ * #GundoHistoryView that has been formerly subscribed to a #GundoHistory
+ * with gundo_history_view_register().
+ */
 void
 gundo_history_view_unregister (GundoHistoryView* self,
                                GundoHistory    * history)

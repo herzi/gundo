@@ -21,6 +21,12 @@
  * USA
  */
 
+/**
+ * GundoToolUndo:
+ *
+ * A #GtkToolItem to add undoable actions to a #GtkToolbar.
+ */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -46,6 +52,14 @@ static void gtu_history_view_init (GundoHistoryViewIface* iface);
 G_DEFINE_TYPE_WITH_CODE (GundoToolUndo, gundo_tool_undo, GUNDO_TYPE_TOOL,
                          G_IMPLEMENT_INTERFACE (GUNDO_TYPE_HISTORY_VIEW, gtu_history_view_init));
 
+/**
+ * gundo_tool_undo_new:
+ *
+ * Get a new #GundoToolUndo.
+ *
+ * Returns: a new #GundoToolUndo casted as a #GtkToolItem (for easy packing
+ * into a #GtkToolbar).
+ */
 GtkToolItem*
 gundo_tool_undo_new (void)
 {

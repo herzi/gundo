@@ -12,6 +12,8 @@ include gundo/Makefile.inc
 include gundo-ui/Makefile.inc
 include test/Makefile.inc
 
+DISTCHECK_CONFIGURE_FLAGS="--enable-gtk-doc"
+
 dist-hook: TODO
 	mv -f TODO $(top_distdir)/TODO
 
@@ -27,7 +29,8 @@ TODO:
 			exit 1; \
 		fi; \
 	else \
-		echo A git clone is required to generate a ChangeLog >&2; \
+		echo A git clone is required to generate a TODO file >&2; \
+		touch $@; \
 	fi
 
 .PHONY: TODO

@@ -21,6 +21,12 @@
  * USA
  */
 
+/**
+ * GUndoTool:
+ *
+ * A shared base class for #GUndoRedoTool and #GundoToolUndo.
+ */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -289,6 +295,12 @@ gundo_tool_class_init (GUndoToolClass* self_class)
                                    g_param_spec_string ("stock-id", "stock-id", "stock-id",
                                                         NULL, G_PARAM_READWRITE));
 
+  /**
+   * GUndoTool::clicked:
+   *
+   * This signal gets emitted when the #GtkButton of the #GUndoTool gets
+   * clicked. This happens when a user wants to undo/redo a task.
+   */
   signals[SIGNAL_CLICKED]   = g_signal_new ("clicked", G_OBJECT_CLASS_TYPE (self_class),
                                             G_SIGNAL_RUN_FIRST, G_STRUCT_OFFSET (GUndoToolClass, clicked),
                                             NULL, NULL,
@@ -303,6 +315,14 @@ gundo_tool_class_init (GUndoToolClass* self_class)
   g_type_class_add_private (self_class, sizeof (GUndoToolPrivate));
 }
 
+/**
+ * gundo_tool_get_history:
+ * @self: a #GUndoTool
+ *
+ * Get the #GundoHistory of @self.
+ *
+ * Returns: the #GundoHistory currently assigned to @self.
+ */
 GundoHistory*
 gundo_tool_get_history (GUndoTool* self)
 {
@@ -311,6 +331,15 @@ gundo_tool_get_history (GUndoTool* self)
   return PRIV (self)->history;
 }
 
+/**
+ * gundo_tool_get_stock_id:
+ * @self: a #GUndoTool
+ *
+ * Get the stock id of the tool. It is used to choose the #GtkButton's label
+ * and icon.
+ *
+ * Returns: The stock id, usually %GTK_STOCK_REDO or %GTK_STOCK_UNDO.
+ */
 gchar const*
 gundo_tool_get_stock_id (GUndoTool* self)
 {
@@ -319,6 +348,14 @@ gundo_tool_get_stock_id (GUndoTool* self)
   return PRIV (self)->stock_id;
 }
 
+/**
+ * gundo_tool_set_history:
+ * @self: a #GUndoTool
+ * @history: a #GundoHistory
+ *
+ * Assign @history to @self. The #GUndoTool will now display it's state
+ * according to the #GundoHistory.
+ */
 void
 gundo_tool_set_history (GUndoTool   * self,
                         GundoHistory* history)
@@ -342,6 +379,13 @@ gundo_tool_set_history (GUndoTool   * self,
   g_object_notify(G_OBJECT(self), "history");
 }
 
+/**
+ * gundo_tool_set_model:
+ * @self: a #GUndoTool
+ * @model: a #GtkTreeModel
+ *
+ * Sets the model that's used for display in the popup window.
+ */
 void
 gundo_tool_set_model (GUndoTool   * self,
                       GtkTreeModel* model)

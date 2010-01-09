@@ -24,6 +24,7 @@
 #include <gundo.h>
 
 /* FIXME: include menu item widgets */
+/* FIXME: move the API to a proper namespace like gundo_ui */
 #include <gundo-redo-model.h>
 #include <gundo-redo-tool.h>
 #include <gundo-undo-model.h>

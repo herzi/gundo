@@ -27,6 +27,12 @@
 
 #include "gundo-redo-model.h"
 
+/**
+ * GUndoRedoTool:
+ *
+ * A #GtkToolItem to add redoable actions to a #GtkToolbar.
+ */
+
 static void implement_gundo_history_view (GundoHistoryViewIface* iface);
 
 G_DEFINE_TYPE_WITH_CODE (GUndoRedoTool, gundo_redo_tool, GUNDO_TYPE_TOOL,
@@ -70,6 +76,14 @@ gundo_redo_tool_class_init (GUndoRedoToolClass* self_class)
   tool_class->clicked  = redo_clicked;
 }
 
+/**
+ * gundo_redo_tool_new:
+ *
+ * Create a new #GUndoRedoTool.
+ *
+ * Returns: a new #GUndoRedoTool cased to #GtkToolItem (to be packed into a
+ * #GtkToolbar easily).
+ */
 GtkToolItem*
 gundo_redo_tool_new (void)
 {
