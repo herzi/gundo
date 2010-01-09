@@ -23,6 +23,7 @@
 
 #include <gundo.h>
 
+/* FIXME: include menu item widgets */
 #include <gundo-redo-model.h>
 #include <gundo-redo-tool.h>
 #include <gundo-undo-model.h>

@@ -1,8 +1,0 @@
-Gtk Undo Library: things to do, in no particular order
-
-* Write a tutorial document
-
-* extend GUndoHistoryView to listen to the signals
-
-* Gnome undo/redo button and menu-item widgets
-

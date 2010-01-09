@@ -24,4 +24,5 @@ mkinstalldirs
 *.o
 sketch
 stamp-h1
+TODO
 tundo
