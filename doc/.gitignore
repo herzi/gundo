@@ -19,6 +19,5 @@ Makefile.in
 scan-build.stamp
 sgml-build.stamp
 sgml.stamp
-tmpl-build.stamp
-tmpl.stamp
+tmpl*
 xml
