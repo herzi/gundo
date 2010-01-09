@@ -7,6 +7,7 @@ gundo.interfaces
 gundo-overrides.txt
 gundo.prerequisites
 gundo.signals
+gundo-undeclared.txt
 gundo-undocumented.txt
 gundo-unused.txt
 html
