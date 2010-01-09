@@ -24,7 +24,6 @@
  *
  * A #GundoSequence contains a list of undoable/redoable actions. Action can be
  * added with gundo_sequence_add_action().
- * The list can be cleared by using gundo_sequence_clear().
  */
 /* FIXME: write more */
  

@@ -96,7 +96,7 @@ make_sensitive(GtkWidget* widget, GundoHistory* history, char* signal_name) {
  *
  * Makes a widget sensitive to the current undo state of a GundoSequence.
  * A widget that is undo-sensitive will only be sensitive
- * when it is possible to call gundo_sequence_undo() on its associated
+ * when it is possible to call gundo_history_undo() on its associated
  * GundoSequence (that is, when gundo_history_can_undo() returns %TRUE).
  */
 void
@@ -112,9 +112,9 @@ gundo_make_undo_sensitive (GtkWidget   * widget,
  * @widget: The #GtkWidget to make redo-sensitive.
  * @history: The undo sequence that the widget should be sensitive to.
  *
- * Makes a widget sensitive to the current redo state of a GundoSequence.  
- * A widget that is redo-sensitive will only be sensitive when it is 
- * possible to call gundo_sequence_redo() on its associated GundoSequence 
+ * Makes a widget sensitive to the current redo state of a GundoSequence.
+ * A widget that is redo-sensitive will only be sensitive when it is
+ * possible to call gundo_history_redo() on its associated GundoSequence
  * (that is, when gundo_history_can_redo() returns %TRUE).
  */
 void

@@ -111,3 +111,15 @@ check-local:
 			exit 1; \
 		fi; \
 	done
+	@echo "TEST  gundo-docs.sgml (valid docbook)"
+	@if test 1 != `xmllint --xinclude gundo-docs.sgml | \
+		      sed 's@ xml:base="[^"]*\.\(x\|sg\)ml"@@' | \
+		      sed 's@xmlns:[[:alpha:]]*="[^"]*"@@' | \
+		      xmllint --postvalid --noout - 2>&1 | \
+		      grep -v "IDREF attribute linkend references an unknown ID \"\(Atk.*\|gboolean\|gchar\|GInitiallyUnowned\|GInterface\|GObject.*\|gpointer\|Gtk.*\|GType\|guint\|void\|\(NULL\|TRUE\)--CAPS\)\"" | \
+		      wc -l`; then \
+		echo "******" >&2; \
+		echo "*** Please fix the documentation" >&2; \
+		echo "******" >&2; \
+		exit 1; \
+	fi
